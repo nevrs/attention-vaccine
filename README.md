@@ -11,9 +11,9 @@
 怒りや不安をあおって稼ぐ、炎上を狙う、根拠を示さずに言い切る。
 読んでいる投稿や記事にこうした**手口**が使われていたら、‼️ で知らせる Chrome 拡張です。
 
-- **知らせるのは手口だけ:** 投稿を隠したり、良し悪しを決めたりはしません。‼️ を押すと、どの手口に当たったか、なぜか、数値が出ます。
+- **知らせるのは手口だけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。‼️ を押すと、どの手口に当たったか、なぜか、数値が出ます。
 - **立場は見ない:** どの主張かではなく、書き方だけを見ます。
-- **真偽は確かめていない:** 「根拠のない断定」は、根拠が示されていないという意味です。内容が誤りだという判定ではありません。
+- **真偽は確かめていない:** 「根拠のない断定」は、根拠を示さずに言い切っている、または広く否定されている主張を事実として述べている、という意味です。内容の真偽を確かめた結果ではありません。
 - **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。判定しないアカウントも指定できます（X・Bluesky）。
 
 ### 願い
@@ -29,15 +29,15 @@
 
 判定には [TypeSafe](https://typesafe.ai) の **Jev**（`jev-1.13.0`）を使います。
 Jev は文章を書かない AI で、「この文は○○か」という問いに確率だけを返します。
-確率が設定した感度を超えたときだけ ‼️ を付けます。
+確率が設定した感度（閾値）以上のときだけ ‼️ を付けます。
 大きな言語モデル（LLM）は使いません。
 
 | 手口 | 見かた | 初期値 |
 |---|---|---|
 | 煽って稼ぐ型 | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
 | 炎上狙い・挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
-| 根拠のない断定 | 根拠を示さない断定、広く否定されている主張（Jev） | オン |
-| 要一次ソース確認 | 数字や研究が元の情報源から切り離されている（Jev、記事ページのみ） | オン |
+| 根拠のない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
+| 要一次ソース確認 | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
 | 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
 | 同じ文言の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
 | 集団へのレッテル貼り | 国籍・性別・世代・立場などの集団の全員に、性質を決めつける（好意的な決めつけも含む。Jev、高度な設定） | オフ |
@@ -48,6 +48,7 @@ API キーが無くても、コードで判定する 2 項目だけで動きま�
 ### 入れ方
 
 Chrome ウェブストアには、まだ出していません。次の手順で、手元のファイルから入れます（Windows・Mac とも同じです）。
+パソコン版の Chrome で動きます。Edge や Brave など Chrome と同じ仕組みのブラウザでも動く見込みですが、確かめていません。スマートフォンでは使えません。
 
 **1. ファイルを取得する**
 1. このページの上にある緑の「Code」ボタンを押し、「Download ZIP」を選びます。
@@ -78,7 +79,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 初期状態では、どのサイトでも何もしません。使いたいサイトごとにオンにします。
 1. 判定したいサイト（X、ニュースサイトなど）を開きます。
 2. 拡張のアイコンを押し、次のどちらかを選びます。
-   - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の右下に結果が 1 つ出ます。
+   - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の隅（多くのサイトでは右下）に結果が 1 つ出ます。
    - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に ‼️ が付きます。
 3. ‼️ を押すと、見つかった手口の名前・理由・数値が出ます。
 4. やめるときは、同じ画面で「オフ」を選びます。
@@ -94,7 +95,10 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 ### 送るもの・送らないもの（プライバシー）
 
 - **どのサイトも、あなたがオンにするまで何も判定しません。**
-- オンにしたサイトで、**画面に表示されて読んだ投稿の本文**（1 件最大 2000 字）を、あなたが選んだ接続先（TypeSafe または Vercel）に送ります。送るのは本文だけです。
+- オンにしたサイトで、あなたが選んだ接続先（TypeSafe または Vercel）に次の文章を送ります。
+  - ブロックごとモード: **画面に表示されて読んだ投稿の本文**（1 件最大 2000 字）
+  - ページ全体モード: **記事の見出しと本文の冒頭**（最大 2000 字）
+  - API キーが無いときは、何も送りません（コードで判定する項目だけが動きます）。
 - **DM・メール・チャットの画面は判定しないようにしています。** アドレスに `/messages`・`/inbox`・`/chat`・`/dm`・`/direct`・`/mail` を含む画面、X の Grok の画面、主なチャット・メール・AI チャットのサービス（Discord・Slack・Messenger・Teams・WhatsApp・Telegram・LINE・Gmail・Outlook・ChatGPT・Claude・Gemini など）が対象です。見分けは完全ではないので、**この一覧にないチャット・メール・AI チャットのサイトはオンにしないでください。**
 - 「一次ソースと比較」（初期値オフ）をオンにすると、記事中の論文番号（DOI）を [OpenAlex](https://openalex.org) に送ります。
 - 開発者のサーバーはありません。利用状況の収集もしていません。
@@ -126,6 +130,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 - Jev は理由を説明しません。‼️ を押すと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
 - 判定がおかしいと思ったら、‼️ の詳細の一番下にあるリンクから [GitHub の Issues](https://github.com/nevrs/attention-vaccine/issues) で知らせてください。公開されている投稿だけを例に挙げてください。
 - ‼️ が付かなくても、内容が正しい・安全だという意味ではありません。
+- 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿、DM などの画面、除外したアカウントの投稿。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
 
 ### 詳しく
@@ -145,9 +150,9 @@ In Japanese, this extension is called 煽り注意報 (roughly "rage-bait adviso
 
 A Chrome extension that shows ‼️ when a post or article you are reading uses a **manipulation technique**, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence.
 
-- **It points out the technique, nothing more:** it never hides posts or judges them good or bad. Click ‼️ to see which technique was detected, why, and the score.
+- **It points out the technique, nothing more:** it never judges posts good or bad, and hides them only if you choose to (blurring sexual content). Click ‼️ to see which technique was detected, why, and the score.
 - **It ignores viewpoints:** it looks only at how something is written, not at which side it supports.
-- **It does not fact-check:** "Unsupported assertion" means no evidence was given. It does not mean the claim is false.
+- **It does not fact-check:** "Unsupported assertion" means something is asserted without evidence, or a widely refuted claim is stated as fact. It is not the result of checking whether the content is true.
 - **You are in control:** you choose the sites, the techniques to detect, and the sensitivity. You can also exclude specific accounts (X and Bluesky).
 
 ### My hope
@@ -163,15 +168,15 @@ I am not an engineer. Almost all of this extension was built in consultation wit
 
 It uses **Jev** (`jev-1.13.0`) by [TypeSafe](https://typesafe.ai).
 Jev is an AI model that does not generate text; it returns only a probability for questions like "Does this text do X?".
-‼️ appears only when the probability exceeds your sensitivity setting.
+‼️ appears only when the probability reaches your sensitivity setting (threshold).
 No large language model (LLM) is used.
 
 | Technique | How it is detected | Default |
 |---|---|---|
 | Emotional bait for profit | Stirs up emotions × drives views or purchases (Jev) | On |
 | Flame bait / provocation | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
-| Unsupported assertion | Claims without evidence, widely debunked claims (Jev) | On |
-| Check the primary source | Numbers or studies cut off from their original source (Jev, article pages only) | On |
+| Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
+| Check the primary source | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
 | Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |
 | Copy-paste posting | Near-identical text posted by different accounts (rule-based) | On |
 | Group labeling | Attributing a trait to everyone in a group by nationality, gender, generation, political position, etc., including "positive" stereotypes (Jev, advanced settings) | Off |
@@ -181,7 +186,7 @@ You can also try the demo page (`demo.html`) without a key.
 
 ### Install
 
-The extension is not on the Chrome Web Store yet. Install it from the files as follows (the steps are the same on Windows and Mac). The extension screens are in Japanese only, so the steps below give English translations in parentheses.
+The extension is not on the Chrome Web Store yet. Install it from the files as follows (the steps are the same on Windows and Mac). It runs on desktop Chrome. It will probably also work in other Chromium-based browsers such as Edge and Brave, but this has not been tested. It does not work on phones. The extension screens are in Japanese only, so the steps below give English translations in parentheses.
 
 **1. Get the files**
 1. Click the green "Code" button at the top of this page and choose "Download ZIP".
@@ -212,7 +217,7 @@ If you use `git`, you can run `git clone https://github.com/nevrs/attention-vacc
 By default, nothing happens on any site. Turn it on for each site you want.
 1. Open a site you want to check (X, a news site, etc.).
 2. Click the extension icon and choose one of these:
-   - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in the bottom-right corner.
+   - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in a corner of the screen (bottom right on most sites).
    - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. ‼️ appears at the top right of each post where a technique is found.
 3. Click ‼️ to see the technique, the reason, and the score.
 4. To stop, choose "オフ" (Off) in the same place.
@@ -228,7 +233,10 @@ Click "Remove" for "Attention Vaccine" in `chrome://extensions`. Your saved sett
 ### What is sent, and what is not (privacy)
 
 - **Nothing is analyzed on any site until you turn that site on.**
-- On sites you turn on, **the text of posts you actually view** (up to 2,000 characters each) is sent to the provider you chose (TypeSafe or Vercel). Only the text is sent.
+- On sites you turn on, the following text is sent to the provider you chose (TypeSafe or Vercel):
+  - Per-block mode: **the text of posts you actually view** (up to 2,000 characters each)
+  - Whole-page mode: **the article's headline and the beginning of its body** (up to 2,000 characters)
+  - Without an API key, nothing is sent (only the rule-based checks run).
 - **DM, mail, and chat pages are skipped.** This covers URL paths containing `/messages`, `/inbox`, `/chat`, `/dm`, `/direct`, or `/mail`, X's Grok pages, and major chat, mail, and AI chat services (Discord, Slack, Messenger, Teams, WhatsApp, Telegram, LINE, Gmail, Outlook, ChatGPT, Claude, Gemini, and others). Detection is not perfect, so **do not turn the extension on for any other chat, mail, or AI chat site.**
 - If you turn on "Compare with the primary source" (off by default), the paper identifier (DOI) found in an article is sent to [OpenAlex](https://openalex.org).
 - There is no developer server and no usage tracking.
@@ -260,6 +268,7 @@ Contributions of questions or phrase lists for other languages, and test results
 - Jev does not explain its reasons. Click ‼️ to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
 - If a result looks wrong, please tell us via the link at the bottom of the ‼️ details ([GitHub Issues](https://github.com/nevrs/attention-vaccine/issues)). Please use only publicly visible posts as examples.
 - No ‼️ does not mean the content is true or safe.
+- Not checked: text inside images or videos, anything after the first 2,000 characters of an article, posts you scroll past quickly, DM-like pages, and posts from accounts you excluded.
 - Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
 
 ### More
