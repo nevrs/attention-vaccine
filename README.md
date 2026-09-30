@@ -1,10 +1,12 @@
-# 煽り注意報 (Aori Alert)
+# Attention Vaccine（煽り注意報）
 
 [日本語](#日本語) | [English](#english)
 
 ---
 
 ## 日本語
+
+英語名は Attention Vaccine です（日本語の Chrome では「煽り注意報」と表示されます）。
 
 怒りや不安をあおって稼ぐ、炎上を狙う、根拠を示さずに言い切る。
 読んでいる投稿や記事にこうした**手口**が使われていたら、‼️ で知らせる Chrome 拡張です。
@@ -49,16 +51,16 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 **1. ファイルを取得する**
 1. このページの上にある緑の「Code」ボタンを押し、「Download ZIP」を選びます。
 2. ダウンロードした ZIP ファイルを展開（解凍）します。
-3. 展開してできたフォルダ（`aori-alert-main`）を、消さない場所に移します（例: ドキュメント）。**このフォルダを消したり動かしたりすると、拡張機能が動かなくなります。**
+3. 展開してできたフォルダ（`attention-vaccine-main`）を、消さない場所に移します（例: ドキュメント）。**このフォルダを消したり動かしたりすると、拡張機能が動かなくなります。**
 
-`git` を使える人は、`git clone https://github.com/nevrs/aori-alert.git` でも構いません。
+`git` を使える人は、`git clone https://github.com/nevrs/attention-vaccine.git` でも構いません。
 
 **2. Chrome に読み込む**
 1. Chrome のアドレス欄に `chrome://extensions` と入れて開きます。
 2. 右上の「デベロッパー モード」をオンにします。
 3. 左上に出る「パッケージ化されていない拡張機能を読み込む」を押します。
 4. 手順 1 のフォルダ（中に `manifest.json` があるフォルダ）を選びます。
-5. 一覧に「煽り注意報」が出れば完了です。体験ページが自動で開きます。キーなしで、どんな表示になるかを試せます。
+5. 一覧に「煽り注意報」が出れば完了です（Chrome の表示言語が日本語以外なら「Attention Vaccine」と出ます）。体験ページが自動で開きます。キーなしで、どんな表示になるかを試せます。
 6. アドレス欄の右にあるパズルのピースのアイコンを押し、「煽り注意報」のピンを押すと、アイコンが常に表示されて使いやすくなります。
 
 **3. API キーを入れる**（キーなしでも、コードで判定する 2 項目だけは動きます）
@@ -136,6 +138,8 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 ## English
 
+In Japanese, this extension is called 煽り注意報 (roughly "rage-bait advisory", as in a weather advisory). The name you see in Chrome depends on your browser's language.
+
 A Chrome extension that shows ‼️ when a post or article you are reading uses a **manipulation technique**, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence.
 
 - **It points out the technique, nothing more:** it never hides posts or judges them good or bad. Click ‼️ to see which technique was detected, why, and the score.
@@ -178,17 +182,17 @@ The extension is not on the Chrome Web Store yet. Install it from the files as f
 **1. Get the files**
 1. Click the green "Code" button at the top of this page and choose "Download ZIP".
 2. Extract the downloaded ZIP file.
-3. Move the extracted folder (`aori-alert-main`) to a place where it will stay (for example, Documents). **If you delete or move this folder later, the extension stops working.**
+3. Move the extracted folder (`attention-vaccine-main`) to a place where it will stay (for example, Documents). **If you delete or move this folder later, the extension stops working.**
 
-If you use `git`, you can run `git clone https://github.com/nevrs/aori-alert.git` instead.
+If you use `git`, you can run `git clone https://github.com/nevrs/attention-vaccine.git` instead.
 
 **2. Load it into Chrome**
 1. Type `chrome://extensions` in the address bar and open it.
 2. Turn on "Developer mode" in the top right.
 3. Click "Load unpacked" in the top left.
 4. Select the folder from step 1 (the one that contains `manifest.json`).
-5. When "煽り注意報" appears in the list, you are done. A demo page opens automatically so you can see how it works without a key.
-6. Click the puzzle-piece icon to the right of the address bar and pin "煽り注意報" so its icon is always visible.
+5. When "Attention Vaccine" appears in the list (or "煽り注意報" if Chrome is set to Japanese), you are done. A demo page opens automatically so you can see how it works without a key.
+6. Click the puzzle-piece icon to the right of the address bar and pin "Attention Vaccine" so its icon is always visible.
 
 **3. Enter an API key** (without a key, only the two rule-based checks run)
 1. Get an API key from one of these. Charges go to your own account (see "Cost" below).
@@ -211,11 +215,11 @@ By default, nothing happens on any site. Turn it on for each site you want.
 
 **Updating**
 
-Download the new ZIP and replace the contents of the old folder. Then click the reload button (circular arrow) for "煽り注意報" in `chrome://extensions`. Your settings and API key are kept.
+Download the new ZIP and replace the contents of the old folder. Then click the reload button (circular arrow) for "Attention Vaccine" in `chrome://extensions`. Your settings and API key are kept.
 
 **Removing**
 
-Click "Remove" for "煽り注意報" in `chrome://extensions`. Your saved settings and API key are deleted with it.
+Click "Remove" for "Attention Vaccine" in `chrome://extensions`. Your saved settings and API key are deleted with it.
 
 ### What is sent, and what is not (privacy)
 

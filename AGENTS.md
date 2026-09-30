@@ -1,4 +1,4 @@
-# AGENTS — 煽り注意報（Chrome 拡張、MV3）
+# AGENTS — Attention Vaccine / 煽り注意報（Chrome 拡張、MV3）
 
 ## 構成
 | ファイル | 役割 |
@@ -9,7 +9,8 @@
 | `content.js` | ページ側。モード（page / block）、見えた件の判定、‼️ の表示 |
 | `picker.js` | クリックで区切り・本文の場所・判定範囲を直すバー |
 | `background.js` | 接続先への問い合わせ（並列制限・再試行・キャッシュ・1日の上限）、OpenAlex |
-| `options.*` / `popup.*` | 設定画面・アイコンのポップアップ |
+| `options.*` / `popup.*` | 設定画面・アイコンのポップアップ（画面は日本語のみ） |
+| `_locales/{ja,en}/messages.json` | 拡張の名前と説明（Chrome の言語で切り替わる。既定は en） |
 | `demo.*` / `demo-data.js` | キー不要の体験ページ。`demo-data.js` は `tools/demo_measure.py` で作る |
 
 ## 動かし方
