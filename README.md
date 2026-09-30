@@ -14,7 +14,7 @@
 - **真偽は確かめていない:** 「根拠のない断定」は、根拠が示されていないという意味です。内容が誤りだという判定ではありません。
 - **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。
 
-### 理念
+### 願い
 
 私がこの拡張機能を作ったのは、政治的な立場を超えて、人々がアテンションエコノミー（人の注目を奪い合って稼ぐ仕組み）などが引き起こす瞬間的な感情に突き動かされることへの、免疫として働いてほしいと願ったからです。
 
@@ -105,7 +105,7 @@ A Chrome extension that shows ‼️ when a post or article you are reading uses
 - **It does not fact-check:** "Unsupported assertion" means no evidence was given. It does not mean the claim is false.
 - **You are in control:** you choose the sites, the techniques to detect, and the sensitivity.
 
-### Why this exists
+### My hope
 
 I built this extension hoping it would work as an immune system, across political lines, against being driven by the momentary emotions stirred up by the attention economy (business models that profit by competing for people's attention) and similar forces.
 
