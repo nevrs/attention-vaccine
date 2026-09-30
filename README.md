@@ -90,6 +90,10 @@ API キーが無くても、コードで判定する 2 項目だけで動きま�
 - 設計の考え方と実測値: [DESIGN.md](DESIGN.md)
 - 開発の現在地: [SESSION.md](SESSION.md)
 
+### ライセンス
+
+[MIT ライセンス](LICENSE)です。ネット環境全体に貢献したいと願っています。改変・再配布・他の製品への組み込みも自由です。
+
 ---
 
 ## English
@@ -178,3 +182,7 @@ Contributions of questions or phrase lists for other languages, and test results
 
 - Design notes and measurements (Japanese): [DESIGN.md](DESIGN.md)
 - Development status (Japanese): [SESSION.md](SESSION.md)
+
+### License
+
+[MIT License](LICENSE). I hope this contributes to the internet as a whole. You are free to modify it, redistribute it, and build it into other products.
