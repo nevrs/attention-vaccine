@@ -44,11 +44,49 @@ API キーが無くても、コードで判定する 2 項目だけで動きま�
 
 ### 入れ方
 
-1. このリポジトリを取得します（`git clone` するか、ZIP をダウンロードして展開）。
-2. Chrome で `chrome://extensions` を開き、右上の「デベロッパーモード」をオンにします。
-3. 「パッケージ化されていない拡張機能を読み込む」を押し、このフォルダを選びます。
-4. 設定画面で接続先を選び、自分の API キーを入れて保存します（TypeSafe 公式、または Vercel AI Gateway）。
-5. 使いたいサイトを開き、拡張のアイコンから「ページ全体」（記事向け）か「ブロックごと」（タイムライン向け）を選びます。
+Chrome ウェブストアには、まだ出していません。次の手順で、手元のファイルから入れます（Windows・Mac とも同じです）。
+
+**1. ファイルを取得する**
+1. このページの上にある緑の「Code」ボタンを押し、「Download ZIP」を選びます。
+2. ダウンロードした ZIP ファイルを展開（解凍）します。
+3. 展開してできたフォルダ（`aori-alert-main`）を、消さない場所に移します（例: ドキュメント）。**このフォルダを消したり動かしたりすると、拡張機能が動かなくなります。**
+
+`git` を使える人は、`git clone https://github.com/nevrs/aori-alert.git` でも構いません。
+
+**2. Chrome に読み込む**
+1. Chrome のアドレス欄に `chrome://extensions` と入れて開きます。
+2. 右上の「デベロッパー モード」をオンにします。
+3. 左上に出る「パッケージ化されていない拡張機能を読み込む」を押します。
+4. 手順 1 のフォルダ（中に `manifest.json` があるフォルダ）を選びます。
+5. 一覧に「煽り注意報」が出れば完了です。体験ページが自動で開きます。キーなしで、どんな表示になるかを試せます。
+6. アドレス欄の右にあるパズルのピースのアイコンを押し、「煽り注意報」のピンを押すと、アイコンが常に表示されて使いやすくなります。
+
+**3. API キーを入れる**（キーなしでも、コードで判定する 2 項目だけは動きます）
+1. 次のどちらかで API キーを発行します。どちらも料金はあなたのアカウントに請求されます（下の「費用」を参照）。
+   - **TypeSafe（公式）:** [console.typesafe.ai](https://console.typesafe.ai/settings/keys) でアカウントを作り、キーを発行します（順番待ちがあることがあります）。
+   - **Vercel AI Gateway:** Vercel のダッシュボードで「AI Gateway」→「API Keys」からキーを発行します。
+2. 拡張のアイコンを押し、「設定を開く」を押します。
+3. 「接続先」でキーを発行した先を選び、「API キー」の欄にキーを貼り付けます。
+4. 「接続テスト」を押し、「つながりました」と出るのを確かめます。
+5. 画面下の「保存」を押します。
+
+**4. 使うサイトを選ぶ**
+
+初期状態では、どのサイトでも何もしません。使いたいサイトごとにオンにします。
+1. 判定したいサイト（X、ニュースサイトなど）を開きます。
+2. 拡張のアイコンを押し、次のどちらかを選びます。
+   - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の右下に結果が 1 つ出ます。
+   - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に ‼️ が付きます。
+3. ‼️ を押すと、見つかった手口の名前・理由・数値が出ます。
+4. やめるときは、同じ画面で「オフ」を選びます。
+
+**更新するとき**
+
+新しい ZIP をダウンロードし、前のフォルダの中身を置き換えます。そのあと `chrome://extensions` で「煽り注意報」の更新ボタン（丸い矢印）を押します。設定と API キーは残ります。
+
+**外すとき**
+
+`chrome://extensions` で「煽り注意報」の「削除」を押します。保存した設定と API キーも一緒に消えます。
 
 ### 送るもの・送らないもの（プライバシー）
 
@@ -135,13 +173,49 @@ You can also try the demo page (`demo.html`) without a key.
 
 ### Install
 
-1. Get this repository (`git clone`, or download the ZIP and extract it).
-2. Open `chrome://extensions` in Chrome and turn on "Developer mode" (top right).
-3. Click "Load unpacked" and select this folder.
-4. In the options page, choose a provider and enter your own API key (TypeSafe or Vercel AI Gateway), then save.
-5. Open a site and choose "Whole page" (for articles) or "Per block" (for timelines) from the extension icon.
+The extension is not on the Chrome Web Store yet. Install it from the files as follows (the steps are the same on Windows and Mac). The extension screens are in Japanese only, so the steps below give English translations in parentheses.
 
-The user interface is currently in Japanese only.
+**1. Get the files**
+1. Click the green "Code" button at the top of this page and choose "Download ZIP".
+2. Extract the downloaded ZIP file.
+3. Move the extracted folder (`aori-alert-main`) to a place where it will stay (for example, Documents). **If you delete or move this folder later, the extension stops working.**
+
+If you use `git`, you can run `git clone https://github.com/nevrs/aori-alert.git` instead.
+
+**2. Load it into Chrome**
+1. Type `chrome://extensions` in the address bar and open it.
+2. Turn on "Developer mode" in the top right.
+3. Click "Load unpacked" in the top left.
+4. Select the folder from step 1 (the one that contains `manifest.json`).
+5. When "煽り注意報" appears in the list, you are done. A demo page opens automatically so you can see how it works without a key.
+6. Click the puzzle-piece icon to the right of the address bar and pin "煽り注意報" so its icon is always visible.
+
+**3. Enter an API key** (without a key, only the two rule-based checks run)
+1. Get an API key from one of these. Charges go to your own account (see "Cost" below).
+   - **TypeSafe (official):** create an account at [console.typesafe.ai](https://console.typesafe.ai/settings/keys) and issue a key (there may be a waitlist).
+   - **Vercel AI Gateway:** in the Vercel dashboard, go to "AI Gateway" → "API Keys" and create a key.
+2. Click the extension icon, then "設定を開く" (Open settings).
+3. Under "接続先" (Provider), choose where you got the key, and paste it into "API キー" (API key).
+4. Click "接続テスト" (Test connection) and check that it says "つながりました" (Connected).
+5. Click "保存" (Save) at the bottom.
+
+**4. Choose the sites**
+
+By default, nothing happens on any site. Turn it on for each site you want.
+1. Open a site you want to check (X, a news site, etc.).
+2. Click the extension icon and choose one of these:
+   - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in the bottom-right corner.
+   - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. ‼️ appears at the top right of each post where a technique is found.
+3. Click ‼️ to see the technique, the reason, and the score.
+4. To stop, choose "オフ" (Off) in the same place.
+
+**Updating**
+
+Download the new ZIP and replace the contents of the old folder. Then click the reload button (circular arrow) for "煽り注意報" in `chrome://extensions`. Your settings and API key are kept.
+
+**Removing**
+
+Click "Remove" for "煽り注意報" in `chrome://extensions`. Your saved settings and API key are deleted with it.
 
 ### What is sent, and what is not (privacy)
 
