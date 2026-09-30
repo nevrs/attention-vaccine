@@ -87,6 +87,13 @@ function createMark(rows, style, extraNote) {
 async function render() {
   const saved = await loadPillars();
   $("measured").textContent = `（判定した日: ${JEV_DEMO.measured}、モデル: ${JEV_DEMO.model}）`;
+  // 「しくみ」の図の数値は見本1から入れる（手で書くと、問いを変えて測り直したときに食い違った）
+  const a0 = JEV_DEMO.posts[0].answers;
+  const pct = (qs) => `${(qs.reduce((acc, k) => acc * a0[k], 1) * 100).toFixed(0)}%`;
+  $("figBait").textContent = pct(JEV_PILLARS.bait.qs);
+  $("figFlame").textContent = pct(JEV_PILLARS.flame.qs);
+  $("figDema").textContent = pct(JEV_PILLARS.dema.qs);
+  $("figBadge").textContent = `‼️ ${JEV_PILLARS.bait.short} ${pct(JEV_PILLARS.bait.qs)}`;
 
   const feed = $("feed");
   feed.textContent = "";
