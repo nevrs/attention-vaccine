@@ -155,8 +155,8 @@ Jev を呼ばずにコードだけで判定する項目を持てる（`JEV_PILLA
 
 ## 安全とプライバシー（v0.12、2026-09-30 の公開前点検）
 - **キーはページ側に出さない**: content script はキーを読まず、有無だけを background に聞く（`hasKey`）。
-  `storage.local` は `setAccessLevel(TRUSTED_CONTEXTS)` でページ側から読めなくする（実機の Chrome で効くかは未確認。失敗しても黙って続ける）。そのため、キーだけ変えたときの通知は sync の `savedAt` で送る
-- **個人間のやり取りは送らない**: パスに `/messages` `/inbox` `/chat(s)` `/dm` `/direct` `/mail` を含む画面（`PRIVATE_PATH`）と、アドレスで見分けられないチャット・メールのサービス（`PRIVATE_HOSTS`: Discord・Slack・Teams・Gmail など）では判定しない。
+  `storage.local` は `setAccessLevel(TRUSTED_CONTEXTS)` でページ側から読めなくする（公式資料に local も対象と明記。実機の Chrome では未確認。失敗しても黙って続ける）。そのため、キーだけ変えたときの通知は sync の `savedAt` で送る
+- **個人間のやり取りは送らない**: パスに `/messages` `/inbox` `/chat(s)` `/dm` `/direct` `/mail` を含む画面と X の `/i/grok`（`PRIVATE_PATH`）と、アドレスで見分けられないチャット・メールのサービス（`PRIVATE_HOSTS`: Discord・Slack・Teams・Gmail・ChatGPT・Claude・Gemini など）では判定しない。
   X の DM の小窓は `/home` の上に開くが、区切りが `article[data-testid="tweet"]` で合うので自動検出に落ちず、小窓の中は判定しない（実ページ未確認）。
   サイト別の区切りが合わない画面は自動検出に落ちるので、X の DM でも区切りが見つかりうる。その手前で止める
 - **表示はページから触れない**: ‼️ とクリック修正のバーは closed shadow DOM（open だとページのプログラムが中身を書き換えられる）

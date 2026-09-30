@@ -54,10 +54,10 @@ API キーが無くても、コードで判定する 2 項目だけで動きま�
 
 - **どのサイトも、あなたがオンにするまで何も判定しません。**
 - オンにしたサイトで、**画面に表示されて読んだ投稿の本文**（1 件最大 2000 字）を、あなたが選んだ接続先（TypeSafe または Vercel）に送ります。送るのは本文だけです。
-- **DM・メール・チャットの画面は判定しないようにしています。** アドレスに `/messages`・`/inbox`・`/chat`・`/dm`・`/direct`・`/mail` を含む画面と、主なチャット・メールのサービス（Discord・Slack・Messenger・Teams・WhatsApp・Telegram・LINE・Gmail・Outlook など）が対象です。見分けは完全ではないので、**この一覧にないチャットやメールのサイトはオンにしないでください。**
+- **DM・メール・チャットの画面は判定しないようにしています。** アドレスに `/messages`・`/inbox`・`/chat`・`/dm`・`/direct`・`/mail` を含む画面、X の Grok の画面、主なチャット・メール・AI チャットのサービス（Discord・Slack・Messenger・Teams・WhatsApp・Telegram・LINE・Gmail・Outlook・ChatGPT・Claude・Gemini など）が対象です。見分けは完全ではないので、**この一覧にないチャット・メール・AI チャットのサイトはオンにしないでください。**
 - 「一次ソースと比較」（初期値オフ）をオンにすると、記事中の論文番号（DOI）を [OpenAlex](https://openalex.org) に送ります。
 - 開発者のサーバーはありません。利用状況の収集もしていません。
-- API キーはこのブラウザの中だけに保存されます（同期しません）。拡張のうちページの中で動く部分はキーを読まず、ページ側から読めないようにする設定もしています（この設定が実際の Chrome で効いているかは、まだ確かめていません）。
+- API キーはこのブラウザの中だけに保存されます（同期しません）。拡張のうちページの中で動く部分はキーを読みません。さらに、Chrome の公式資料にある方法（`storage.local.setAccessLevel`）で、ページの中からは読めない設定にしています（実際の Chrome での動作確認はまだです）。
 - 判定結果は、ブラウザを閉じると消えます。
 
 ### 費用
@@ -147,10 +147,10 @@ The user interface is currently in Japanese only.
 
 - **Nothing is analyzed on any site until you turn that site on.**
 - On sites you turn on, **the text of posts you actually view** (up to 2,000 characters each) is sent to the provider you chose (TypeSafe or Vercel). Only the text is sent.
-- **DM, mail, and chat pages are skipped.** This covers URL paths containing `/messages`, `/inbox`, `/chat`, `/dm`, `/direct`, or `/mail`, and major chat and mail services (Discord, Slack, Messenger, Teams, WhatsApp, Telegram, LINE, Gmail, Outlook, and others). Detection is not perfect, so **do not turn the extension on for any other chat or mail site.**
+- **DM, mail, and chat pages are skipped.** This covers URL paths containing `/messages`, `/inbox`, `/chat`, `/dm`, `/direct`, or `/mail`, X's Grok pages, and major chat, mail, and AI chat services (Discord, Slack, Messenger, Teams, WhatsApp, Telegram, LINE, Gmail, Outlook, ChatGPT, Claude, Gemini, and others). Detection is not perfect, so **do not turn the extension on for any other chat, mail, or AI chat site.**
 - If you turn on "Compare with the primary source" (off by default), the paper identifier (DOI) found in an article is sent to [OpenAlex](https://openalex.org).
 - There is no developer server and no usage tracking.
-- Your API key is stored only in this browser (not synced). The part of the extension that runs inside web pages never reads it, and storage is also configured to block access from web pages (whether this setting takes effect in real Chrome has not been verified yet).
+- Your API key is stored only in this browser (not synced). The part of the extension that runs inside web pages never reads it. Storage is also restricted from web-page contexts using the documented Chrome method (`storage.local.setAccessLevel`); this has not yet been verified in a real browser.
 - Results are cleared when you close the browser.
 
 ### Cost

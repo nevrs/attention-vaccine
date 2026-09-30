@@ -80,10 +80,12 @@ async function load() {
 
 // 個人間のやり取り（DM・メール・チャット）の画面は判定しない。本文を接続先に送らないため。
 // サイト別の区切りが合わない画面では自動検出に落ちるので、その前にここで止める（X の DM で起きうる）
-const PRIVATE_PATH = /\/(messages?|inbox|chats?|dm|direct|mail)(\/|$)/i;
+const PRIVATE_PATH = /\/(messages?|inbox|chats?|dm|direct|mail)(\/|$)|^\/i\/grok(\/|$)/i; // /i/grok は X の Grok との会話
 // アドレスの形では見分けられないチャット・メールのサービスは、サイトごと判定しない
 const PRIVATE_HOSTS = ["discord.com", "slack.com", "messenger.com", "teams.microsoft.com", "teams.live.com", "web.whatsapp.com", "web.telegram.org",
-  "chat.line.me", "chatwork.com", "mail.google.com", "outlook.live.com", "outlook.office.com", "outlook.office365.com", "mail.yahoo.co.jp", "mail.yahoo.com", "proton.me"];
+  "chat.line.me", "chatwork.com", "mail.google.com", "outlook.live.com", "outlook.office.com", "outlook.office365.com", "mail.yahoo.co.jp", "mail.yahoo.com", "proton.me",
+  // AI とのチャット（自分の相談内容が載る）
+  "chatgpt.com", "chat.openai.com", "claude.ai", "gemini.google.com", "grok.com", "copilot.microsoft.com", "perplexity.ai", "chat.deepseek.com"];
 const isPrivatePage = () =>
   PRIVATE_PATH.test(location.pathname) || PRIVATE_HOSTS.some((h) => location.hostname === h || location.hostname.endsWith("." + h));
 
@@ -408,6 +410,7 @@ let idleTimer = null;
 const idleJobs = new Set();
 
 function whenIdle(fn) {
+  idleJobs.delete(fn); // 入れ直して最後に回す。隅の件数（updateCounter）が、後から積んだ ‼️ の描画より先に走ると古いまま残った
   idleJobs.add(fn);
   clearTimeout(idleTimer);
   idleTimer = setTimeout(runIdle, Math.max(0, IDLE_MS - (Date.now() - lastScroll)));
