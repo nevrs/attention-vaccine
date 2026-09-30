@@ -74,10 +74,12 @@ function createMark(rows, style, extraNote) {
     add("hit", `‼️ ${r.c.label}（${r.c.code ? "決まり文句" : r.pct.toFixed(0) + "%"}）`);
     if (r.c.why) add("why", r.c.why);
     if (r.matches?.length) add("note", "見つかった言い回し: " + r.matches.map((m) => `「${m}」`).join(""));
+    if (!r.c.code) add("note", jevQuestionNote(r.c.qs.map((k) => JEV_QUESTIONS[k])));
     if (r.c.showSources) add("note", "範囲内に一次ソースへのリンクは見当たりません");
   }
   if (extraNote) add("note", extraNote);
   add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
+  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
   badge.onclick = () => (pop.hidden = !pop.hidden);
   return { host, hits };
 }

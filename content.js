@@ -7,7 +7,7 @@
 // 区切りの自動検出は一度見つけた形を覚える。オンの問いは1回の呼び出しにまとめる。
 const MAX_CHARS = 2000;
 
-const DEFAULTS = { enabled: true, siteModes: {}, userSites: [], pillars: {}, rules: [], compare: {}, debug: false, dwell: 1.5 };
+const DEFAULTS = { enabled: true, siteModes: {}, userSites: [], pillars: {}, rules: [], compare: {}, debug: false, dwell: 1.5, excludeAuthors: [] };
 // デバッグモード（高度な設定）: 見つけた件を枠で囲み、全件にマーク、右下に内部の状態、コンソールに [Jev] の記録
 const dbg = (...a) => settings.debug && console.log("[Jev]", ...a);
 let itemsFrom = ""; // 区切りの出どころ（デバッグ表示用）
@@ -19,7 +19,9 @@ let settings = DEFAULTS;
 let mode = null; // "page" | "block" | null
 let checks = []; // { id, label, why, qs[], code, high, action, showSources }
 let keyless = false; // API キーが無い: コードで判定する項目だけで動く（Jev は呼ばない）
-const stats = { judged: 0, warned: 0, errors: 0, lastError: "" };
+const stats = { judged: 0, warned: 0, errors: 0, lastError: "", excluded: 0 };
+let excludedAuthors = new Set(); // 利用者が「判定しない」と決めたアカウント（小文字、@ なし）
+const excludedSeen = new Set(); // 除外した投稿（投稿者＋本文の冒頭）。X は画面外の投稿を作り直すので、要素ではなく中身で数える
 
 // ---- 共通 ----
 
@@ -58,7 +60,9 @@ let loadSeq = 0;
 async function load() {
   const seq = ++loadSeq; // 設定の保存で続けて呼ばれても、最後の1回だけが開始する（開始が重なるとタイマーが漏れる）
   settings = await chrome.storage.sync.get(DEFAULTS);
-  Object.assign(stats, { judged: 0, warned: 0, errors: 0, lastError: "" });
+  Object.assign(stats, { judged: 0, warned: 0, errors: 0, lastError: "", excluded: 0 });
+  excludedAuthors = new Set((settings.excludeAuthors || []).map((a) => String(a).replace(/^@/, "").toLowerCase()));
+  excludedSeen.clear();
   SITE = jevSiteFor(location.hostname, settings.userSites);
   SITE_ITEMS = [...new Set([SITE?.item, jevSiteFor(location.hostname)?.item].filter(Boolean))];
   stopPage();
@@ -192,11 +196,12 @@ function createMark(fixed) {
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
   badge.onclick = () => (pop.hidden = !pop.hidden);
-  // マークへの操作はページ側（リンクの移動など）に渡さない
+  // マークへの操作はページ側（投稿を包むリンクの移動など）に渡さない。ただし詳細の中の自分のリンク（出典・報告）は開く。
+  // 外枠（host）で preventDefault すると、内側の <a> の移動まで打ち消された。closed の内側を見分けるため shadow root で受ける
   for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup"]) {
-    host.addEventListener(t, (e) => {
+    sh.addEventListener(t, (e) => {
       e.stopPropagation();
-      if (t === "click") e.preventDefault();
+      if (t === "click" && !e.target.closest?.("a[href]")) e.preventDefault();
     });
   }
   return { host, badge, pop };
@@ -238,6 +243,7 @@ function fillDetails(pop, rows, links, extra) {
     add("hit", `‼️ ${r.c.label}（${r.c.code ? "コードで判定" : r.pct.toFixed(0) + "%"}）`);
     if (r.c.why) add("why", r.c.why);
     if (r.detail) add("note", r.detail);
+    if (!r.c.code) add("note", jevQuestionNote(r.c.qs));
     if (r.c.showSources) {
       if (!links.length) add("note", "範囲内に一次ソースへのリンクは見当たりません");
       for (const href of links.slice(0, 3)) link(href, "出典: " + shortUrl(href));
@@ -246,6 +252,8 @@ function fillDetails(pop, rows, links, extra) {
   extra?.(add, link);
   if (keyless) add("note", "API キーが無いので、コードで判定できる項目だけを見ています。キーを入れると Jev の判定も加わります");
   add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
+  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
+  link(JEV_REPORT_URL, "判定がおかしいと思ったら、ここから知らせてください（GitHub）");
 }
 
 // ---- ページ全体モード ----
@@ -270,6 +278,13 @@ function stopPage() {
   pageUrl = "";
   pageView = null;
   pageLastText = "";
+}
+
+// ページ全体モードの除外: 判定範囲の最初の投稿者（X・Bluesky の投稿ページなら、その投稿の主）で決める
+function pageAuthorExcluded() {
+  if (!excludedAuthors.size || !SITE?.author) return false;
+  const who = authorOf(pageRoot());
+  return !!who && excludedAuthors.has(who.toLowerCase());
 }
 
 // 本文の範囲: サイト別の設定 → h1 を含む article → main → body
@@ -302,7 +317,7 @@ async function judgePage(retry = 0) {
   pageView = null;
   pageMark?.host.remove();
   pageMark = null;
-  if (isPrivatePage()) return;
+  if (isPrivatePage() || pageAuthorExcluded()) return;
   const text = pageText().slice(0, MAX_CHARS);
   const root = pageRoot();
   dbg("page", { root: root.tagName + (root.className ? "." + String(root.className).split(" ")[0] : ""), chars: text.length, head: text.slice(0, 40) });
@@ -546,6 +561,7 @@ function updateCounter() {
   add(`読んだ投稿 ${stats.judged} 件のうち、手口が見つかったのは ${stats.warned} 件です。`);
   add("‼️ は、手口が見つかった投稿の右上に付きます。画面に少しとどまった投稿だけを判定しています。", "note");
   if (keyless) add("API キーが無いので、コードで判定できる項目（誘導の決まり文句・同じ文言の大量投稿）だけを見ています。キーを入れると Jev の判定も加わります。", "note");
+  if (stats.excluded) add(`除外リストのアカウントの投稿 ${stats.excluded} 件は判定していません。`, "note");
   if (stats.errors) add(`判定の失敗 ${stats.errors} 件: ${stats.lastError}`, "hit");
   if (settings.debug) {
     const waiting = [...state.values()].filter((s) => s.timer && !s.answers).length;
@@ -572,6 +588,14 @@ function scan() {
       continue;
     }
     if (isMainArticle(el)) continue;
+    // 除外リストのアカウントは判定しない（送らない・数えない・同じ文言にも入れない）
+    const who = excludedAuthors.size ? authorOf(el) : null;
+    if (who && excludedAuthors.has(who.toLowerCase())) {
+      state.set(el, { excluded: true, answers: null, pending: false, timer: null, mark: null });
+      excludedSeen.add(who.toLowerCase() + "\n" + el.textContent.slice(0, 200));
+      stats.excluded = excludedSeen.size;
+      continue;
+    }
     state.set(el, { answers: null, pending: false, timer: null, mark: null });
     if (settings.debug) el.classList.add("jev-debug");
     const gid = remember(el);
@@ -592,7 +616,7 @@ function scan() {
 function onView(entries) {
   for (const e of entries) {
     const st = state.get(e.target);
-    if (!st || st.answers) continue;
+    if (!st || st.answers || st.excluded) continue;
     const seen = inView(e);
     if (seen && st.timer) continue; // 見えたまま比率だけ変わった: 待ちを続ける
     clearTimeout(st.timer);

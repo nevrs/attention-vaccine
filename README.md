@@ -14,7 +14,7 @@
 - **知らせるのは手口だけ:** 投稿を隠したり、良し悪しを決めたりはしません。‼️ を押すと、どの手口に当たったか、なぜか、数値が出ます。
 - **立場は見ない:** どの主張かではなく、書き方だけを見ます。
 - **真偽は確かめていない:** 「根拠のない断定」は、根拠が示されていないという意味です。内容が誤りだという判定ではありません。
-- **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。
+- **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。判定しないアカウントも指定できます（X・Bluesky）。
 
 ### 願い
 
@@ -123,6 +123,8 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 ### 使うときの注意
 
 - ‼️ は機械による推定です。**相手を「デマ認定された」と責める根拠には使わないでください。**
+- Jev は理由を説明しません。‼️ を押すと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
+- 判定がおかしいと思ったら、‼️ の詳細の一番下にあるリンクから [GitHub の Issues](https://github.com/nevrs/attention-vaccine/issues) で知らせてください。公開されている投稿だけを例に挙げてください。
 - ‼️ が付かなくても、内容が正しい・安全だという意味ではありません。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
 
@@ -146,7 +148,7 @@ A Chrome extension that shows ‼️ when a post or article you are reading uses
 - **It points out the technique, nothing more:** it never hides posts or judges them good or bad. Click ‼️ to see which technique was detected, why, and the score.
 - **It ignores viewpoints:** it looks only at how something is written, not at which side it supports.
 - **It does not fact-check:** "Unsupported assertion" means no evidence was given. It does not mean the claim is false.
-- **You are in control:** you choose the sites, the techniques to detect, and the sensitivity.
+- **You are in control:** you choose the sites, the techniques to detect, and the sensitivity. You can also exclude specific accounts (X and Bluesky).
 
 ### My hope
 
@@ -255,6 +257,8 @@ Contributions of questions or phrase lists for other languages, and test results
 ### Please note
 
 - ‼️ is a machine estimate. **Please do not use it as proof to accuse others of spreading misinformation.**
+- Jev does not explain its reasons. Click ‼️ to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
+- If a result looks wrong, please tell us via the link at the bottom of the ‼️ details ([GitHub Issues](https://github.com/nevrs/attention-vaccine/issues)). Please use only publicly visible posts as examples.
 - No ‼️ does not mean the content is true or safe.
 - Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
 

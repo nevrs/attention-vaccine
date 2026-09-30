@@ -78,14 +78,22 @@
 </p>
 <div id="pillars"></div>
 
+<h2>感度（閾値）</h2>
+<p class="hint">Jev の確率がこの値以上で ‼️ を付けます。下げるほど多く付き、上げるほど確かなものだけに付きます。初期値は少数の例文で決めた仮の値です。</p>
+<div id="thresholds" class="item"></div>
+
+<h2>判定しないアカウント（除外リスト）</h2>
+<p class="hint">ここに書いたアカウントの投稿は判定しません（接続先にも送りません）。1行に1つ書きます（先頭の @ はあってもなくても構いません）。
+  投稿者を読み取れるサイト（X・Bluesky）でだけ使えます。ページ全体モードでは、ページの最初の投稿の投稿者で決めます。</p>
+<p class="hint">この道具の本来の価値は、誰が書いたかではなく、書き方だけを見ることにあります。
+  信頼している人も手口を使うことがあり、除外すると、それには気づけなくなります。</p>
+<textarea id="excludeAuthors" style="height:5em" placeholder="@example"></textarea>
+
 <p class="savebar"><button id="save">保存</button><span id="status"></span></p>
 
 <details id="adv">
 <summary>高度な設定</summary>
 
-<h2>感度（閾値）</h2>
-<p class="hint">Jev の確率がこの値以上で ‼️ を付けます。下げるほど多く付きます。初期値は少数の例文で決めた仮の値です。</p>
-<div id="thresholds" class="item"></div>
 <h2>判定までの待ち時間</h2>
 <p class="hint">ブロックごとモードで、投稿が画面に見えてから判定を始めるまでの秒数です。長いほど軽く（流し読みした投稿を判定しない）、短いほど早く ‼️ が出ます。</p>
 <label><input type="number" id="dwell" min="0.5" max="5" step="0.1" style="width:5em"> 秒（初期値 1.5）</label>

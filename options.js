@@ -177,7 +177,9 @@ function collect() {
   if (!(cmpHigh >= 0 && cmpHigh <= 100)) errors.push("一次ソースと比較: 閾値は 0〜100 にしてください");
   const compare = { on: $("cmpOn").checked, high: cmpHigh };
   const userSites = readSites(errors);
-  return { pillars, rules, compare, userSites, debug: $("debug").checked, dwell: Number($("dwell").value), errors };
+  const excludeAuthors = [...new Set($("excludeAuthors").value.split(/[\s,、]+/).map((a) => a.trim().replace(/^@/, "")).filter(Boolean))];
+  if (excludeAuthors.some((a) => a.length > 100)) errors.push("判定しないアカウント: 1つが長すぎます");
+  return { pillars, rules, compare, userSites, excludeAuthors, debug: $("debug").checked, dwell: Number($("dwell").value), errors };
 }
 
 async function init() {
@@ -186,12 +188,13 @@ async function init() {
   apiKeys = local.apiKeys || (local.apiKey ? { typesafe: local.apiKey } : {}); // 0.1.0 の単一キーを引き継ぐ
   $("provider").value = local.provider || "typesafe";
   showProvider();
-  const s = await chrome.storage.sync.get({ enabled: true, pillars: {}, rules: [], compare: {}, userSites: [], debug: false, dwell: 1.5, dailyCap: JEV_DAILY_CAP });
+  const s = await chrome.storage.sync.get({ enabled: true, pillars: {}, rules: [], compare: {}, userSites: [], debug: false, dwell: 1.5, dailyCap: JEV_DAILY_CAP, excludeAuthors: [] });
   s.userSites.forEach(addSite);
   $("enabled").checked = s.enabled;
   $("debug").checked = !!s.debug;
   $("dwell").value = s.dwell;
   $("dailyCap").value = s.dailyCap;
+  $("excludeAuthors").value = s.excludeAuthors.map((a) => "@" + a).join("\n");
   renderPillars(s.pillars);
   const cmp = { ...JEV_COMPARE.defaults, ...s.compare };
   $("cmpOn").checked = cmp.on;
@@ -213,7 +216,7 @@ $("test").onclick = async () => {
 };
 
 $("save").onclick = async () => {
-  const { pillars, rules, compare, userSites, debug, dwell, errors } = collect();
+  const { pillars, rules, compare, userSites, excludeAuthors, debug, dwell, errors } = collect();
   const dailyCap = Number($("dailyCap").value);
   if (!(dwell >= 0.5 && dwell <= 5)) errors.push("判定までの待ち時間: 0.5〜5 秒にしてください");
   if (!(Number.isInteger(dailyCap) && dailyCap >= 1)) errors.push("1日の上限: 1 以上の整数にしてください");
@@ -223,9 +226,16 @@ $("save").onclick = async () => {
     st.textContent = errors.join(" / ");
     return;
   }
-  await chrome.storage.local.set({ provider: $("provider").value, apiKeys });
-  await chrome.storage.local.remove("apiKey");
-  await chrome.storage.sync.set({ enabled: $("enabled").checked, pillars, rules, compare, userSites, debug, dwell, dailyCap, savedAt: Date.now() }); // savedAt: キーだけ変えたときも、ページ側に変更を知らせる
+  try {
+    await chrome.storage.local.set({ provider: $("provider").value, apiKeys });
+    await chrome.storage.local.remove("apiKey");
+    await chrome.storage.sync.set({ enabled: $("enabled").checked, pillars, rules, compare, userSites, excludeAuthors, debug, dwell, dailyCap, savedAt: Date.now() }); // savedAt: キーだけ変えたときも、ページ側に変更を知らせる
+  } catch (e) {
+    // sync は1項目 8KB まで。除外リストやサイト別の設定が長すぎると失敗する
+    st.className = "bad";
+    st.textContent = "保存できませんでした（設定が長すぎる可能性があります）: " + (e.message || e);
+    return;
+  }
   st.className = "";
   st.textContent = apiKeys[$("provider").value]
     ? "保存しました（開いているページにもすぐ反映）"
