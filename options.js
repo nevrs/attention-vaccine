@@ -20,7 +20,7 @@ function showProvider() {
 }
 
 // 基本の項目はオン・オフだけを見せ、閾値は高度な設定の「感度」にまとめる。
-// advanced の項目（性的な内容）は、オン・オフ・動作・閾値ごと高度な設定に置く
+// advanced の項目（集団へのレッテル貼り・性的な内容）は、オン・オフ・動作・閾値ごと高度な設定に置く
 function renderPillars(saved) {
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
     const c = { ...p.defaults, ...(saved[id] || {}) };

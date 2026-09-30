@@ -40,6 +40,7 @@ Jev は文章を書かない AI で、「この文は○○か」という問い
 | 要一次ソース確認 | 数字や研究が元の情報源から切り離されている（Jev、記事ページのみ） | オン |
 | 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
 | 同じ文言の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
+| 集団へのレッテル貼り | 国籍・性別・世代・立場などの集団の全員に、性質を決めつける（好意的な決めつけも含む。Jev、高度な設定） | オフ |
 
 API キーが無くても、コードで判定する 2 項目だけで動きます。
 キーを入れずに、体験ページ（`demo.html`）で見本を試すこともできます。
@@ -123,7 +124,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 - ‼️ は機械による推定です。**相手を「デマ認定された」と責める根拠には使わないでください。**
 - ‼️ が付かなくても、内容が正しい・安全だという意味ではありません。
-- 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ測っていません。
+- 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
 
 ### 詳しく
 
@@ -171,6 +172,7 @@ No large language model (LLM) is used.
 | Check the primary source | Numbers or studies cut off from their original source (Jev, article pages only) | On |
 | Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |
 | Copy-paste posting | Near-identical text posted by different accounts (rule-based) | On |
+| Group labeling | Attributing a trait to everyone in a group by nationality, gender, generation, political position, etc., including "positive" stereotypes (Jev, advanced settings) | Off |
 
 Without an API key, only the two rule-based checks run.
 You can also try the demo page (`demo.html`) without a key.
@@ -254,7 +256,7 @@ Contributions of questions or phrase lists for other languages, and test results
 
 - ‼️ is a machine estimate. **Please do not use it as proof to accuse others of spreading misinformation.**
 - No ‼️ does not mean the content is true or safe.
-- Whether texts from different political positions, written in the same style, are judged equally has not been measured yet.
+- Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
 
 ### More
 
