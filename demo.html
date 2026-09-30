@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<title>煽り注意報を体験する</title>
+<style>
+  body { font: 15px/1.7 system-ui, sans-serif; max-width: 760px; margin: 24px auto; padding: 0 16px; color: #222; background: #fafafa; }
+  h1 { font-size: 22px; margin-bottom: 4px; } h2 { font-size: 17px; margin-top: 36px; }
+  .banner { background: #eef4ff; border: 1px solid #b9cdf5; border-radius: 8px; padding: 10px 14px; font-size: 14px; }
+  .hint { color: #666; font-size: 13px; }
+  .feed { list-style: none; padding: 0; }
+  .post { position: relative; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 14px 120px 14px 16px; margin: 10px 0; }
+  .post .who { color: #888; font-size: 12px; }
+  .article { position: relative; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px 56px; }
+  .article h3 { margin: 0 0 8px; font-size: 18px; }
+  .article .src { font-size: 12px; color: #888; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; background: #fff; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; }
+  .go { display: inline-block; margin-top: 10px; padding: 10px 18px; font: inherit; font-weight: 700; background: #2b7cff; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
+  label.toggle { font-size: 13px; color: #555; }
+  .diagram { margin: 12px 0; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 10px; }
+  .diagram svg { width: 100%; height: auto; display: block; }
+</style>
+
+<h1>煽り注意報を体験する</h1>
+<div class="banner">
+  このページは<b>体験モード</b>です。下の投稿と記事は見本で、判定結果はあらかじめ本物の Jev で判定しておいたものです。
+  API キーも通信も不要で、費用もかかりません。<span id="measured"></span>
+</div>
+
+<h2>1. タイムラインや検索結果では（ブロックごと）</h2>
+<p>手口が見つかった投稿の右上にだけ <b>‼️</b> が付きます。<b>‼️ を押してみてください。</b>何に当たったか、なぜかが出ます。
+  暗いニュースや、はっきりした反対意見には付きません。見ているのは書き方で、どの立場の主張かではないからです。</p>
+<label class="toggle"><input type="checkbox" id="showAll"> 何も付かなかった投稿の数値も見る</label>
+<ul class="feed" id="feed"></ul>
+
+<h2>2. 記事ページでは（ページ全体）</h2>
+<p>ページ1枚をまとめて判定し、画面の隅に結果を出します。記事ページでは「要一次ソース確認」も見ます
+  （研究や統計の数字が、元の情報源から切り離されて使われていないか）。</p>
+<div class="article" id="article"></div>
+
+<h2>3. しくみ</h2>
+<p>
+  Jev は、文章が判定基準に当てはまりそうかどうかを、<b>確率で返すことに特化した AI</b> です。
+  文章を書いたり要約したりはせず「当てはまる確率」だけを返すので、軽く、安く、速く動きます。
+  煽り注意報は、その確率が感度（閾値）を超えたときだけ ‼️ を出します。
+</p>
+<figure class="diagram">
+  <svg viewBox="0 0 770 210" role="img" aria-label="投稿の文章を Jev が判定し、確率が感度以上なら ‼️ を付け、未満なら何もしない流れ">
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+      </marker>
+    </defs>
+    <g font-family="system-ui, sans-serif" font-size="13" fill="#222">
+      <rect x="6" y="60" width="150" height="80" rx="10" fill="#fff" stroke="#bbb"/>
+      <text x="81" y="92" text-anchor="middle" font-weight="700">投稿・記事の文章</text>
+      <text x="81" y="114" text-anchor="middle" fill="#666" font-size="12">あなたが読んでいるもの</text>
+
+      <line x1="160" y1="100" x2="206" y2="100" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+      <rect x="210" y="20" width="220" height="160" rx="10" fill="#eef4ff" stroke="#7ea6ec"/>
+      <text x="320" y="46" text-anchor="middle" font-weight="700">Jev</text>
+      <text x="320" y="66" text-anchor="middle" fill="#555" font-size="12">判定基準ごとに「当てはまる確率」だけを返す</text>
+      <text x="236" y="98">煽り×利益</text><text x="404" y="98" text-anchor="end" font-weight="700">94%</text>
+      <text x="236" y="122">炎上狙い</text><text x="404" y="122" text-anchor="end">30%</text>
+      <text x="236" y="146">根拠のない断定</text><text x="404" y="146" text-anchor="end">66%</text>
+      <text x="320" y="170" text-anchor="middle" fill="#888" font-size="11">文章は書かない・要約しない</text>
+
+      <line x1="434" y1="100" x2="480" y2="100" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+
+      <rect x="484" y="70" width="96" height="60" rx="10" fill="#fff" stroke="#bbb"/>
+      <text x="532" y="96" text-anchor="middle" font-weight="700">感度（閾値）</text>
+      <text x="532" y="116" text-anchor="middle" fill="#666" font-size="12">を超えたか</text>
+
+      <line x1="580" y1="88" x2="662" y2="52" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+      <line x1="580" y1="112" x2="662" y2="148" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
+      <text x="600" y="58" fill="#8a5300" font-size="12">超えた</text>
+      <text x="596" y="152" fill="#666" font-size="12">超えない</text>
+
+      <rect x="666" y="26" width="96" height="44" rx="10" fill="#fff4d6" stroke="#e0a000"/>
+      <text x="714" y="53" text-anchor="middle" font-weight="700">‼️ を付ける</text>
+      <rect x="666" y="130" width="96" height="44" rx="10" fill="#fff" stroke="#ccc"/>
+      <text x="714" y="157" text-anchor="middle" fill="#666">何もしない</text>
+    </g>
+  </svg>
+  <figcaption class="hint">数値は見本の投稿1（老後資金の不安をあおる投稿）の実際の判定結果です。</figcaption>
+</figure>
+<p>
+  本番モードでは、判定した分だけ料金がかかります。調べた範囲では（2026年9月時点）、Jev を無料で使える枠はありません。
+  ただし料金はとても安く、1件あたり約 0.004 円です。1日300件を判定しても、ひと月30円ほどです。
+  最初に少額をチャージしておけば、かなりの時間と量を扱えます。流し読みした投稿は判定しないので、実際はさらに少なく済みます。
+</p>
+
+<h2>4. ‼️ の読み方</h2>
+<ul>
+  <li><b>‼️ 煽り×利益 94%</b> … いちばん確率の高い手口の名前と、Jev が「その手口が使われている」と答えた確率です。「ほか1」は、ほかにも当たった手口の数です。</li>
+  <li>‼️ は「悪い投稿」「うそ」という判定ではありません。「この手口が使われている」という知らせです。どう受け取るかは、あなたが決めてください。</li>
+  <li><b>‼️ 誘導文句</b> … 「プロフのリンクから」「公式LINE登録」「今だけ」のような、リンクや登録へ誘導する決まった言い回しです。これは Jev ではなく決まった言い回しの一覧で見つけているので、<b>API キーがなくても動きます</b>。</li>
+  <li>Jev は内容の真偽を確かめていません。どのくらいで ‼️ を付けるか（感度）は、設定画面の「高度な設定」で変えられます。</li>
+</ul>
+
+<h2>5. 体験モードと本番の違い</h2>
+<table>
+  <tr><th></th><th>体験モード（このページ）</th><th>本番</th></tr>
+  <tr><th>判定するもの</th><td>用意した見本の投稿と記事だけ</td><td>あなたが開いたサイトの投稿や記事</td></tr>
+  <tr><th>判定のしかた</th><td>あらかじめ判定した結果を表示するだけ</td><td>その場で Jev に判定させる（1件 0.3 秒ほど）</td></tr>
+  <tr><th>API キー</th><td>不要</td><td>Jev の判定には必要（TypeSafe または Vercel で発行）。キーがなくても「誘導の決まり文句」だけは本番のサイトで動きます</td></tr>
+  <tr><th>通信</th><td>なし</td><td>判定する本文を接続先に送る（あなたが選んだサイトのものだけ）</td></tr>
+  <tr><th>費用</th><td>なし</td><td>判定した分だけ（無料枠なし）。1件あたり約 0.004 円（概算）。流し読みした投稿は判定しない</td></tr>
+  <tr><th>感度などの設定</th><td>今の設定で表示</td><td>同じ設定で判定</td></tr>
+</table>
+
+<h2>6. 本番を始めるには</h2>
+<ol>
+  <li>設定画面で API キーを入れ、「接続テスト」を押します。</li>
+  <li>判定したいサイトを開き、拡張機能のアイコンから「ページ全体」か「ブロックごと」を選びます。</li>
+</ol>
+<button class="go" id="goOptions">設定を開いて API キーを入れる</button>
+<p class="hint">費用の概算は、1回の判定で約 600 トークンを送るとして、入力 100 万トークンあたり $0.042・1 ドル 150 円で計算しています。</p>
+
+<script src="checks.js"></script>
+<script src="demo-data.js"></script>
+<script src="demo.js"></script>
+</html>

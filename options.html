@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<title>煽り注意報の設定</title>
+<style>
+  body { font: 14px system-ui, sans-serif; max-width: 760px; margin: 24px auto; padding: 0 16px; color: #222; }
+  h1 { font-size: 20px; } h2 { font-size: 16px; margin-top: 28px; }
+  .hint { color: #666; font-size: 12px; margin: 2px 0 0; }
+  .intro { line-height: 1.8; margin: 8px 0; }
+  .trial { display: inline-block; padding: 8px 14px; background: #eef4ff; border: 1px solid #b9cdf5; border-radius: 8px; color: #0b57d0; font-weight: 700; text-decoration: none; }
+  .steps { font-size: 13px; line-height: 1.7; padding-left: 1.4em; }
+  input[type=text], input[type=password], textarea { width: 100%; box-sizing: border-box; padding: 6px; font: inherit; }
+  textarea { height: 3.2em; resize: vertical; }
+  .row { margin: 8px 0; display: block; }
+  .row > span { display: block; font-weight: 600; font-size: 13px; }
+  #status { margin-left: 12px; color: #2a7; }
+  #status.bad { color: #c22; }
+  button { padding: 6px 14px; }
+  .item { border: 1px solid #ddd; border-radius: 6px; padding: 8px 12px; margin: 8px 0; }
+  .item .why { color: #666; font-size: 12px; margin-left: 24px; }
+  .item .opts { margin: 6px 0 0 24px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; font-size: 13px; }
+  .item input[type=number] { width: 4.5em; }
+  .rule { display: flex; gap: 8px; align-items: start; }
+  .rule textarea { flex: 1; }
+  .savebar { position: sticky; bottom: 0; background: #fff; padding: 10px 0; margin: 20px 0 0; border-top: 1px solid #eee; }
+  details#adv { margin-top: 24px; } details#adv > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+  #thresholds label { display: inline-block; margin: 4px 16px 4px 0; font-size: 13px; }
+  #presets { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+  #presets button { padding: 4px 10px; border-radius: 14px; border: 1px solid #999; background: #f6f6f6; cursor: pointer; }
+  #presets button:disabled { opacity: 0.4; cursor: default; }
+</style>
+
+<h1>煽り注意報の設定</h1>
+<p class="intro">
+  ネットには、読む人の怒りや不安を反射的に引き出して、クリックや拡散、購入につなげる書き方があふれています。<br>
+  煽り注意報は、そうした「手口」が使われている投稿や記事に ‼️ を付けて知らせます。<br>
+  見ているのは書き方だけです。どの立場の主張か、内容が正しいかどうかは判定しません。
+  手口に気づいたうえでどう受け取るかは、あなたが決めてください。判定基準も自分で設定できます。
+</p>
+<p><a class="trial" href="demo.html" target="_blank">まず体験してみる（キー不要・費用なし）→</a></p>
+<p class="hint">
+  判定には TypeSafe 社の AI「Jev」を使います。Jev は文章を読んで「この手口が使われているか」を確率で答えるだけの小さな AI で、
+  文章を書いたり要約したりはしません。
+</p>
+
+<h2>接続先と API キー</h2>
+<p class="hint">使う人それぞれが自分のキーを入れます。料金はキーの持ち主に請求されます（入力100万トークンあたり $0.042）。</p>
+<label class="row"><span>接続先</span>
+  <select id="provider">
+    <option value="typesafe">TypeSafe（公式）</option>
+    <option value="vercel">Vercel AI Gateway</option>
+  </select></label>
+<p class="hint" id="providerHint"></p>
+<label class="row"><span>API キー</span><input type="password" id="apiKey"></label>
+<p><button id="test">接続テスト</button><span id="testResult" style="margin-left:12px"></span></p>
+<p class="hint">キーはこのブラウザの中だけに保存します（同期しません。送る先は接続先だけ）。</p>
+
+<h2>使い方</h2>
+<ol class="steps">
+  <li>上の欄に API キーを入れます。</li>
+  <li>判定したいサイトを開き、拡張機能のアイコンから選びます。
+    <ul>
+      <li><b>ページ全体</b>: 記事ページ向け。ページ1枚を判定し、画面の隅に結果を出します。</li>
+      <li><b>ブロックごと</b>: タイムラインや検索結果向け。1件ずつ判定します。</li>
+    </ul></li>
+  <li>手口が見つかった所にだけ <b>‼️</b> が付きます。押すと、手口の名前・理由・数値が出ます。本文は隠しません。</li>
+</ol>
+<p class="hint">
+  画面に少しとどまった投稿だけを判定します。流し読みした投稿は判定しないので、軽く、その分の費用もかかりません。<br>
+  判定のために接続先へ送るのは、あなたが選んだサイトの本文だけです。
+</p>
+<label><input type="checkbox" id="enabled"> 有効にする</label>
+
+<h2>見つける手口</h2>
+<p class="hint">
+  Jev は真偽を確かめません。見ているのは書き方です（どうあおっているか、何に誘導しているか、根拠を示しているか）。<br>
+  ‼️ は「悪い投稿」という判定ではなく、「この手口が使われている」という知らせです。
+</p>
+<div id="pillars"></div>
+
+<p class="savebar"><button id="save">保存</button><span id="status"></span></p>
+
+<details id="adv">
+<summary>高度な設定</summary>
+
+<h2>感度（閾値）</h2>
+<p class="hint">Jev の確率がこの値以上で ‼️ を付けます。下げるほど多く付きます。初期値は少数の例文で決めた仮の値です。</p>
+<div id="thresholds" class="item"></div>
+<h2>判定までの待ち時間</h2>
+<p class="hint">ブロックごとモードで、投稿が画面に見えてから判定を始めるまでの秒数です。長いほど軽く（流し読みした投稿を判定しない）、短いほど早く ‼️ が出ます。</p>
+<label><input type="number" id="dwell" min="0.5" max="5" step="0.1" style="width:5em"> 秒（初期値 1.5）</label>
+<h2>1日の判定回数の上限</h2>
+<p class="hint">接続先への問い合わせを1日にこの回数までに抑えます（料金の使いすぎを防ぐため）。超えるとその日は判定を止めます。料金の目安: TypeSafe は入力 100 万トークンで $0.042、1回は数百トークンです。</p>
+<label><input type="number" id="dailyCap" min="1" step="1" style="width:6em"> 回（初期値 2000）</label>
+
+<h2>デバッグ</h2>
+<label><input type="checkbox" id="debug"> デバッグモード</label>
+<p class="hint">見つけた「1件分」を点線（判定済みは緑の実線）で囲み、当たらない件にも控えめな ✓ を付けます（押すと数値）。
+  画面の隅の表示に、区切りの出どころ・件数・最後のエラーを出し、開発者ツールのコンソールに [Jev] の記録（本文の冒頭40字と数値）を出します。
+  感度の調整や、動かないときの原因探しに使ってください。</p>
+
+<h2>ほかの判定項目</h2>
+<div id="advPillars"></div>
+
+<h2>自分で足す項目</h2>
+<div id="presets"></div>
+<div id="rules"></div>
+<button id="add">＋ 自分で書く</button>
+
+<h2>一次ソースと比較</h2>
+<div class="item">
+  <label><input type="checkbox" id="cmpOn"> <b>記事と、元の論文の要旨を比べる</b></label>
+  <div class="why">
+    ページ全体モードで、記事に論文のリンク（DOI・arXiv）があるときだけ動きます。
+    論文の DOI を無料の論文データベース OpenAlex に問い合わせて要旨を取り、記事と並べて Jev に1回だけ判定させます。<br>
+    比べられるのは要旨だけです。要旨にない数字や、数字の細かいずれは確かめられません。
+  </div>
+  <div class="opts"><label>閾値 <input type="number" min="0" max="100" id="cmpHigh"> %</label></div>
+</div>
+
+<h2>サイト別の設定</h2>
+<p class="hint">
+  ふつうはページ上でクリックして作ります（拡張のアイコン →「表示がずれるとき」）。
+  ここでは、作った設定の確認・修正・削除と、他の人との共有ができます。組み込みのおすすめ設定より優先します。<br>
+  <b>1件分</b>: ブロックごとモードの区切り。<b>本文</b>: 1件の中で Jev に渡す部分。<b>判定範囲</b>: ページ全体モードで判定する部分。
+  どれも CSS セレクタで、空欄なら組み込みの設定か自動検出を使います。
+</p>
+<div id="sites"></div>
+<button id="addSite">＋ サイトを追加</button>
+<details style="margin-top:10px">
+  <summary>書き出し・読み込み（共有用）</summary>
+  <p class="hint">「書き出し」で下の欄にサイト別の設定が出ます。コピーして他の人に渡せます。
+    受け取った設定を貼って「読み込み」を押すと、今の一覧に追加されます（同じサイトは上書き）。保存を押すまで確定しません。
+    API キーは含まれません。</p>
+  <textarea id="sitesJson" style="height:8em;font:12px monospace"></textarea>
+  <p><button id="exportSites">書き出し</button> <button id="importSites">読み込み</button><span id="jsonStatus" style="margin-left:12px"></span></p>
+</details>
+
+<template id="siteTpl">
+  <div class="item site">
+    <div class="opts" style="margin-left:0">
+      <label>サイト <input type="text" data-s="hosts" placeholder="例: example.com（, 区切りで複数）" style="width:22em"></label>
+      <button class="del">削除</button>
+    </div>
+    <div class="opts" style="margin-left:0">
+      <label>1件分 <input type="text" data-s="item" style="width:18em"></label>
+      <label>本文 <input type="text" data-s="text" style="width:14em"></label>
+      <label>判定範囲 <input type="text" data-s="page" style="width:12em"></label>
+    </div>
+  </div>
+</template>
+</details>
+
+<template id="tpl">
+  <div class="item rule">
+    <textarea data-k="condition" placeholder="見分けたい内容。例: 転売目的の出品・投稿"></textarea>
+    <label>閾値 <input type="number" data-k="high" min="0" max="100"> %</label>
+    <button class="del">削除</button>
+  </div>
+</template>
+
+<script src="checks.js"></script>
+<script src="options.js"></script>
+</html>

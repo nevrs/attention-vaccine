@@ -1,0 +1,14 @@
+/* ‼️ マークを右上に重ねる基準。元が static の要素にだけ付ける（content.js）。文章の位置は変えない */
+.jev-anchor { position: relative !important; }
+
+/* ぼかし（性的な内容、高度な設定で選んだときだけ）: 中身だけぼかす。本文を押すと解く（content.js） */
+.jev-blur { cursor: pointer !important; }
+.jev-blur > *:not(jev-mark) { filter: blur(16px) !important; pointer-events: none !important; }
+
+/* デバッグモード: 見つけた件は点線、判定が済んだ件は実線 */
+.jev-debug { outline: 1px dashed #8a8a8a !important; outline-offset: -1px; }
+.jev-debug.jev-debug-done { outline: 1px solid #2a7 !important; }
+
+/* 区切りの確認・修正（picker.js） */
+.jev-preview { outline: 3px solid #2b7cff !important; outline-offset: -3px; }
+.jev-pick { outline: 3px dashed #2b7cff !important; outline-offset: -3px; background-color: rgba(43, 124, 255, 0.08) !important; }

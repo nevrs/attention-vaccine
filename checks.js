@@ -1,0 +1,174 @@
+// 判定項目の定義。content.js と options.js の両方から読む。
+// 問いの文面を1文字でも変えると確率の出方が変わる（閾値の前提が崩れる）ので、変えたら測り直すこと。
+// 2026-09-28 の試験: SESSION.md
+
+const JEV_QUESTIONS = {
+  arouse: "読み手の怒り・不安・恐怖・嫉妬を強くあおる書き方をしている（事実を淡々と伝えるだけの暗いニュースは含まない）",
+  profit: "閲覧数・拡散・商品購入・登録などへ誘導する意図がある",
+  flame: "反論や怒りの反応を集めること自体が目的の、わざと挑発的な発言（特定の属性や集団を雑にけなす、極端な一般化、「異論は認める」など）",
+  dema: "根拠を示さずに断定している、または広く否定されているデマ・陰謀論・誤情報を含む",
+  sexual: "性的な内容、露骨な表現、性的なほのめかしを含む",
+  // 「確かめる価値がある」と聞くと、公的発表の直接報道に最も高く出て（0.87）、出典なしの「専門家によると」に低く出た（0.27）。
+  // 「切り離されて」と聞くと、出典なし系 0.78〜0.90 / ナゾロジー 0.74 / 出典を示した報道・分析 0.41〜0.49 に分かれた
+  source: "研究や統計を根拠にした断定や数字が、元の情報源から切り離されて使われている（又聞き、要約での言い切り、出典があいまい・示されていない）",
+};
+
+// qs が2つ以上なら確率を掛け合わせる（煽り × 利益誘導）。
+// 1問で「煽って稼ぐか」と聞くより、暗いが正当なニュースとの差が広がった（0.27〜0.37 → 0.03 以下）
+// 1日の問い合わせ上限の初期値（設定画面で変えられる）。暴走で料金が膨らむのを止める
+const JEV_DAILY_CAP = 2000;
+
+const JEV_PILLARS = {
+  bait: {
+    label: "煽って稼ぐ型",
+    short: "煽り×利益",
+    why: "怒り・不安・嫉妬をあおって、閲覧や購入に誘導している",
+    qs: ["arouse", "profit"],
+    defaults: { on: true, high: 50, action: "warn" },
+  },
+  flame: {
+    label: "炎上狙い・挑発",
+    short: "炎上狙い",
+    why: "反応を集めるための挑発や、集団をひとまとめにけなす書き方",
+    qs: ["flame"],
+    defaults: { on: true, high: 70, action: "warn" },
+  },
+  dema: {
+    label: "根拠のない断定", // 「デマ」は判定の押し付けになるので使わない（どの立場の人にもフラットに）
+    short: "根拠なき断定", // ‼️ の横に出る。「デマ」だと判定の押し付けになるので、手口の名前にする
+    why: "根拠を示さない断定、または広く否定されている主張。真偽の確認はしていない",
+    qs: ["dema"],
+    defaults: { on: true, high: 80, action: "warn" },
+  },
+  source: {
+    label: "要一次ソース確認",
+    short: "要ソース確認",
+    why: "数字や研究が、元の情報源から切り離されて使われている",
+    qs: ["source"],
+    // 拾いたくない側（出典を示した報道・分析）が 0.41〜0.49、ナゾロジーの1ページ目が 0.64 だったので 60
+    defaults: { on: true, high: 60, action: "warn" },
+    // 一覧の見出しや短い投稿は出典を書かないのが普通で、ブロックごとだと正当なニュースにも付く
+    // （能登の震災ニュースの見出しで 73%）。出典の有無に意味がある記事ページだけで使う
+    modes: ["page"],
+    showSources: true, // 超えたとき、記事内の一次ソースへのリンクを添える（リンクの検出はコードのみ）
+  },
+  // コードだけで判定する項目（Jev を呼ばない・キーなしでも動く）。qs は空、code に判定関数の名前
+  lure: {
+    label: "誘導の決まり文句",
+    short: "誘導文句",
+    why: "リンク・登録・DM・限定などへ誘導する、決まった言い回しがある",
+    qs: [],
+    code: "lure",
+    defaults: { on: true, high: 50, action: "warn" },
+  },
+  // 画面に流れてきた投稿どうしを比べる（コードだけ・キーなしでも動く）。投稿者の場所は sites.js の author
+  dup: {
+    label: "同じ文言の大量投稿",
+    short: "同じ文言",
+    why: "ほぼ同じ文を、別々のアカウントが投稿している（画面に流れてきた範囲で数えている）",
+    qs: [],
+    code: "dup",
+    modes: ["block"],
+    defaults: { on: true, high: 50, action: "warn" },
+  },
+  sexual: {
+    label: "性的な内容",
+    short: "性的",
+    why: "",
+    qs: ["sexual"],
+    defaults: { on: false, high: 65, action: "warn" },
+    actions: ["warn", "blur"], // ぼかしはブロックごとモードのみ。ページ全体モードでは ‼️ のみ
+    advanced: true, // 設定画面では高度な設定に置く
+  },
+};
+
+// 誘導の決まり文句（コードだけで判定）。強い言い回しは1つで、弱い言い回しは2つ以上で当たり。
+// 弱いものを1つで当たりにすると普通の投稿にも付きすぎる。ふつうの動画にほぼ必ずある「チャンネル登録」は入れない。
+// 言い回しを足すときは、普通の投稿に付かないかを確かめる（誤検知は ‼️ の信用を落とす）
+const JEV_LURE = {
+  strong: [
+    /プロフ(ィール)?(の|に)?(リンク|URL|ＵＲＬ)/,
+    /プロフ(ィール)?(から|を?見て|をチェック)/,
+    /固定(ツイ|ポスト)|固ツイ/,
+    /(公式)?LINE(登録|追加|で受け取)|LINE@|友(だち|達)追加/,
+    /DM(ください|下さい|で(お送り|送ります|受付|受け付け)|くれ)/,
+    /無料(プレゼント|配布|診断|相談|セミナー|講座|体験会)/,
+    /拡散(希望|お願い|して(ください|下さい))|RT希望|リポスト希望/,
+    /先着\s*\d+\s*(名|人|様)/,
+    /本日限り|今日だけ|残り(わずか|僅か)/,
+    /メルマガ(登録|で)/,
+    /続きは(note|ノート|ブログ|有料|こちら|リンク|プロフ)/,
+  ],
+  weak: [/今だけ/, /期間限定/, /今すぐ/, /詳しくは(こちら|リンク|概要欄)/, /概要欄/, /リンクから/, /限定(公開|特典|配布)/, /特典/, /知らないと損/],
+};
+
+// コードで判定する項目の関数。返り値は { hit, matches[] }
+const JEV_CODE = {
+  lure(text) {
+    const pick = (list) => list.map((re) => text.match(re)?.[0]).filter(Boolean);
+    const strong = pick(JEV_LURE.strong);
+    const weak = pick(JEV_LURE.weak);
+    return { hit: strong.length >= 1 || weak.length >= 2, matches: [...strong, ...weak] };
+  },
+};
+
+// 同じ文言の大量投稿の比べ方（content.js が使う）。語尾や絵文字だけ違う投稿も同じとみなすため、
+// 記号・絵文字・URL・空白を除いた本文を3文字ずつの切れ端にし、「短いほうの切れ端のうち、何割が相手にもあるか」で比べる。
+// 全体に対する割合（Jaccard）だと、同じ文の後ろに銘柄名などを追記しただけで 0.57 まで下がり取りこぼした（2026-09-29）
+const JEV_DUP = {
+  minChars: 20, // 挨拶などを除いた残りがこれより短い投稿は比べない。短いと偶然一致する
+  similar: 0.7, // これ以上なら同じ文言。実例の変種（語尾違い・途中違い・追記）は 0.74〜1.0、似た型の別文は 0.63
+  minAuthors: 3, // 別々のアカウントがこれ以上そろったら当たり
+  keep: 500, // 覚えておく投稿の数（古いものから忘れる）
+  // ありふれた挨拶・お礼は、本当に同じ文なので比べ方では区別できない（挨拶どうしで 0.82〜1.0）。比べる前に取り除く
+  stock: /おはようございます|おはよう|こんにちは|こんばんは|おやすみなさい|ありがとうございました|ありがとうございます|ありがとう|よろしくお願いいたします|よろしくお願いします|よろしく|お疲れ様です|おつかれさまです|おめでとうございます|今日も一日|良い一日を|素敵な一日を|頑張りましょう|フォロー|仲良くしてください|これから/g,
+  normalize(text) {
+    return text
+      .normalize("NFKC")
+      .replace(this.stock, "")
+      .toLowerCase()
+      .replace(/https?:\/\/\S+/g, "")
+      .replace(/[^\p{L}\p{N}]/gu, "");
+  },
+  shingles(norm) {
+    const s = new Set();
+    for (let i = 0; i + 3 <= norm.length; i++) s.add(norm.slice(i, i + 3));
+    return s;
+  },
+  similarity(a, b) {
+    let inter = 0;
+    const [small, big] = a.size < b.size ? [a, b] : [b, a];
+    for (const x of small) if (big.has(x)) inter++;
+    return inter / (small.size || 1);
+  },
+};
+
+// 一次ソース比較（オプション）。記事と論文の要旨を並べて1回で聞く。background.js が使う。
+// 2026-09-28 の試験: ナゾロジー 0.89（やや誇張 55% / 大きく誇張 44%）、忠実な書き方 0.13、煽った書き方 0.97。
+// 実在の記事は1本だけ。要旨にない数字は照合できず、数字の細かいずれ（4.0% → 40%）は Jev の苦手分野
+const JEV_COMPARE = {
+  distort: "【記事】は【元論文の要旨】の結論を誇張・歪曲している（効果の大きさを盛る、要旨にない主張を足す、見出しが要旨と食い違う）",
+  level: "【記事】が【元論文の要旨】をどの程度正確に伝えているか",
+  levels: ["正確", "やや誇張", "大きく誇張", "別物"],
+  label: "元の研究を盛って伝えている",
+  defaults: { on: false, high: 60 },
+};
+
+// 一次ソースとみなすリンク先。ホスト名の末尾一致（"go.jp" なら mhlw.go.jp も当たる）
+const JEV_PRIMARY_HOSTS = [
+  // 論文・プレプリント
+  "doi.org", "arxiv.org", "biorxiv.org", "medrxiv.org", "pubmed.ncbi.nlm.nih.gov", "ncbi.nlm.nih.gov",
+  "nature.com", "science.org", "sciencedirect.com", "link.springer.com", "onlinelibrary.wiley.com",
+  "cell.com", "thelancet.com", "nejm.org", "jamanetwork.com", "bmj.com", "plos.org", "frontiersin.org",
+  "mdpi.com", "psycnet.apa.org", "academic.oup.com", "tandfonline.com", "pnas.org", "journals.sagepub.com",
+  "jstage.jst.go.jp", "cir.nii.ac.jp", "ssrn.com",
+  // 公的機関・国際機関
+  "go.jp", "e-stat.go.jp", "gov", "gov.uk", "europa.eu", "who.int", "un.org", "oecd.org", "imf.org", "worldbank.org",
+];
+
+const JEV_ACTION_LABEL = {
+  warn: "‼️ を付ける",
+  blur: "‼️ を付けて本文をぼかす（押すと表示）",
+};
+
+const JEV_MODES = { page: "ページ全体", block: "ブロックごと" };
