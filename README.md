@@ -14,6 +14,12 @@
 - **真偽は確かめていない:** 「根拠のない断定」は、根拠が示されていないという意味です。内容が誤りだという判定ではありません。
 - **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。
 
+### 理念
+
+私がこの拡張機能を作ったのは、政治的な立場を超えて、人々がアテンションエコノミー（人の注目を奪い合って稼ぐ仕組み）などが引き起こす瞬間的な感情に突き動かされることへの、免疫として働いてほしいと願ったからです。
+
+開発者の私はエンジニアではありません。この拡張機能は、ほぼすべてを AI（Claude Opus 5.5）と相談しながら作りました。エンジニアの方による修正や改善を心から歓迎します。
+
 > **状態: 試作品（プロトタイプ）です。** 精度は、主に自作の例文と一部の実サイトでしか測っていません。
 > 誤った ‼️ も、見逃しも起きます。
 
@@ -94,6 +100,12 @@ A Chrome extension that shows ‼️ when a post or article you are reading uses
 - **It ignores viewpoints:** it looks only at how something is written, not at which side it supports.
 - **It does not fact-check:** "Unsupported assertion" means no evidence was given. It does not mean the claim is false.
 - **You are in control:** you choose the sites, the techniques to detect, and the sensitivity.
+
+### Why this exists
+
+I built this extension hoping it would work as an immune system, across political lines, against being driven by the momentary emotions stirred up by the attention economy (business models that profit by competing for people's attention) and similar forces.
+
+I am not an engineer. Almost all of this extension was built in consultation with an AI (Claude Opus 5.5). Fixes and improvements from engineers are very welcome.
 
 > **Status: prototype.** Accuracy has mainly been measured on hand-written examples and a few real sites.
 > Expect both false ‼️ and misses.
