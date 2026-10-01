@@ -19,7 +19,7 @@
 - 体験ページの数値の作り直し（問いを変えたら必須）: `TYPESAFE_API_KEY` を設定して `python tools/demo_measure.py`
 - ビルド工程なし・外部ライブラリなし
 - ストア用 ZIP（コミット済みの内容から、拡張に要るファイルだけ）: `git archive -o dist/attention-vaccine-<版>.zip HEAD manifest.json _locales icons LICENSE background.js checks.js content.js content.css demo.html demo.js demo-data.js options.html options.js picker.js popup.html popup.js sites.js`
-- アイコン（`icons/`）は仮。差し替えるときは 16・32・48・128 px を同じ名前で置く
+- アイコン（`icons/`、盾の中に釣り針）は `python tools/make_icons.py` で作る（要 Pillow）。16・32・48・128 px
 
 ## 文書
 - 外向けの説明: `README.md`（日英）／設計判断と実測: `DESIGN.md`／今どこにいるか: `SESSION.md`
