@@ -33,20 +33,25 @@ def judge(text, keys):
     r = ask(text, {k: {"type": "noul", "instructions": Q[k]} for k in keys})
     return {k: round(v["noul"], 3) for k, v in r["answers"].items()}
 
-BLOCK = ["arouse", "profit", "flame", "dema"]
-PAGE = BLOCK + ["source"]
-with cf.ThreadPoolExecutor(8) as ex:
-    posts = list(ex.map(lambda t: {"text": t, "answers": judge(t, BLOCK)}, POSTS))
-article = {"text": ARTICLE, "answers": judge(ARTICLE, PAGE)}
+def main():
+    BLOCK = ["arouse", "profit", "flame", "dema"]
+    PAGE = BLOCK + ["source"]
+    with cf.ThreadPoolExecutor(8) as ex:
+        posts = list(ex.map(lambda t: {"text": t, "answers": judge(t, BLOCK)}, POSTS))
+    article = {"text": ARTICLE, "answers": judge(ARTICLE, PAGE)}
 
-data = {"measured": datetime.date.today().isoformat(), "model": "jev-1.13.0", "posts": posts, "article": article}
-out = os.path.join(HERE, "..", "demo-data.js")
-open(out, "w", encoding="utf-8").write(
-    "// 体験ページの見本と、その判定結果。本物の Jev（jev-1.13.0）に checks.js の問いで判定させた値をそのまま載せている。\n"
-    "// 問いの文面を変えたら作り直すこと: python tools/demo_measure.py\n"
-    "const JEV_DEMO = " + json.dumps(data, ensure_ascii=False, indent=2) + ";\n")
+    data = {"measured": datetime.date.today().isoformat(), "model": "jev-1.13.0", "posts": posts, "article": article}
+    out = os.path.join(HERE, "..", "demo-data.js")
+    open(out, "w", encoding="utf-8").write(
+        "// 体験ページの見本と、その判定結果。本物の Jev（jev-1.13.0）に checks.js の問いで判定させた値をそのまま載せている。\n"
+        "// 問いの文面を変えたら作り直すこと: python tools/demo_measure.py\n"
+        "const JEV_DEMO = " + json.dumps(data, ensure_ascii=False, indent=2) + ";\n")
 
-for p in posts + [article]:
-    a = p["answers"]
-    bait = a["arouse"] * a["profit"]
-    print(f"煽×利 {bait:.2f} 炎上 {a['flame']:.2f} 断定 {a['dema']:.2f}" + (f" 要源 {a['source']:.2f}" if "source" in a else ""), p["text"][:24])
+    for p in posts + [article]:
+        a = p["answers"]
+        bait = a["arouse"] * a["profit"]
+        print(f"煽×利 {bait:.2f} 炎上 {a['flame']:.2f} 断定 {a['dema']:.2f}" + (f" 要源 {a['source']:.2f}" if "source" in a else ""), p["text"][:24])
+
+
+if __name__ == "__main__":
+    main()
