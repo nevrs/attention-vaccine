@@ -200,7 +200,7 @@ function createMark(fixed) {
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
   badge.onclick = () => (pop.hidden = !pop.hidden);
-  // マークへの操作はページ側（投稿を包むリンクの移動など）に渡さない。ただし詳細の中の自分のリンク（出典・報告）は開く。
+  // マークへの操作はページ側（投稿を包むリンクの移動など）に渡さない。ただし詳細の中の自分のリンク（出典・論文）は開く。
   // 外枠（host）で preventDefault すると、内側の <a> の移動まで打ち消された。closed の内側を見分けるため shadow root で受ける
   for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup"]) {
     sh.addEventListener(t, (e) => {
@@ -258,7 +258,6 @@ function fillDetails(pop, rows, links, extra, text) {
   add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
   if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
   addConsult(pop, rows, text);
-  link(JEV_REPORT_URL, "判定がおかしいと思ったら、ここから知らせてください（GitHub）");
 }
 
 // 「AI に相談」: 押すと、AI に貼る文をその場に出す（本文が入るので、何が渡るかをコピーの前に見せる）。

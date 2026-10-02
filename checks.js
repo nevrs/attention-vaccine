@@ -220,7 +220,6 @@ const JEV_ACTION_LABEL = {
 // ‼️ の詳細に出す説明（content.js・demo.js で共通）。Jev は理由を返さないので、代わりに聞いた問いの原文を見せる
 const JEV_PCT_NOTE = "数値は「この書き方に当てはまる」と Jev が見た確率です。内容が正しいかどうかの確率ではありません。";
 const jevQuestionNote = (qs) => "判定に使った問い: " + qs.map((q) => `「${q}」`).join(" × ");
-const JEV_REPORT_URL = "https://github.com/nevrs/attention-vaccine/issues";
 
 const JEV_MODES = { page: "ページ全体", block: "ブロックごと" };
 

@@ -20,7 +20,7 @@
 
 私がこの拡張機能を作ったのは、政治的な立場を超えて、人々がアテンションエコノミー（人の注目を奪い合って稼ぐ仕組み）などが引き起こす瞬間的な感情に突き動かされることへの、免疫として働いてほしいと願ったからです。
 
-開発者の私はエンジニアではありません。この拡張機能は、ほぼすべてを AI（Claude Opus 5.5）と相談しながら作りました。エンジニアの方による修正や改善を心から歓迎します。
+開発者の私はエンジニアではありません。この拡張機能は、ほぼすべてを AI（Claude Opus 5.5）と相談しながら作りました。直したいところは、拡張の中で自分で直すか（下の「使うときの注意」）、フォークして自由に変えてください。開発者は、個別の要望・Issue・プルリクエストを受け付けていません。
 
 > **状態: 試作品（プロトタイプ）です。** 精度は、主に自作の例文と一部の実サイトでしか測っていません。
 > 誤った ‼️ も、見逃しも起きます。
@@ -123,14 +123,13 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 - **その言語を母語とする人が、それぞれの言語や文化に合わせて書いた問いのほうが、より正確に判定できる可能性があります。** あおり方・皮肉・挑発の型は、文化によって違うからです。
 - 「誘導の決まり文句」は日本語の言い回しだけに対応しています。
 
-各言語の問いや言い回しの提案、実際の投稿での検証結果を歓迎します。
+各言語向けの問いは、設定画面の「自分で足す項目」や、フォークで作ってください。
 
 ### 使うときの注意
 
 - ‼️ は機械による推定です。**相手を「デマ認定された」と責める根拠には使わないでください。**
 - Jev は理由を説明しません。‼️ を押すと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
-- 判定がおかしいと思ったら、‼️ の詳細の一番下にあるリンクから [GitHub の Issues](https://github.com/nevrs/attention-vaccine/issues) で知らせてください。公開されている投稿だけを例に挙げてください。
-- 問いや閾値を自分で直したいときは、‼️ の詳細の「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。AI の答え（JSON）を設定画面から開ける「問いを試す」画面に貼ると、今の問いと案を例文すべてにかけて表で比べ、良い案をそのまま自分の項目として採用できます（例文の数だけ問い合わせ、1日の上限に数えます）。
+- 判定がおかしいと思ったら、自分で直せます。‼️ の詳細の「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。AI の答え（JSON）を設定画面から開ける「問いを試す」画面に貼ると、今の問いと案を例文すべてにかけて表で比べ、良い案をそのまま自分の項目として採用できます（例文の数だけ問い合わせ、1日の上限に数えます）。
 - ‼️ が付かなくても、内容が正しい・安全だという意味ではありません。
 - 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿、DM などの画面、除外したアカウントの投稿。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
@@ -161,7 +160,7 @@ A Chrome extension that shows ‼️ when a post or article you are reading uses
 
 I built this extension hoping it would work as an immune system, across political lines, against being driven by the momentary emotions stirred up by the attention economy (business models that profit by competing for people's attention) and similar forces.
 
-I am not an engineer. Almost all of this extension was built in consultation with an AI (Claude Opus 5.5). Fixes and improvements from engineers are very welcome.
+I am not an engineer. Almost all of this extension was built in consultation with an AI (Claude Opus 5.5). If you want something changed, adjust it inside the extension (see "Please note" below) or fork the code and change it freely. The developer does not accept individual requests, issues, or pull requests.
 
 > **Status: prototype.** Accuracy has mainly been measured on hand-written examples and a few real sites.
 > Expect both false ‼️ and misses.
@@ -263,14 +262,13 @@ We do not consider this sufficient:
 - **Questions written by native speakers and adapted to each language and culture may well be more accurate.** Styles of baiting, sarcasm, and provocation differ between cultures.
 - "Lure phrases" covers Japanese expressions only.
 
-Contributions of questions or phrase lists for other languages, and test results on real posts, are welcome.
+Questions for other languages can be added as your own checks on the options page, or in a fork.
 
 ### Please note
 
 - ‼️ is a machine estimate. **Please do not use it as proof to accuse others of spreading misinformation.**
 - Jev does not explain its reasons. Click ‼️ to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
-- If a result looks wrong, please tell us via the link at the bottom of the ‼️ details ([GitHub Issues](https://github.com/nevrs/attention-vaccine/issues)). Please use only publicly visible posts as examples.
-- To tune a question or threshold yourself, use "この判定を AI に相談する" (consult an AI) in the ‼️ details or on the options page. It produces a prompt with how the extension works, the questions, the scores and the text, to paste into an AI of your choice for rewording ideas and test sentences. It includes the post text, so choose where you paste it. Whether a suggestion works can only be known by measuring it with Jev: paste the AI's JSON answer into the "問いを試す" (try questions) page, linked from the options page, to score the current question and the candidates on every test sentence, compare them in a table, and adopt one as your own check (one request per sentence, counted toward the daily limit).
+- If a result looks wrong, you can fix it yourself: use "この判定を AI に相談する" (consult an AI) in the ‼️ details or on the options page. It produces a prompt with how the extension works, the questions, the scores and the text, to paste into an AI of your choice for rewording ideas and test sentences. It includes the post text, so choose where you paste it. Whether a suggestion works can only be known by measuring it with Jev: paste the AI's JSON answer into the "問いを試す" (try questions) page, linked from the options page, to score the current question and the candidates on every test sentence, compare them in a table, and adopt one as your own check (one request per sentence, counted toward the daily limit).
 - No ‼️ does not mean the content is true or safe.
 - Not checked: text inside images or videos, anything after the first 2,000 characters of an article, posts you scroll past quickly, DM-like pages, and posts from accounts you excluded.
 - Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
