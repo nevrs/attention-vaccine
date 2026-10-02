@@ -49,7 +49,8 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       changed = true;
     }
   }
-  if (changed) await chrome.storage.sync.set({ rules, savedAt: Date.now() });
+  // rules が変われば開いているページは storage.onChanged で読み直す。容量超えで失敗したら旧い文のまま（次の更新で再試行）
+  if (changed) await chrome.storage.sync.set({ rules }).catch(() => {});
 });
 
 chrome.runtime.onMessage.addListener((msg, _sender, send) => {
