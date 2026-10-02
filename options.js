@@ -4,12 +4,6 @@ const PROVIDER_HINT = {
   typesafe: "キーは console.typesafe.ai/settings/keys で発行（2026-09 時点で順番待ちあり）。",
   vercel: "キーは Vercel ダッシュボードの AI Gateway → API Keys で発行。順番待ちなし。",
 };
-// 閾値は 2026-09-27 に8文で Jev に当てて決めた仮の値
-const PRESETS = [
-  { label: "誇張", high: 85, condition: "事実を大きく誇張した表現や、根拠のない最上級の言い回し（「史上最強」「絶対」「99%が知らない」など）を含む" },
-  { label: "釣りタイトル", high: 85, condition: "中身より興味を引くことを優先した、煽り見出し・釣りタイトル" },
-  { label: "宣伝・勧誘", high: 85, condition: "広告・宣伝・アフィリエイト、または副業や投資への勧誘" },
-];
 let apiKeys = {}; // 接続先ごとのキー。切り替えても入力を失わない
 
 function showProvider() {
@@ -77,7 +71,7 @@ function refreshPresets() {
 }
 
 function renderPresets() {
-  for (const p of PRESETS) {
+  for (const p of JEV_PRESETS) {
     const b = document.createElement("button");
     b.textContent = "＋ " + p.label;
     b.dataset.condition = p.condition;

@@ -36,7 +36,8 @@ function buildChecks(s, mode) {
   for (const r of s.rules) {
     if (!r.condition) continue;
     const cut = (n) => (r.condition.length > n ? r.condition.slice(0, n) + "…" : r.condition);
-    out.push({ id: r.id, label: cut(16), short: cut(8), why: "", qs: [r.condition], high: r.high, action: "warn" });
+    const name = JEV_PRESETS.find((p) => p.condition === r.condition)?.label; // おすすめから足した項目は、その名前で出す
+    out.push({ id: r.id, label: name || cut(16), short: name || cut(8), why: "", qs: [r.condition], high: r.high, action: "warn" });
   }
   return out;
 }

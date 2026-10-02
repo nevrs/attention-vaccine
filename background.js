@@ -1,6 +1,6 @@
 // Jev への問い合わせを一手に引き受ける。並列数の制限・429 の再試行・結果のキャッシュをここに置く。
 // 接続先は利用者が設定画面で選ぶ。どちらも TypeSafe と同じリクエスト/レスポンスの形。
-importScripts("checks.js"); // JEV_COMPARE
+importScripts("checks.js"); // JEV_COMPARE・JEV_PRESETS
 const PROVIDERS = {
   // バージョン固定。latest は閾値の前提を無言で変える（Jev は問いの文面と版で確率の出方が変わる）
   typesafe: { url: "https://api.typesafe.ai/v1/systemone", model: "jev-1.13.0" },
@@ -37,6 +37,19 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     await chrome.storage.sync.set({ userSites });
     await chrome.storage.sync.remove("siteSelectors");
   }
+  // おすすめの問いを変えたとき、旧い文のまま足してある項目を今の文に入れ替える。閾値は旧の初期値のままなら今の初期値に
+  const { rules } = await chrome.storage.sync.get("rules");
+  let changed = false;
+  for (const r of rules || []) {
+    for (const p of JEV_PRESETS) {
+      const o = p.old?.find((o) => o.condition === r.condition);
+      if (!o) continue;
+      r.condition = p.condition;
+      if (r.high === o.high) r.high = p.high;
+      changed = true;
+    }
+  }
+  if (changed) await chrome.storage.sync.set({ rules, savedAt: Date.now() });
 });
 
 chrome.runtime.onMessage.addListener((msg, _sender, send) => {
