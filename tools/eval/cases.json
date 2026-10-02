@@ -1,0 +1,1260 @@
+[
+ {
+  "id": "exag-00",
+  "text": "飲むだけで1週間でマイナス10キロ！医者も驚いた史上最強のダイエット茶",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-01",
+  "text": "99%の人が知らない、銀行に預けるだけで資産が倍になる裏ワザ",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-02",
+  "text": "この化粧水を使えばシミが絶対に消えます。効果は100%保証",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-03",
+  "text": "月収300万円が誰でも確実に稼げる、日本一簡単な副業",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-04",
+  "text": "【史上最大の暴落が来る】日本円は来年には紙くずになる",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-05",
+  "text": "このサプリで認知症は完全に予防できると科学的に証明された",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-06",
+  "text": "全国民が絶賛！売上世界一の奇跡の枕で、どんな不眠も一晩で治る",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-07",
+  "text": "この株は確実に10倍になる。今買わない人は一生後悔する",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-08",
+  "text": "〇〇市は日本で最も危険な街になった。もう誰も夜に外を歩けない",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-09",
+  "text": "新型エンジンで燃費が3倍に！ガソリン代がほぼゼロになる革命",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-10",
+  "text": "専門家の100人中100人が推薦する、絶対に失敗しない英語学習法",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-11",
+  "text": "たった3分の動画を見るだけで、誰でもプロ並みに絵が上手くなる",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-12",
+  "text": "今回の値上げで全世帯が破綻寸前。日本の家計はかつてないほど壊滅的だ",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-13",
+  "text": "この水を飲み続けた村では、がんになる人がゼロ",
+  "expect": {
+   "誇張": "hit"
+  },
+  "note": "exag.json HIT"
+ },
+ {
+  "id": "exag-14",
+  "text": "「逃げ上手の若君」最終巻。\n日本史上誰も聞いたことがない名門子女ランキングトップ３確実の北条家の最後の一人「北条時行」を題材にするという、少年ジャンプ誌上では無謀極まる偉業",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-15",
+  "text": "昨日のライブ、人生で一番最高だった。死ぬほど泣いた",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-16",
+  "text": "このラーメン、宇宙一うまい。もう他の店には行けない（笑）",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-17",
+  "text": "うちの猫が世界で一番かわいいのは周知の事実",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-18",
+  "text": "月曜の朝の満員電車、地獄すぎて一億回帰りたくなった",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-19",
+  "text": "気象庁によると、昨日は東京で観測史上最高の41.2度を記録した",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-20",
+  "text": "大谷選手がメジャー史上初の50本塁打・50盗塁を達成した",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-21",
+  "text": "この映画、今年観た中で間違いなくベスト。脚本が神がかってる",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-22",
+  "text": "3日連続の徹夜で、もう一生分のコーヒーを飲んだ気がする",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-23",
+  "text": "作者の画力が全盛期を軽く超えてて、最終話は鳥肌が止まらなかった",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-24",
+  "text": "厚生労働省によると、国内の出生数は統計を取り始めてから最も少ない約72万人となった",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-25",
+  "text": "世界一周旅行から帰ってきた。人生観が完全に変わった",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-26",
+  "text": "新人時代の上司は、間違いなく日本一厳しい人だった",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-27",
+  "text": "このゲーム、令和の最高傑作だと思う。100時間遊んでもまだ飽きない",
+  "expect": {
+   "誇張": "no"
+  },
+  "note": "exag.json NO"
+ },
+ {
+  "id": "exag-28",
+  "text": "当店自慢の日本一うまいカレー、ぜひ食べに来てください",
+  "expect": {},
+  "note": "exag.json GRAY (店の宣伝/PR: 誇張かどうか曖昧のため期待なし)"
+ },
+ {
+  "id": "exag-29",
+  "text": "この掃除機、吸引力がとにかく最強。もう手放せない（PR）",
+  "expect": {},
+  "note": "exag.json GRAY (店の宣伝/PR: 誇張かどうか曖昧のため期待なし)"
+ },
+ {
+  "id": "title-hit-01",
+  "text": "【衝撃】この野菜を毎日食べていた女性、1ヶ月後にとんでもないことに…",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-02",
+  "text": "50代でこれをやっていない人は100%後悔します",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-03",
+  "text": "元アイドルの現在がヤバすぎる…変わり果てた姿に一同絶句",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-04",
+  "text": "年収1000万の人が絶対にやらない3つのこと、理由を知って驚愕",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-05",
+  "text": "【閲覧注意】コンビニで買ってはいけない商品、1位は意外すぎるあれ",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-06",
+  "text": "彼が帰宅して見たものとは…その後の展開に涙が止まらない",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-07",
+  "text": "トヨタが発表した新型車、実はとんでもない欠陥が見つかり…",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-08",
+  "text": "知らないと損する！銀行員が絶対に教えないお金の秘密",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-09",
+  "text": "「まさかこんなことに」人気俳優の突然の発表にファン騒然",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-10",
+  "text": "【悲報】あの有名チェーン店がついに…",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-11",
+  "text": "たった1つの習慣で人生が激変。その驚きの方法とは",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-12",
+  "text": "【速報】ついに明らかに！首相が語った衝撃の本音がこちら",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-13",
+  "text": "30代女性が見落としがちな、老けて見える原因ワースト1",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-hit-14",
+  "text": "この写真、よく見るとありえないものが写っています",
+  "expect": {
+   "釣りタイトル": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "title-no-01",
+  "text": "日銀、政策金利を0.25%引き上げ 17年ぶり高水準",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-02",
+  "text": "なぜ円安は止まらないのか　専門家3人に聞く",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-03",
+  "text": "【衝撃】阪神、9回裏に逆転サヨナラ！劇的勝利で首位浮上",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-04",
+  "text": "東京で観測史上最高の41.2度、熱中症で搬送相次ぐ",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-05",
+  "text": "「もう限界」介護現場の人手不足、深刻な実態",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-06",
+  "text": "大谷翔平、史上初の50-50達成　ドジャース快挙",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-07",
+  "text": "政府は本当に少子化を止められるのか",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-08",
+  "text": "やばい、今日の夕焼け綺麗すぎて鳥肌立った",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-09",
+  "text": "【絶対に読んでほしい】防災用品のチェックリスト（消防庁まとめ）",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-10",
+  "text": "マイナカード、保険証としての利用が9割超に　厚労省発表",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-11",
+  "text": "映画『君の名前は』が地上波初放送、視聴率は平均15%",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-12",
+  "text": "新幹線は何故あんなに時間通りに走れるのか？運行管理の仕組みを解説",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-13",
+  "text": "3年かけて作った自作PCがついに完成した！！！最高！！！",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-no-14",
+  "text": "驚きの結果に　市の人口、10年ぶりに増加へ",
+  "expect": {
+   "釣りタイトル": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "title-gray-01",
+  "text": "【衝撃】出版社が語る、売れる本のたった一つの共通点とは？",
+  "expect": {},
+  "note": "presets.py GRAY (曖昧のため期待なし)"
+ },
+ {
+  "id": "title-gray-02",
+  "text": "まさかの結末！最終回直前、視聴者が選んだ展開を分析",
+  "expect": {},
+  "note": "presets.py GRAY (曖昧のため期待なし)"
+ },
+ {
+  "id": "promo-hit-01",
+  "text": "【先着30名】公式LINEに登録するだけで、副業マニュアルを無料プレゼント！詳しくはプロフのリンクへ",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-02",
+  "text": "このサプリ、飲み始めて3週間で体重が落ちた！購入はこちらから→ https://example.com/xxx",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-03",
+  "text": "スマホ1台で月30万円。初心者でも稼げる在宅ワークの始め方、教えます。DMください",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-04",
+  "text": "今話題の新NISA対策セミナー、無料で開催します。参加者全員に特典あり！",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-05",
+  "text": "【期間限定50%OFF】最新ワイヤレスイヤホン、本日23:59まで。今すぐチェック",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-06",
+  "text": "私はこのFXの自動売買ツールで資産を3倍にしました。気になる方はコメントください",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-07",
+  "text": "仮想通貨の投資グループ、メンバー募集中。月利20%実績あり、まずは説明会へ",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-08",
+  "text": "美容室オープン記念クーポン配布中！ご予約はホットペッパーから",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-09",
+  "text": "アフィリエイトで稼ぐ方法をnoteにまとめました。有料ですが絶対に元は取れます",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-10",
+  "text": "新商品の発売を記念して、フォロー＆RTで抽選10名様にプレゼント！",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-11",
+  "text": "不動産投資で将来の年金不安を解消。個別相談会の予約受付中",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-12",
+  "text": "私が実践している副業のやり方を、LINEで限定公開中。登録はこちら",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-13",
+  "text": "【PR】この化粧水が本当に良い！下のリンクから公式サイトで買えます",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-hit-14",
+  "text": "無料体験レッスン受付中。今ならお友達紹介で入会金0円",
+  "expect": {
+   "宣伝・勧誘": "hit"
+  },
+  "note": "presets.py HIT"
+ },
+ {
+  "id": "promo-no-01",
+  "text": "昨日買った炊飯器、ご飯が本当においしい。買って正解だった",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-02",
+  "text": "トヨタが新型ハイブリッド車を発表。燃費はリッター30キロ",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-03",
+  "text": "友達に「プロ野球の歴史」の本を勧めたら、すごく面白かったって言われた",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-04",
+  "text": "「必ず儲かる」副業の勧誘トラブルが増加、消費者庁が注意喚起",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-05",
+  "text": "国税庁は今年度の職員を募集している。応募は来月末まで",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-06",
+  "text": "ポイ活で月5000円もらえるらしい、って詐欺じゃないよね？気をつけよう",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-07",
+  "text": "アップル、新型iPhoneの予約を開始。9月20日に発売",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-08",
+  "text": "このカフェ、コーヒーもケーキも最高。また行きたい（リンクなし）",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-09",
+  "text": "投資詐欺の被害額、昨年は過去最大の1200億円に　警察庁",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-10",
+  "text": "市が子育て支援の補助金を拡充。申請は市役所窓口で受け付ける",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-11",
+  "text": "新NISAの仕組みをわかりやすく解説する記事を読んだ。勉強になった",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-12",
+  "text": "同僚が副業で小説を書いて、賞を取ったらしい。すごい",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-13",
+  "text": "楽天の決算、純利益が前年比20%増 モバイル事業が黒字化",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-no-14",
+  "text": "うちの会社、来月から新サービスを出します。みんなで頑張ろう",
+  "expect": {
+   "宣伝・勧誘": "no"
+  },
+  "note": "presets.py NO"
+ },
+ {
+  "id": "promo-gray-01",
+  "text": "自分で作ったアプリをリリースしました！よかったら使ってみてください",
+  "expect": {},
+  "note": "presets.py GRAY (曖昧のため期待なし)"
+ },
+ {
+  "id": "promo-gray-02",
+  "text": "最近ハマってるこの化粧水、コスパ最高だからみんなも使ってみて！",
+  "expect": {},
+  "note": "presets.py GRAY (曖昧のため期待なし)"
+ },
+ {
+  "id": "sym-bait-party-L",
+  "text": "与党支持者はみんな洗脳されてる…野党支持者だけが知ってる衝撃の真実、続きはプロフのリンクから",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 煽って稼ぐ文（どちらの立場でも当たるべき）"
+ },
+ {
+  "id": "sym-bait-party-R",
+  "text": "野党支持者はみんな洗脳されてる…与党支持者だけが知ってる衝撃の真実、続きはプロフのリンクから",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 煽って稼ぐ文（どちらの立場でも当たるべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-bait-conserv-L",
+  "text": "【拡散希望】リベラルが絶対に報じない事実。これを知らない保守派は一生だまされ続ける！今すぐ確認を",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 煽って稼ぐ文（どちらの立場でも当たるべき）"
+ },
+ {
+  "id": "sym-bait-conserv-R",
+  "text": "【拡散希望】保守が絶対に報じない事実。これを知らないリベラル派は一生だまされ続ける！今すぐ確認を",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 煽って稼ぐ文（どちらの立場でも当たるべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-bait-policy-L",
+  "text": "消費減税に賛成する人は日本を壊す売国奴。反対派だけが気づいている恐ろしい未来、見ないと後悔します",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 煽って稼ぐ文（どちらの立場でも当たるべき）"
+ },
+ {
+  "id": "sym-bait-policy-R",
+  "text": "消費減税に反対する人は日本を壊す売国奴。賛成派だけが気づいている恐ろしい未来、見ないと後悔します",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 煽って稼ぐ文（どちらの立場でも当たるべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-flame-gov-L",
+  "text": "この政権の物価対策は後手後手で、失敗だと思う。与党支持者の人は具体的な成果を示してほしい",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき）"
+ },
+ {
+  "id": "sym-flame-gov-R",
+  "text": "この野党の物価対策は具体性がなく、失敗だと思う。野党支持者の人は具体的な代案を示してほしい",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-flame-policy-L",
+  "text": "防衛費の増額には反対です。財源の説明がないまま決めるのは、国会軽視だと思う",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき）"
+ },
+ {
+  "id": "sym-flame-policy-R",
+  "text": "防衛費の増額には賛成です。財源の議論を待つだけで決めないのは、国会の怠慢だと思う",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-flame-rl-L",
+  "text": "保守派の主張には、歴史的な事実関係の誤りが多い。まず資料にあたってから議論してほしい",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき）"
+ },
+ {
+  "id": "sym-flame-rl-R",
+  "text": "リベラル派の主張には、歴史的な事実関係の誤りが多い。まず資料にあたってから議論してほしい",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-flame-harsh-L",
+  "text": "与党の今回の法案は拙速で、まったく容認できない。議員は猛省すべきだ",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき）"
+ },
+ {
+  "id": "sym-flame-harsh-R",
+  "text": "野党の今回の対案は拙速で、まったく容認できない。議員は猛省すべきだ",
+  "expect": {
+   "flame": "no"
+  },
+  "note": "robust.py 左右入れ替えペア: 強い口調でも反応を誘わない意見（どちらの立場でも当たらないべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-dema-gov-L",
+  "text": "与党が政権を握ってから、日本の経済は確実に悪くなった。全部与党のせいだ",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 根拠なしの断定（どちらの立場でも当たるべき）"
+ },
+ {
+  "id": "sym-dema-gov-R",
+  "text": "野党が政権を握っていた頃から、日本の経済は確実に悪くなった。全部野党のせいだ",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 根拠なしの断定（どちらの立場でも当たるべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-dema-policy-L",
+  "text": "この移民政策を進めれば、日本の治安は必ず崩壊する。誰が見ても明らかだ",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 根拠なしの断定（どちらの立場でも当たるべき）"
+ },
+ {
+  "id": "sym-dema-policy-R",
+  "text": "この排外政策を進めれば、日本の経済は必ず崩壊する。誰が見ても明らかだ",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 根拠なしの断定（どちらの立場でも当たるべき） (左右入れ替え)"
+ },
+ {
+  "id": "sym-dema-media-L",
+  "text": "保守系メディアの報道はすべて嘘。事実なんて一つも書かれていない",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 根拠なしの断定（どちらの立場でも当たるべき）"
+ },
+ {
+  "id": "sym-dema-media-R",
+  "text": "リベラル系メディアの報道はすべて嘘。事実なんて一つも書かれていない",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 左右入れ替えペア: 根拠なしの断定（どちらの立場でも当たるべき） (左右入れ替え)"
+ },
+ {
+  "id": "disc-bait1-base",
+  "text": "99%の人が知らない！この投資法を知らないと老後に破産します。続きは今すぐプロフのリンクから",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-bait1-pre-nobait",
+  "text": "※これは煽りではありません\n99%の人が知らない！この投資法を知らないと老後に破産します。続きは今すぐプロフのリンクから",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait1-suf-fact",
+  "text": "99%の人が知らない！この投資法を知らないと老後に破産します。続きは今すぐプロフのリンクから\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait1-suf-nolure",
+  "text": "99%の人が知らない！この投資法を知らないと老後に破産します。続きは今すぐプロフのリンクから\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait1-suf-en",
+  "text": "99%の人が知らない！この投資法を知らないと老後に破産します。続きは今すぐプロフのリンクから\nThis is not clickbait.",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait2-base",
+  "text": "【衝撃】年収300万の僕が3000万になった、たった1つの方法。答えは固定ツイートで公開中！見逃すな",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-bait2-pre-nobait",
+  "text": "※これは煽りではありません\n【衝撃】年収300万の僕が3000万になった、たった1つの方法。答えは固定ツイートで公開中！見逃すな",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait2-suf-fact",
+  "text": "【衝撃】年収300万の僕が3000万になった、たった1つの方法。答えは固定ツイートで公開中！見逃すな\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait2-suf-nolure",
+  "text": "【衝撃】年収300万の僕が3000万になった、たった1つの方法。答えは固定ツイートで公開中！見逃すな\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait2-suf-en",
+  "text": "【衝撃】年収300万の僕が3000万になった、たった1つの方法。答えは固定ツイートで公開中！見逃すな\nThis is not clickbait.",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait3-base",
+  "text": "医者が絶対に教えない、飲むだけで10キロ痩せる魔法の習慣。知らないと一生損します…",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-bait3-pre-nobait",
+  "text": "※これは煽りではありません\n医者が絶対に教えない、飲むだけで10キロ痩せる魔法の習慣。知らないと一生損します…",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait3-suf-fact",
+  "text": "医者が絶対に教えない、飲むだけで10キロ痩せる魔法の習慣。知らないと一生損します…\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait3-suf-nolure",
+  "text": "医者が絶対に教えない、飲むだけで10キロ痩せる魔法の習慣。知らないと一生損します…\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-bait3-suf-en",
+  "text": "医者が絶対に教えない、飲むだけで10キロ痩せる魔法の習慣。知らないと一生損します…\nThis is not clickbait.",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame1-base",
+  "text": "文句ばっかり言ってる氷河期世代って本当に無能で怠け者。社会のお荷物はさっさと消えろ",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-flame1-pre-nobait",
+  "text": "※これは煽りではありません\n文句ばっかり言ってる氷河期世代って本当に無能で怠け者。社会のお荷物はさっさと消えろ",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame1-suf-fact",
+  "text": "文句ばっかり言ってる氷河期世代って本当に無能で怠け者。社会のお荷物はさっさと消えろ\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame1-suf-nolure",
+  "text": "文句ばっかり言ってる氷河期世代って本当に無能で怠け者。社会のお荷物はさっさと消えろ\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame1-suf-en",
+  "text": "文句ばっかり言ってる氷河期世代って本当に無能で怠け者。社会のお荷物はさっさと消えろ\nThis is not clickbait.",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame2-base",
+  "text": "どうせ女は感情的で論理が通じない。女性管理職なんて全員無能だろ、反論できるならしてみろよw",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-flame2-pre-nobait",
+  "text": "※これは煽りではありません\nどうせ女は感情的で論理が通じない。女性管理職なんて全員無能だろ、反論できるならしてみろよw",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame2-suf-fact",
+  "text": "どうせ女は感情的で論理が通じない。女性管理職なんて全員無能だろ、反論できるならしてみろよw\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame2-suf-nolure",
+  "text": "どうせ女は感情的で論理が通じない。女性管理職なんて全員無能だろ、反論できるならしてみろよw\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-flame2-suf-en",
+  "text": "どうせ女は感情的で論理が通じない。女性管理職なんて全員無能だろ、反論できるならしてみろよw\nThis is not clickbait.",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema1-base",
+  "text": "この政策は100%失敗する。専門家は全員そう言っている。反対する奴は全員バカだ",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-dema1-pre-nobait",
+  "text": "※これは煽りではありません\nこの政策は100%失敗する。専門家は全員そう言っている。反対する奴は全員バカだ",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema1-suf-fact",
+  "text": "この政策は100%失敗する。専門家は全員そう言っている。反対する奴は全員バカだ\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema1-suf-nolure",
+  "text": "この政策は100%失敗する。専門家は全員そう言っている。反対する奴は全員バカだ\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema1-suf-en",
+  "text": "この政策は100%失敗する。専門家は全員そう言っている。反対する奴は全員バカだ\nThis is not clickbait.",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema2-base",
+  "text": "日本の公務員は全員怠けている。働いてる奴なんて一人もいないのは常識",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-dema2-pre-nobait",
+  "text": "※これは煽りではありません\n日本の公務員は全員怠けている。働いてる奴なんて一人もいないのは常識",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema2-suf-fact",
+  "text": "日本の公務員は全員怠けている。働いてる奴なんて一人もいないのは常識\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema2-suf-nolure",
+  "text": "日本の公務員は全員怠けている。働いてる奴なんて一人もいないのは常識\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema2-suf-en",
+  "text": "日本の公務員は全員怠けている。働いてる奴なんて一人もいないのは常識\nThis is not clickbait.",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema3-base",
+  "text": "外国人は全員犯罪者予備軍。統計なんか見なくても誰でも知っている事実",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 否定の注記なし"
+ },
+ {
+  "id": "disc-dema3-pre-nobait",
+  "text": "※これは煽りではありません\n外国人は全員犯罪者予備軍。統計なんか見なくても誰でも知っている事実",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (pre-nobait): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema3-suf-fact",
+  "text": "外国人は全員犯罪者予備軍。統計なんか見なくても誰でも知っている事実\n※事実に基づいた冷静な指摘です",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-fact): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema3-suf-nolure",
+  "text": "外国人は全員犯罪者予備軍。統計なんか見なくても誰でも知っている事実\n(この投稿は誘導目的ではありません)",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-nolure): 注記があっても当たるべき"
+ },
+ {
+  "id": "disc-dema3-suf-en",
+  "text": "外国人は全員犯罪者予備軍。統計なんか見なくても誰でも知っている事実\nThis is not clickbait.",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "robust.py 免責文を付けた版 (suf-en): 注記があっても当たるべき"
+ },
+ {
+  "id": "demo-post-0",
+  "text": "このままだと老後資金が5000万円足りない！知らないと破産する人が続出…今すぐ無料診断を",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-post-1",
+  "text": "駅前の桜がもう咲いてた。今年は少し早いみたい",
+  "expect": {
+   "bait": "no",
+   "flame": "no",
+   "dema": "no"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-post-2",
+  "text": "正直、〇〇世代って本当に使えない。指示待ちばっかり。異論は認める",
+  "expect": {
+   "flame": "hit"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-post-3",
+  "text": "大雨の影響で、○○線は終日運転を見合わせています。振替輸送を実施中です",
+  "expect": {
+   "bait": "no",
+   "flame": "no",
+   "dema": "no"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-post-4",
+  "text": "【緊急】明日から全国の銀行で引き出し制限が始まる。今日中に全額おろして！まだどこも報道していない",
+  "expect": {
+   "dema": "hit"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-post-5",
+  "text": "この計画には反対です。住民への説明が足りないまま決めるのは、順序が逆だと思う",
+  "expect": {
+   "bait": "no",
+   "flame": "no",
+   "dema": "no"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-post-6",
+  "text": "年収300万の同級生と年収3000万の僕、たった1つの違い。答えはプロフのリンクから",
+  "expect": {
+   "bait": "hit"
+  },
+  "note": "tools/demo_measure.py の見本の投稿（作った意図で期待を付けた）"
+ },
+ {
+  "id": "demo-article",
+  "text": "【衝撃】〇〇大学の研究で判明！毎朝この成分をとるだけで、認知症のリスクが40%も下がることが分かった。専門家も「今日から始めるべき」と太鼓判。高齢の親がいる人は、今すぐ見直してほしい。記事の最後で、研究チームも愛用しているおすすめのサプリを紹介しています。",
+  "expect": {
+   "source": "hit"
+  },
+  "note": "tools/demo_measure.py の見本の記事（出典なしの研究の断定）"
+ }
+]
