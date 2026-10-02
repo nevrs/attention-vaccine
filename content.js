@@ -382,7 +382,7 @@ async function judgePage(retry = 0) {
   comparePage(text, links);
 }
 
-// ページ全体は右下に1つだけ。当たれば ‼️ と件数、当たらなければ控えめな Jev ‼️0（押せば数値が見られる）
+// ページ全体は右下に1つだけ。当たれば ‼️ と件数、当たらなければ控えめな Jev 読んだ（押せば数値が見られる。‼️ は当たりの印なので入れない）
 function renderPage() {
   if (!pageView) return;
   if (!pageMark) {
@@ -411,7 +411,7 @@ function renderPage() {
   const { rows, links, cmp } = pageView;
   // 元論文との比較で当たったものも、手口の1つとして並べる
   const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元論文より誇張" }, pct: cmp.pct }] : []);
-  pageMark.badge.textContent = tag(hits.length ? badgeText(hits) : "Jev ‼️0");
+  pageMark.badge.textContent = tag(hits.length ? badgeText(hits) : "Jev 読んだ");
   pageMark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(pageMark.pop, rows, links, (add, link) => {
     if (!cmp) return;
@@ -777,7 +777,7 @@ async function judgeBlock(el) {
   whenIdle(updateCounter); // 失敗も数える
 }
 
-// 当たった件にだけ ‼️ を重ねる（「判定した全件にマーク」がオンなら、当たらない件にも控えめな ✓）
+// 当たった件にだけ ‼️ を重ねる（「判定した全件にマーク」がオンなら、当たらない件にも控えめな「読んだ」。✓ は「安全」と読まれるので使わない）
 function apply(el) {
   clearMarks(el);
   const st = state.get(el);
@@ -792,7 +792,7 @@ function apply(el) {
   if (!hits.length && !settings.debug) return;
   if (getComputedStyle(el).position === "static") el.classList.add("jev-anchor"); // マークを右上に置く基準
   st.mark = createMark(false);
-  st.mark.badge.textContent = hits.length ? badgeText(hits) : "✓";
+  st.mark.badge.textContent = hits.length ? badgeText(hits) : "読んだ";
   st.mark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(st.mark.pop, rows, hits.some((r) => r.c.showSources) ? primaryLinks(el) : [], (add) => {
     if (el.classList.contains("jev-blur")) add("note", "本文はぼかしています。本文を押すと表示します");

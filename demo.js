@@ -61,7 +61,7 @@ function createMark(rows, style, extraNote) {
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
   const hits = rows.filter((r) => r.hit);
-  badge.textContent = hits.length ? badgeText(hits) : "✓";
+  badge.textContent = hits.length ? badgeText(hits) : "読んだ";
   badge.classList.toggle("quiet", !hits.length);
   const add = (cls, text) => {
     const d = document.createElement("div");
