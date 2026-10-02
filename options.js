@@ -176,7 +176,19 @@ function collect() {
   return { pillars, rules, compare, userSites, excludeAuthors, debug: $("debug").checked, dwell: Number($("dwell").value), errors };
 }
 
+// モードを選んであるのに許可がないサイト（v0.17 で <all_urls> をやめたので、それ以前から使っている人は全部これになる）
+async function renderPerm() {
+  const { siteModes = {} } = await chrome.storage.sync.get({ siteModes: {} });
+  const missing = [];
+  for (const h of Object.keys(siteModes)) if (!(await chrome.permissions.contains({ origins: [jevSitePattern(h)] }))) missing.push(h);
+  $("perm").hidden = !missing.length;
+  $("permHosts").textContent = missing.join("、");
+  // 許可の確認はクリックの直後に呼ぶ（間に await を挟むと Chrome に断られる）
+  $("permAsk").onclick = () => chrome.permissions.request({ origins: missing.map(jevSitePattern) }).catch(() => false).then(renderPerm);
+}
+
 async function init() {
+  renderPerm();
   renderPresets();
   const local = await chrome.storage.local.get(["provider", "apiKeys", "apiKey"]);
   apiKeys = local.apiKeys || (local.apiKey ? { typesafe: local.apiKey } : {}); // 0.1.0 の単一キーを引き継ぐ

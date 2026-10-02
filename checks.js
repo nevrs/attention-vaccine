@@ -223,6 +223,11 @@ const jevQuestionNote = (qs) => "判定に使った問い: " + qs.map((q) => `�
 
 const JEV_MODES = { page: "ページ全体", block: "ブロックごと" };
 
+// ページ側に入れるファイル。manifest には書かず、利用者が許可したサイトにだけ background.js が登録する（v0.17.0 で <all_urls> をやめた）
+const JEV_CONTENT = { id: "jev", js: ["checks.js", "sites.js", "content.js", "picker.js"], css: ["content.css"], runAt: "document_idle" };
+// サイトの許可は http と https をまとめて、ホスト単位で求める（siteModes もホスト単位）
+const jevSitePattern = (host) => `*://${host}/*`;
+
 // 「AI に相談」: 利用者が好きな AI（ChatGPT など）に貼って、問いと閾値の直し方を相談するための文。
 // 拡張の中で AI は使わない（理念）。AI は案と例文を出す係で、効くかどうかは Jev で測るまで分からない（2026-10-02 の調整の教訓）
 // items: [{ label, qs: [問いの原文], high, pct（この件の値。無ければ null） }]、text: 相談したい文章（無ければ設定全体の相談）

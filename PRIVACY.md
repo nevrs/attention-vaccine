@@ -31,7 +31,7 @@
 
 ### 第三者について
 
-接続先に送った文章の扱いは、それぞれの運営者の方針に従います。[TypeSafe](https://typesafe.ai)、[Vercel](https://vercel.com)、[OpenAlex](https://openalex.org) の公開情報を確認してください。
+接続先に送った文章の扱いは、それぞれの運営者の方針に従います。TypeSafe・Vercel・[OpenAlex](https://openalex.org) が公開している方針を確認してください。
 
 ### 問い合わせ・変更の依頼について
 
@@ -68,7 +68,7 @@ The extension runs only on sites you turn on in the popup. When you turn a site 
 
 ### Third parties
 
-Text sent to a provider is handled under that provider's own policies. See the public information of [TypeSafe](https://typesafe.ai), [Vercel](https://vercel.com), and [OpenAlex](https://openalex.org).
+Text sent to a provider is handled under that provider's own policies. See the policies published by TypeSafe, Vercel, and [OpenAlex](https://openalex.org).
 
 ### Contact and change requests
 

@@ -1,6 +1,6 @@
 // Jev への問い合わせを一手に引き受ける。並列数の制限・429 の再試行・結果のキャッシュをここに置く。
 // 接続先は利用者が設定画面で選ぶ。どちらも TypeSafe と同じリクエスト/レスポンスの形。
-importScripts("checks.js"); // JEV_COMPARE・JEV_PRESETS
+importScripts("checks.js"); // JEV_COMPARE・JEV_PRESETS・JEV_CONTENT
 const PROVIDERS = {
   // バージョン固定。latest は閾値の前提を無言で変える（Jev は問いの文面と版で確率の出方が変わる）
   typesafe: { url: "https://api.typesafe.ai/v1/systemone", model: "jev-1.13.0" },
@@ -51,7 +51,36 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
   // rules が変われば開いているページは storage.onChanged で読み直す。容量超えで失敗したら旧い文のまま（次の更新で再試行）
   if (changed) await chrome.storage.sync.set({ rules }).catch(() => {});
+  await syncContentScripts();
 });
+
+// ページ側のスクリプトは、利用者が許可したサイトにだけ入れる。許可はポップアップ・設定画面でサイトをオンにしたときに
+// Chrome の確認で求める。許可が増減したら登録し直す（登録は Chrome を閉じても残る）
+async function syncContentScripts() {
+  const api = chrome.runtime.getManifest().host_permissions; // 接続先の許可は除く
+  const { origins = [] } = await chrome.permissions.getAll();
+  const matches = origins.filter((o) => !api.includes(o));
+  const had = (await chrome.scripting.getRegisteredContentScripts({ ids: [JEV_CONTENT.id] })).length > 0;
+  if (!matches.length) return had && chrome.scripting.unregisterContentScripts({ ids: [JEV_CONTENT.id] });
+  const script = { ...JEV_CONTENT, matches };
+  await (had ? chrome.scripting.updateContentScripts([script]) : chrome.scripting.registerContentScripts([script]));
+}
+
+// 許可した直後は、そのサイトの開いているタブにも入れる（読み込み直さなくても動くように）。既に入っているタブには入れない
+async function injectInto(origins) {
+  const tabs = await chrome.tabs.query({ url: origins }).catch(() => []);
+  for (const t of tabs) {
+    if (await chrome.tabs.sendMessage(t.id, { type: "stats" }).catch(() => null)) continue;
+    await chrome.scripting.insertCSS({ target: { tabId: t.id }, files: JEV_CONTENT.css }).catch(() => {});
+    await chrome.scripting.executeScript({ target: { tabId: t.id }, files: JEV_CONTENT.js }).catch(() => {});
+  }
+}
+
+chrome.permissions.onAdded.addListener(async ({ origins = [] }) => {
+  await syncContentScripts();
+  await injectInto(origins);
+});
+chrome.permissions.onRemoved.addListener(() => syncContentScripts());
 
 chrome.runtime.onMessage.addListener((msg, _sender, send) => {
   const job =

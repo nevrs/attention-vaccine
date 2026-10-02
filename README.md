@@ -78,11 +78,11 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 初期状態では、どのサイトでも何もしません。使いたいサイトごとにオンにします。
 1. 判定したいサイト（X、ニュースサイトなど）を開きます。
-2. 拡張のアイコンを押し、次のどちらかを選びます。
+2. 拡張のアイコンを押し、次のどちらかを選びます。初めて選ぶサイトでは、Chrome が「このサイトのデータの読み取りと変更」の許可を確かめるので、許可します。拡張は許可したサイトでしか動きません。
    - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の隅（多くのサイトでは右下）に結果が 1 つ出ます。
    - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に ‼️ が付きます。
 3. ‼️ を押すと、見つかった手口の名前・理由・数値が出ます。
-4. やめるときは、同じ画面で「オフ」を選びます。
+4. やめるときは、同じ画面で「オフ」を選びます。そのサイトの許可も返します。
 
 **更新するとき**
 
@@ -94,7 +94,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 ### 送るもの・送らないもの（プライバシー）
 
-- **どのサイトも、あなたがオンにするまで何も判定しません。**
+- **どのサイトも、あなたがオンにして Chrome の許可を出すまで、拡張はそのページに入りません。** 詳しくは [プライバシーポリシー](PRIVACY.md)。
 - オンにしたサイトで、あなたが選んだ接続先（TypeSafe または Vercel）に次の文章を送ります。
   - ブロックごとモード: **画面に表示されて読んだ投稿の本文**（1 件最大 2000 字）
   - ページ全体モード: **記事の見出しと本文の冒頭**（最大 2000 字）
@@ -217,11 +217,11 @@ If you use `git`, you can run `git clone https://github.com/nevrs/attention-vacc
 
 By default, nothing happens on any site. Turn it on for each site you want.
 1. Open a site you want to check (X, a news site, etc.).
-2. Click the extension icon and choose one of these:
+2. Click the extension icon and choose one of these. The first time for a site, Chrome asks you to allow the extension to read and change data on that site; allow it. The extension runs only on sites you allow.
    - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in a corner of the screen (bottom right on most sites).
    - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. ‼️ appears at the top right of each post where a technique is found.
 3. Click ‼️ to see the technique, the reason, and the score.
-4. To stop, choose "オフ" (Off) in the same place.
+4. To stop, choose "オフ" (Off) in the same place. This also gives back the permission for that site.
 
 **Updating**
 
@@ -233,7 +233,7 @@ Click "Remove" for "Attention Vaccine" in `chrome://extensions`. Your saved sett
 
 ### What is sent, and what is not (privacy)
 
-- **Nothing is analyzed on any site until you turn that site on.**
+- **The extension does not touch a site until you turn it on and grant Chrome's permission for it.** See the [privacy policy](PRIVACY.md).
 - On sites you turn on, the following text is sent to the provider you chose (TypeSafe or Vercel):
   - Per-block mode: **the text of posts you actually view** (up to 2,000 characters each)
   - Whole-page mode: **the article's headline and the beginning of its body** (up to 2,000 characters)
