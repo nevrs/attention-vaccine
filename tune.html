@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<title>煽り注意報 — 問いを試す</title>
+<style>
+  body { font: 14px system-ui, sans-serif; max-width: 960px; margin: 24px auto; padding: 0 16px; color: #222; }
+  h1 { font-size: 20px; } h2 { font-size: 16px; margin-top: 28px; }
+  .hint { color: #666; font-size: 12px; margin: 2px 0 0; line-height: 1.7; }
+  textarea { width: 100%; box-sizing: border-box; padding: 6px; font: 12px/1.5 ui-monospace, monospace; height: 12em; resize: vertical; }
+  button { padding: 6px 14px; }
+  #msg { margin-left: 12px; }
+  .bad { color: #c22; }
+  table { border-collapse: collapse; margin-top: 12px; font-size: 13px; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 4px 6px; vertical-align: top; }
+  th { background: #f6f6f6; text-align: left; font-weight: 600; }
+  td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.over { background: #fff1d6; }
+  tr.grp td { background: #fafafa; font-weight: 600; }
+  .q { font-weight: 400; font-size: 12px; color: #444; }
+  .sum td { background: #f3f7ff; }
+  .adopt { margin-top: 4px; font-size: 12px; padding: 2px 8px; }
+</style>
+
+<h1>問いを試す</h1>
+<p class="hint">
+  「AI に相談」で AI が返した JSON を貼ると、今の問いと AI の案を、例文すべてにあなたのキーで Jev にかけて並べます。<br>
+  問い合わせは例文1本につき1回（問いはまとめて聞きます）で、1日の上限に数えます。例文 30 本なら 30 回ほどです。<br>
+  表の数値は「この書き方に当てはまる」確率（%）です。当てはまるべき文が高く、当てはまるべきでない文が低く、その間が大きく空いている案が良い案です。
+</p>
+
+<h2>1. AI の答えを貼る</h2>
+<textarea id="input" placeholder='{"target": "…", "current": "今の問い", "candidates": ["案1", "案2"], "should_hit": ["…"], "should_not_hit": ["…"], "notes": "…"}'></textarea>
+<p><button id="run">測る</button><span id="msg"></span></p>
+
+<div id="out" hidden>
+  <h2>2. 結果</h2>
+  <p class="hint" id="notes"></p>
+  <div id="table"></div>
+  <p><button id="copy">結果を AI に返す文をコピー</button> <span id="copyMsg"></span></p>
+  <p class="hint">採用すると、その問いと閾値を「自分で足す項目」に入れます（今の問いが自分で足した項目なら置き換えます）。本体の項目の問いは書き換えられないので、本体の項目を直したいときは、採用したうえで設定画面で本体の項目をオフにしてください。</p>
+</div>
+
+<script src="checks.js"></script>
+<script src="tune.js"></script>
