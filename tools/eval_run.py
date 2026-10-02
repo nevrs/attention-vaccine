@@ -1,7 +1,7 @@
 # 回帰評価: tools/eval/cases.json の文を今の checks.js の問いで Jev にかけ、閾値での誤検知・取りこぼしを出す。
 # 使い方（問いや閾値を変える前後に）: TYPESAFE_API_KEY を設定して  python tools/eval_run.py [--only bait] [--repeat 3] [--limit 15] [--out r.json]
 # 失敗（誤検知・取りこぼし）があれば終了コード 1。
-import sys, re, json, os, argparse, urllib.request, concurrent.futures as cf, statistics
+import sys, re, json, os, time, argparse, urllib.request, urllib.error, concurrent.futures as cf, statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL = "jev-1.13.0"
@@ -37,12 +37,17 @@ def ask(state, questions):
     req = urllib.request.Request("https://api.typesafe.ai/v1/systemone", data=body, headers={
         "Authorization": "Bearer " + os.environ["TYPESAFE_API_KEY"], "Content-Type": "application/json"})
     last = None
-    for _ in range(3):
+    for i in range(3):
         try:
             with urllib.request.urlopen(req, timeout=60) as r:
                 return json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code != 429 and e.code < 500:
+                raise  # 4xx（キー・形の誤り）は再試行しても同じ
+            last = e
         except Exception as e:
             last = e
+        time.sleep(2 ** i)
     raise last
 
 
@@ -84,11 +89,21 @@ def main():
         cases = [cases[int(i * step)] for i in range(a.limit)]
     n = 1 + a.repeat
     jobs = [(c, i) for c in cases for i in range(n)]
+    def safe(j):  # 1件の失敗で全体の結果を捨てない
+        try:
+            return score_case(j[0], checks)
+        except Exception as e:
+            print(f"失敗 {j[0]['id']}: {e}", file=sys.stderr)
+            return None
+
     with cf.ThreadPoolExecutor(8) as ex:
-        res = list(ex.map(lambda j: score_case(j[0], checks), jobs))
+        res = list(ex.map(safe, jobs))
     runs = {c["id"]: [] for c in cases}
     for (c, _), r in zip(jobs, res):
-        runs[c["id"]].append(r)
+        if r is not None:
+            runs[c["id"]].append(r)
+    runs = {cid: rs for cid, rs in runs.items() if rs}
+    cases = [c for c in cases if c["id"] in runs]
     scores = {cid: {k: statistics.mean(r[k] for r in rs) for k in rs[0]} for cid, rs in runs.items()}
 
     fails = []

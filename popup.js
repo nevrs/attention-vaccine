@@ -20,6 +20,7 @@ function trialButton() {
 }
 
 // サイトの許可（v0.17.0）: ページ側のスクリプトは、モードを選んだときに Chrome の確認で許可したサイトにだけ入る
+let injectTried = false; // 入れられないページ（PDF・ストア・管理者が止めたサイト）で入れ直しを繰り返さない
 async function render() {
   $("stats").textContent = "";
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -45,7 +46,8 @@ async function render() {
   const { siteModes = {} } = await chrome.storage.sync.get({ siteModes: {} });
   const mode = siteModes[host] || "";
   // 許可はあるのに、許可より前から開いていたタブにはまだ入っていない → 今入れる
-  if (granted && mode && !s) {
+  if (granted && mode && !s && !injectTried) {
+    injectTried = true;
     await chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: JEV_CONTENT.css }).catch(() => {});
     await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: JEV_CONTENT.js }).catch(() => {});
     return setTimeout(render, 500);
@@ -89,7 +91,7 @@ async function render() {
     if (noKey) trialButton();
     return;
   }
-  if (!s) return line("読み込み中…（動かなければページを読み込み直してください）");
+  if (!s) return line("このページには入れませんでした。読み込み直すか、PDF・ストアなど拡張が入れないページでないか確かめてください");
   if (s.mode === "block") line(`読んだ投稿 ${s.judged} 件のうち ‼️ ${s.warned} 件`);
   if (s.mode === "page") line(s.judged ? `このページの ‼️ ${s.pageHits} 件` : "判定中…");
   if (s.errors) line(`失敗 ${s.errors}（${s.lastError}）`, "err");

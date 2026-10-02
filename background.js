@@ -56,7 +56,12 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 
 // ページ側のスクリプトは、利用者が許可したサイトにだけ入れる。許可はポップアップ・設定画面でサイトをオンにしたときに
 // Chrome の確認で求める。許可が増減したら登録し直す（登録は Chrome を閉じても残る）
-async function syncContentScripts() {
+let syncing = Promise.resolve();
+function syncContentScripts() {
+  // 続けて呼ばれても順に（同時だと両方が「未登録」と見て register し、ID の重複で失敗する）
+  return (syncing = syncing.then(syncOnce, syncOnce));
+}
+async function syncOnce() {
   const api = chrome.runtime.getManifest().host_permissions; // 接続先の許可は除く
   const { origins = [] } = await chrome.permissions.getAll();
   const matches = origins.filter((o) => !api.includes(o));
@@ -77,7 +82,7 @@ async function injectInto(origins) {
 }
 
 chrome.permissions.onAdded.addListener(async ({ origins = [] }) => {
-  await syncContentScripts();
+  await syncContentScripts().catch(() => {}); // 登録に失敗しても、開いているタブには入れる
   await injectInto(origins);
 });
 chrome.permissions.onRemoved.addListener(() => syncContentScripts());

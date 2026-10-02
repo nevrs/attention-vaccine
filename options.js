@@ -180,7 +180,12 @@ function collect() {
 async function renderPerm() {
   const { siteModes = {} } = await chrome.storage.sync.get({ siteModes: {} });
   const missing = [];
-  for (const h of Object.keys(siteModes)) if (!(await chrome.permissions.contains({ origins: [jevSitePattern(h)] }))) missing.push(h);
+  // 旧版は file:// でも動いたので、ホスト名が空・不正なキーがありうる。1つでも不正だと許可の要求全体が失敗するので除く
+  const hosts = Object.keys(siteModes).filter((h) => /^([a-z0-9-]+\.)*[a-z0-9-]+$|^\[[0-9a-f:]+\]$/i.test(h));
+  for (const h of hosts) {
+    const ok = await chrome.permissions.contains({ origins: [jevSitePattern(h)] }).catch(() => true);
+    if (!ok) missing.push(h);
+  }
   $("perm").hidden = !missing.length;
   $("permHosts").textContent = missing.join("、");
   // 許可の確認はクリックの直後に呼ぶ（間に await を挟むと Chrome に断られる）
