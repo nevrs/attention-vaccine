@@ -1,5 +1,5 @@
 // 体験ページ: demo-data.js の見本と判定結果を、本番と同じ見た目の ‼️ で表示する（通信なし・キー不要）。
-// ‼️ の見た目と詳細の中身は content.js の createMark / fillDetails / badgeText に合わせている。
+// ‼️ の見た目と詳細の中身は content.js の createMark / fillDetails / badgeText に合わせている（「AI に相談」は本文の判定が無いので出さない）。
 const $ = (id) => document.getElementById(id);
 
 const MARK_CSS = `

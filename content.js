@@ -202,8 +202,7 @@ function createMark(fixed) {
   badge.onclick = () => (pop.hidden = !pop.hidden);
   // マークへの操作はページ側（投稿を包むリンクの移動など）に渡さない。ただし詳細の中の自分のリンク（出典・報告）は開く。
   // 外枠（host）で preventDefault すると、内側の <a> の移動まで打ち消された。closed の内側を見分けるため shadow root で受ける
-  // キー操作も止める（相談の欄に書いている文字を、X などがショートカットとして受け取らないように）
-  for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup", "keydown", "keyup", "keypress"]) {
+  for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup"]) {
     sh.addEventListener(t, (e) => {
       e.stopPropagation();
       if (t === "click" && !e.target.closest?.("a[href]")) e.preventDefault();
@@ -262,7 +261,9 @@ function fillDetails(pop, rows, links, extra, text) {
   link(JEV_REPORT_URL, "判定がおかしいと思ったら、ここから知らせてください（GitHub）");
 }
 
-// 「AI に相談」: 押すと、AI に貼る文をその場に出す（本文が入るので、何が渡るかをコピーの前に見せる）。【】に考えを書き足してコピーする
+// 「AI に相談」: 押すと、AI に貼る文をその場に出す（本文が入るので、何が渡るかをコピーの前に見せる）。
+// 欄は読むだけ。ページの中で書かせると、描き直し（比較の結果・同じ文言の更新・設定の保存）で消え、
+// X などのショートカットが打った文字を拾いうる（ページ側が capture で受けると shadow root では止められない）。考えは AI に貼ってから書く
 function addConsult(pop, rows, text) {
   const items = rows.filter((r) => !r.c.code).map((r) => ({ label: r.c.label, qs: r.c.qs, high: r.c.high, pct: r.pct }));
   if (!items.length || !text) return;
@@ -273,9 +274,10 @@ function addConsult(pop, rows, text) {
   btn.onclick = () => {
     const note = document.createElement("div");
     note.className = "note";
-    note.textContent = "下の文をコピーして、ChatGPT などの AI に貼ってください。この文章の本文が入っています。【】の中に考えを書き足すと話が早くなります";
+    note.textContent = "下の文をコピーして、ChatGPT などの AI に貼ってください。この文章の本文が入っています。貼ったあと【】の中に考えを書き足すと話が早くなります";
     const ta = document.createElement("textarea");
     ta.rows = 8;
+    ta.readOnly = true;
     ta.value = jevConsultPrompt({ items, text, mode });
     const copy = document.createElement("button");
     copy.className = "act";

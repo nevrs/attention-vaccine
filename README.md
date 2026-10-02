@@ -101,6 +101,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
   - API キーが無いときは、何も送りません（コードで判定する項目だけが動きます）。
 - **DM・メール・チャットの画面は判定しないようにしています。** アドレスに `/messages`・`/inbox`・`/chat`・`/dm`・`/direct`・`/mail` を含む画面、X の Grok の画面、主なチャット・メール・AI チャットのサービス（Discord・Slack・Messenger・Teams・WhatsApp・Telegram・LINE・Gmail・Outlook・ChatGPT・Claude・Gemini など）が対象です。見分けは完全ではないので、**この一覧にないチャット・メール・AI チャットのサイトはオンにしないでください。**
 - 「一次ソースと比較」（初期値オフ）をオンにすると、記事中の論文番号（DOI）を [OpenAlex](https://openalex.org) に送ります。
+- 「AI に相談」は、相談用の文（投稿の本文を最大 2000 字含む）を画面に出してクリップボードにコピーするだけです。拡張から AI へは送りません。どこに貼るかはあなたが決めます。
 - 開発者のサーバーはありません。利用状況の収集もしていません。
 - API キーはこのブラウザの中だけに保存されます（同期しません）。拡張のうちページの中で動く部分はキーを読みません。さらに、Chrome の公式資料にある方法（`storage.local.setAccessLevel`）で、ページの中からは読めない設定にしています（実際の Chrome での動作確認はまだです）。
 - 判定結果は、ブラウザを閉じると消えます。
@@ -129,7 +130,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 - ‼️ は機械による推定です。**相手を「デマ認定された」と責める根拠には使わないでください。**
 - Jev は理由を説明しません。‼️ を押すと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
 - 判定がおかしいと思ったら、‼️ の詳細の一番下にあるリンクから [GitHub の Issues](https://github.com/nevrs/attention-vaccine/issues) で知らせてください。公開されている投稿だけを例に挙げてください。
-- 問いや閾値を自分で直したいときは、‼️ の詳細の「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼って、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。
+- 問いや閾値を自分で直したいときは、‼️ の詳細の「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。
 - ‼️ が付かなくても、内容が正しい・安全だという意味ではありません。
 - 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿、DM などの画面、除外したアカウントの投稿。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
@@ -240,6 +241,7 @@ Click "Remove" for "Attention Vaccine" in `chrome://extensions`. Your saved sett
   - Without an API key, nothing is sent (only the rule-based checks run).
 - **DM, mail, and chat pages are skipped.** This covers URL paths containing `/messages`, `/inbox`, `/chat`, `/dm`, `/direct`, or `/mail`, X's Grok pages, and major chat, mail, and AI chat services (Discord, Slack, Messenger, Teams, WhatsApp, Telegram, LINE, Gmail, Outlook, ChatGPT, Claude, Gemini, and others). Detection is not perfect, so **do not turn the extension on for any other chat, mail, or AI chat site.**
 - If you turn on "Compare with the primary source" (off by default), the paper identifier (DOI) found in an article is sent to [OpenAlex](https://openalex.org).
+- "Consult an AI" only shows a prompt (including up to 2,000 characters of the post) and copies it to your clipboard. The extension does not send it to any AI; you decide where to paste it.
 - There is no developer server and no usage tracking.
 - Your API key is stored only in this browser (not synced). The part of the extension that runs inside web pages never reads it. Storage is also restricted from web-page contexts using the documented Chrome method (`storage.local.setAccessLevel`); this has not yet been verified in a real browser.
 - Results are cleared when you close the browser.

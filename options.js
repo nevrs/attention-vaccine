@@ -199,12 +199,15 @@ async function init() {
 $("add").onclick = () => addRule({});
 // 「AI に相談」: 画面上の今の値（保存前でも）で、オンの Jev の項目と自分で足した項目を並べる
 $("consult").onclick = () => {
-  const { pillars, rules } = collect();
+  const { pillars, rules, errors } = collect();
+  $("consultErr").textContent = errors.join(" / ");
+  if (errors.length) return;
   const items = Object.entries(JEV_PILLARS)
     .filter(([id, p]) => !p.code && pillars[id].on)
     .map(([id, p]) => ({ label: p.label, qs: p.qs.map((k) => JEV_QUESTIONS[k]), high: pillars[id].high, pct: null }))
     .concat(rules.map((r) => ({ label: JEV_PRESETS.find((p) => p.condition === r.condition)?.label || "自分で足した項目", qs: [r.condition], high: r.high, pct: null })));
   $("consultText").value = jevConsultPrompt({ items });
+  $("consultText").readOnly = true; // 考えは AI に貼ってから書く（content.js と同じ）
   $("consultBox").hidden = false;
   $("consultStatus").textContent = "";
 };
