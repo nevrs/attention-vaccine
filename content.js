@@ -258,6 +258,25 @@ function fillDetails(pop, rows, links, extra, text) {
   add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
   if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
   addConsult(pop, rows, text);
+  addDisagree(pop, rows, text);
+}
+
+// 「違うと思う」: この件を手元（このブラウザの中だけ）に残す。「問いを試す」画面で、AI の例文に加えて本人の実例で測れる。
+// ‼️ が付いた件は誤検知の、付かなかった件は取りこぼしの例として残す
+function addDisagree(pop, rows, text) {
+  const jev = rows.filter((r) => !r.c.code);
+  if (!jev.length || !text) return;
+  const hits = jev.filter((r) => r.hit);
+  const btn = document.createElement("button");
+  btn.className = "act";
+  btn.textContent = hits.length ? "誤検知だと思う（記録する）" : "取りこぼしだと思う（記録する）";
+  btn.onclick = async () => {
+    const item = { kind: hits.length ? "fp" : "miss", text, checks: hits.map((r) => r.c.label), host: location.hostname };
+    const res = await chrome.runtime.sendMessage({ type: "disagree", item }).catch(() => null);
+    btn.textContent = res?.ok ? "記録しました（設定画面の「問いを試す」で例文に使えます）" : "記録できませんでした";
+    btn.disabled = true;
+  };
+  pop.append(" ", btn);
 }
 
 // 「AI に相談」: 押すと、AI に貼る文をその場に出す（本文が入るので、何が渡るかをコピーの前に見せる）。

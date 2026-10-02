@@ -16,6 +16,7 @@
   td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
   td.over { background: #fff1d6; }
   tr.grp td { background: #fafafa; font-weight: 600; }
+  .src { color: #2a7; font-size: 11px; margin-right: 4px; }
   .q { font-weight: 400; font-size: 12px; color: #444; }
   .sum td { background: #f3f7ff; }
   .adopt { margin-top: 4px; font-size: 12px; padding: 2px 8px; }
@@ -30,6 +31,13 @@
 
 <h2>1. AI の答えを貼る</h2>
 <textarea id="input" placeholder='{"target": "…", "current": "今の問い", "candidates": ["案1", "案2"], "should_hit": ["…"], "should_not_hit": ["…"], "notes": "…"}'></textarea>
+<div id="mine" hidden>
+  <h2>あなたが記録した「違うと思う」</h2>
+  <p class="hint">‼️ の詳細の「誤検知だと思う」「取りこぼしだと思う」で記録した投稿です（このブラウザの中だけにあり、最大 50 件）。
+    AI が作った例文は AI の案に有利に偏りがちなので、あなたの実例も一緒に測ると確かです。</p>
+  <label><input type="checkbox" id="useMine" checked> 測るときに例文に加える（誤検知 → 当てはまるべきでない文、取りこぼし → 当てはまるべき文）</label>
+  <table id="mineTable"></table>
+</div>
 <p><button id="run">測る</button><span id="msg"></span></p>
 
 <div id="out" hidden>

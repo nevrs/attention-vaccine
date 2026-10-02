@@ -58,6 +58,30 @@ function summarize(rows, ci) {
 
 const pct = (x) => (x == null ? "–" : x.toFixed(0));
 
+// 「違うと思う」の記録（background.js の addDisagree が storage.local に残す）
+async function mine() {
+  return (await chrome.storage.local.get("disagree")).disagree || [];
+}
+async function renderMine() {
+  const list = await mine();
+  $("mine").hidden = !list.length;
+  const t = $("mineTable");
+  t.textContent = "";
+  for (const d of list) {
+    const r = t.insertRow();
+    r.insertCell().textContent = d.kind === "fp" ? "誤検知" : "取りこぼし";
+    r.insertCell().textContent = d.checks.join("・");
+    r.insertCell().textContent = d.text.length > 80 ? d.text.slice(0, 80) + "…" : d.text;
+    const del = Object.assign(document.createElement("button"), { textContent: "削除" });
+    del.onclick = async () => {
+      await chrome.storage.local.set({ disagree: (await mine()).filter((x) => x.text !== d.text) });
+      renderMine();
+    };
+    r.insertCell().append(del);
+  }
+}
+renderMine();
+
 $("run").onclick = async () => {
   $("msg").className = "";
   let spec;
@@ -76,7 +100,12 @@ $("run").onclick = async () => {
   const cols = [];
   if (spec.current) cols.push({ name: "今の問い", q: spec.current });
   spec.candidates.forEach((q, i) => q !== spec.current && cols.push({ name: `案${i + 1}`, q }));
-  const texts = spec.hit.map((t) => ({ g: "hit", t })).concat(spec.not.map((t) => ({ g: "not", t })));
+  let texts = spec.hit.map((t) => ({ g: "hit", t })).concat(spec.not.map((t) => ({ g: "not", t })));
+  if ($("useMine").checked) {
+    const seen = new Set(texts.map((x) => x.t));
+    const add = (await mine()).filter((d) => !seen.has(d.text)).map((d) => ({ g: d.kind === "fp" ? "not" : "hit", t: d.text, mine: true }));
+    texts = texts.concat(add).slice(0, MAX_TEXTS + JEV_DISAGREE_MAX);
+  }
   $("run").disabled = true;
   let done = 0;
   let failed = 0;
@@ -141,7 +170,10 @@ function render() {
   const th = (g, label) => {
     tr([label, ...cols.map(() => "")], "grp");
     for (const r of rows.filter((r) => r.g === g)) {
-      tr([r.t, ...r.v.map((v, i) => {
+      const label = document.createElement("span");
+      if (r.mine) label.append(Object.assign(document.createElement("span"), { className: "src", textContent: "記録" }));
+      label.append(r.t);
+      tr([{ node: label }, ...r.v.map((v, i) => {
         const line = sums[i].t ?? cur?.high;
         return { text: pct(v), cls: "n" + (v != null && line != null && (g === "hit" ? v < line : v >= line) ? " over" : "") };
       })]);

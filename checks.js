@@ -232,6 +232,7 @@ const jevSitePattern = (host) => `*://${host}/*`;
 // 拡張の中で AI は使わない（理念）。AI は案と例文を出す係で、効くかどうかは Jev で測るまで分からない（2026-10-02 の調整の教訓）
 // items: [{ label, qs: [問いの原文], high, pct（この件の値。無ければ null） }]、text: 相談したい文章（無ければ設定全体の相談）
 const JEV_CONSULT_MAX = 2000; // 貼る本文の上限（字）
+const JEV_DISAGREE_MAX = 50; // 「違うと思う」で手元に残す件数（古いものから消える）
 function jevConsultPrompt({ items, text, mode }) {
   const row = (it) =>
     `- ${it.label}（閾値 ${it.high}${it.pct == null ? "" : `、この文章の値 ${it.pct.toFixed(0)}${it.pct >= it.high ? " → ‼️" : ""}`}）\n  問い: ${it.qs.map((q) => `「${q}」`).join(" × ")}`;

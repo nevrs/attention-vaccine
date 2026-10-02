@@ -28,6 +28,7 @@
 - 設定（オンにしたサイト、しきい値、自作の問い、除外するアカウントなど）: Chrome の `storage.sync` に保存します。Chrome の同期をオンにしている場合は、Chrome があなたの Google アカウントを通じて他の端末と同期します。これは Chrome の機能で、開発者には届きません。
 - 判定結果のキャッシュ: `storage.session` に置きます。ブラウザを閉じると消えます。
 - 1 日の利用回数: `storage.local` に保存します。
+- 「違うと思う」で記録した投稿の本文（最大 50 件）: `storage.local` に保存します。どこにも送りません。「問いを試す」で例文に加えたときだけ、ほかの例文と同じく接続先に送ります。
 
 ### 第三者について
 
@@ -65,6 +66,7 @@ The extension runs only on sites you turn on in the popup. When you turn a site 
 - Settings (enabled sites, thresholds, custom questions, excluded accounts, etc.): in Chrome's `storage.sync`. If Chrome sync is on, Chrome syncs it to your other devices through your Google account. This is a Chrome feature; the developer does not receive it.
 - Cached results: in `storage.session`, cleared when you close the browser.
 - Daily usage count: in `storage.local`.
+- Posts you record with "違うと思う" (I think this is wrong), up to 50: stored in `storage.local` and not sent anywhere, except when you include them as test sentences on the try-questions page, which sends them to your provider like any other test sentence.
 
 ### Third parties
 

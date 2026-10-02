@@ -93,11 +93,29 @@ chrome.runtime.onMessage.addListener((msg, _sender, send) => {
     msg.type === "test" ? testConnection(msg.provider, msg.apiKey) :
     msg.type === "compare" ? compareWithPaper(msg.doi, msg.text) :
     msg.type === "hasKey" ? account().then((a) => ({ has: !!a.apiKey })) : // ページ側にはキーそのものを渡さない
+    msg.type === "disagree" ? addDisagree(msg.item) : // ページ側は storage.local を読めないので、ここで書く
     null;
   if (!job) return;
   job.then(send, (e) => send({ error: String(e.message || e) }));
   return true; // 非同期で返す
 });
+
+// 「違うと思う」の記録。ページから来た値なので、形と長さを決めてから残す。同じ本文は新しいほうだけ
+async function addDisagree(item) {
+  const text = String(item?.text || "").slice(0, JEV_CONSULT_MAX);
+  if (!text) throw new Error("本文がありません");
+  const { disagree = [] } = await chrome.storage.local.get("disagree");
+  const list = disagree.filter((d) => d.text !== text);
+  list.unshift({
+    kind: item.kind === "miss" ? "miss" : "fp",
+    text,
+    checks: (Array.isArray(item.checks) ? item.checks : []).map(String).slice(0, 10),
+    host: String(item.host || "").slice(0, 100),
+    at: Date.now(),
+  });
+  await chrome.storage.local.set({ disagree: list.slice(0, JEV_DISAGREE_MAX) });
+  return { ok: true };
+}
 
 async function account() {
   const { provider = "typesafe", apiKeys = {} } = await chrome.storage.local.get(["provider", "apiKeys"]);
