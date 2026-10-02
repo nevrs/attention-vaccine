@@ -197,6 +197,15 @@ async function init() {
 }
 
 $("add").onclick = () => addRule({});
+// 「問いを試す」画面で採用すると rules が変わる。開いたままのこの画面で保存すると上書きして消してしまうので、読み直す
+chrome.storage.onChanged.addListener((ch, area) => {
+  if (area !== "sync" || !ch.rules) return;
+  const next = ch.rules.newValue || [];
+  if (JSON.stringify(next) === JSON.stringify(collect().rules)) return; // この画面の保存
+  $("rules").textContent = "";
+  next.forEach(addRule);
+  $("status").textContent = "ほかの画面で「自分で足す項目」が変わったので、読み直しました";
+});
 // 「AI に相談」: 画面上の今の値（保存前でも）で、オンの Jev の項目と自分で足した項目を並べる
 $("consult").onclick = () => {
   const { pillars, rules, errors } = collect();

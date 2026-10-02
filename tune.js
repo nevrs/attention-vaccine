@@ -5,7 +5,8 @@ const MAX_CANDIDATES = 4;
 const MAX_TEXTS = 60; // 例文の上限（1日の上限を食いつぶさない）
 const MAX_LEN = 2000; // 1本・1問の上限（字）
 
-let result = null; // { cols, rows, current }
+let result = null; // { cols, rows, cur, spec }
+let adopted = null; // { current, q }: この画面で最後に採用した問い。測り直しても、同じ「今の問い」なら置き換え先として使う
 
 // AI の答えは前後に説明や ``` が付きがちなので、最初の { から最後の } までを JSON として読む
 function parse(raw) {
@@ -46,11 +47,13 @@ function summarize(rows, ci) {
   const vals = (g) => rows.filter((r) => r.g === g && r.v[ci] != null).map((r) => r.v[ci]);
   const h = vals("hit");
   const n = vals("not");
-  const hitMin = Math.min(...h);
-  const notMax = Math.max(...n);
-  const t = hitMin > notMax ? Math.round((hitMin + notMax) / 2) : null;
+  // 片側が1本も測れなかった列は比べられない（Math.min() の Infinity から閾値 NaN → 0 で採用されうる）
+  const ok = h.length > 0 && n.length > 0;
+  const hitMin = ok ? Math.min(...h) : null;
+  const notMax = ok ? Math.max(...n) : null;
+  const t = ok && hitMin > notMax ? Math.round((hitMin + notMax) / 2) : null;
   const count = (arr, th) => arr.filter((x) => x >= th).length;
-  return { hitMin, notMax, gap: hitMin - notMax, t, count, h, n };
+  return { ok, hitMin, notMax, gap: ok ? hitMin - notMax : null, t, count, h, n };
 }
 
 const pct = (x) => (x == null ? "–" : x.toFixed(0));
@@ -94,6 +97,7 @@ $("run").onclick = async () => {
   $("run").disabled = false;
   $("msg").className = failed ? "bad" : "";
   $("msg").textContent = failed ? `${failed} 本は測れませんでした（${lastError}）` : `${texts.length} 本を測りました`;
+  if (failed === texts.length) return ($("out").hidden = true);
   const cur = spec.current ? await currentHigh(spec.current) : null;
   result = { cols, rows, cur, spec };
   render();
@@ -124,11 +128,11 @@ function render() {
   cols.forEach((c, i) => {
     const th = document.createElement("th");
     th.append(c.name, Object.assign(document.createElement("div"), { className: "q", textContent: c.q }));
-    if (c.name !== "今の問い") { // 今の問いは比べる基準。採用するのは案だけ
+    if (c.name !== "今の問い" && sums[i].ok) { // 今の問いは比べる基準。採用するのは案だけ。測れなかった列は採用させない
       const box = document.createElement("div");
       const high = Object.assign(document.createElement("input"), { type: "number", min: 0, max: 100, value: sums[i].t ?? cur?.high ?? 70, style: "width:4em" });
       const btn = Object.assign(document.createElement("button"), { className: "adopt", textContent: "この問いを採用" });
-      btn.onclick = () => adopt(c.q, Number(high.value), btn);
+      btn.onclick = () => adopt(c.q, high.value === "" ? NaN : Number(high.value), btn);
       box.append("閾値 ", high, " % ", btn);
       th.append(box);
     }
@@ -148,8 +152,8 @@ function render() {
   tr(["当てはまるべき文の最小", ...sums.map((s) => ({ text: pct(s.hitMin), cls: "n" }))], "sum");
   tr(["当てはまるべきでない文の最大", ...sums.map((s) => ({ text: pct(s.notMax), cls: "n" }))], "sum");
   tr(["間の空き（大きいほど良い）", ...sums.map((s) => ({ text: pct(s.gap), cls: "n" }))], "sum");
-  tr(["閾値の候補", ...sums.map((s) => ({ text: s.t == null ? "分かれない" : String(s.t), cls: "n" }))], "sum");
-  if (cur) tr([`今の閾値 ${cur.high} での取りこぼし／誤検知`, ...sums.map((s) => ({ text: `${s.h.length - s.count(s.h, cur.high)} ／ ${s.count(s.n, cur.high)}`, cls: "n" }))], "sum");
+  tr(["閾値の候補", ...sums.map((s) => ({ text: !s.ok ? "測れていない" : s.t == null ? "分かれない" : String(s.t), cls: "n" }))], "sum");
+  if (cur) tr([`今の閾値 ${cur.high} での取りこぼし／誤検知`, ...sums.map((s) => ({ text: s.ok ? `${s.h.length - s.count(s.h, cur.high)} ／ ${s.count(s.n, cur.high)}` : "–", cls: "n" }))], "sum");
   $("table").textContent = "";
   $("table").append(table);
   $("table").append(Object.assign(document.createElement("p"), {
@@ -158,19 +162,27 @@ function render() {
   }));
 }
 
-// 採用: 今の問い（この画面で採用し直すときは、さっき採用した問い）と同じ文の「自分で足す項目」があれば置き換え、無ければ足す
+// 採用: 同じ文の項目が既にあれば閾値だけ直す。無ければ、今の問い（この画面で採用し直すときは、さっき採用した問い）の項目を置き換え、それも無ければ足す
 async function adopt(q, high, btn) {
   if (!(high >= 0 && high <= 100)) return (btn.textContent = "閾値は 0〜100 に");
-  const target = result.adopted ?? result.spec.current;
-  const { rules = [] } = await chrome.storage.sync.get("rules");
-  const same = target && rules.find((r) => r.condition === target);
-  if (same) Object.assign(same, { condition: q, high });
-  else rules.push({ id: crypto.randomUUID(), condition: q, high });
-  await chrome.storage.sync.set({ rules });
-  result.adopted = q;
-  for (const b of document.querySelectorAll(".adopt")) Object.assign(b, { textContent: "この問いを採用", disabled: false });
-  btn.textContent = same ? "置き換えました" : "足しました";
-  btn.disabled = true;
+  const current = result.spec.current;
+  const target = adopted?.current === current ? adopted.q : current;
+  try {
+    const { rules = [] } = await chrome.storage.sync.get("rules");
+    const exists = rules.find((r) => r.condition === q);
+    const same = !exists && target && rules.find((r) => r.condition === target);
+    if (exists) exists.high = high;
+    else if (same) Object.assign(same, { condition: q, high });
+    else rules.push({ id: crypto.randomUUID(), condition: q, high });
+    await chrome.storage.sync.set({ rules });
+    adopted = { current, q };
+    for (const b of document.querySelectorAll(".adopt")) Object.assign(b, { textContent: "この問いを採用", disabled: false });
+    btn.textContent = exists ? "閾値を直しました" : same ? "置き換えました" : "足しました";
+    btn.disabled = true;
+  } catch (e) {
+    // sync の1項目の上限（8KB）を超えると保存できない。長い問いを足しすぎたとき
+    btn.textContent = "保存できませんでした: " + String(e.message || e);
+  }
 }
 
 // 測った結果を AI に返す（jevConsultPrompt のお願い 4「測った値が貼られたら、次の案を出す」）
