@@ -382,7 +382,7 @@ async function judgePage(retry = 0) {
   comparePage(text, links);
 }
 
-// ページ全体は右下に1つだけ。当たれば ‼️ と件数、当たらなければ控えめな ✓（押せば数値が見られる）
+// ページ全体は右下に1つだけ。当たれば ‼️ と件数、当たらなければ控えめな Jev ‼️0（押せば数値が見られる）
 function renderPage() {
   if (!pageView) return;
   if (!pageMark) {
@@ -411,7 +411,7 @@ function renderPage() {
   const { rows, links, cmp } = pageView;
   // 元論文との比較で当たったものも、手口の1つとして並べる
   const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元論文より誇張" }, pct: cmp.pct }] : []);
-  pageMark.badge.textContent = tag(hits.length ? badgeText(hits) : "Jev ✓");
+  pageMark.badge.textContent = tag(hits.length ? badgeText(hits) : "Jev ‼️0");
   pageMark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(pageMark.pop, rows, links, (add, link) => {
     if (!cmp) return;
@@ -588,7 +588,7 @@ function updateCounter() {
     document.documentElement.append(counter.host);
   }
   const failing = stats.errors && !stats.judged;
-  const label = failing ? "Jev ⚠" : stats.warned ? `‼️ ${stats.warned}` : `Jev ✓ ${stats.judged}`;
+  const label = failing ? "Jev ⚠" : stats.warned ? `‼️ ${stats.warned}` : `Jev 読んだ ${stats.judged}`;
   counter.badge.textContent = settings.debug ? `${modeName(mode)}｜${label}` : label;
   counter.badge.classList.toggle("quiet", !stats.warned && !failing);
   counter.pop.textContent = "";
