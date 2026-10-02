@@ -197,6 +197,25 @@ async function init() {
 }
 
 $("add").onclick = () => addRule({});
+// 「AI に相談」: 画面上の今の値（保存前でも）で、オンの Jev の項目と自分で足した項目を並べる
+$("consult").onclick = () => {
+  const { pillars, rules } = collect();
+  const items = Object.entries(JEV_PILLARS)
+    .filter(([id, p]) => !p.code && pillars[id].on)
+    .map(([id, p]) => ({ label: p.label, qs: p.qs.map((k) => JEV_QUESTIONS[k]), high: pillars[id].high, pct: null }))
+    .concat(rules.map((r) => ({ label: JEV_PRESETS.find((p) => p.condition === r.condition)?.label || "自分で足した項目", qs: [r.condition], high: r.high, pct: null })));
+  $("consultText").value = jevConsultPrompt({ items });
+  $("consultBox").hidden = false;
+  $("consultStatus").textContent = "";
+};
+$("consultCopy").onclick = async () => {
+  try {
+    await navigator.clipboard.writeText($("consultText").value);
+    $("consultStatus").textContent = "コピーしました";
+  } catch {
+    $("consultStatus").textContent = "コピーできませんでした。欄の中を全選択してコピーしてください";
+  }
+};
 $("provider").onchange = showProvider;
 $("apiKey").oninput = (e) => (apiKeys[$("provider").value] = e.target.value.trim());
 

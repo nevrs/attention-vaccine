@@ -182,6 +182,9 @@ const MARK_CSS = `
   .note { color: #777; font-size: 11px; }
   .all { margin-top: 6px; padding-top: 4px; border-top: 1px dashed #ddd; color: #777; font-size: 11px; }
   a { color: #0b57d0; word-break: break-all; }
+  .act { all: initial; display: inline-block; margin-top: 6px; font: 12px/1.4 system-ui, sans-serif; color: #0b57d0; cursor: pointer;
+         border: 1px solid #0b57d0; border-radius: 10px; padding: 2px 8px; }
+  textarea { box-sizing: border-box; width: 100%; margin-top: 4px; font: 11px/1.4 system-ui, sans-serif; color: #222; background: #fafafa; }
   [hidden] { display: none; }
 `;
 
@@ -199,7 +202,8 @@ function createMark(fixed) {
   badge.onclick = () => (pop.hidden = !pop.hidden);
   // マークへの操作はページ側（投稿を包むリンクの移動など）に渡さない。ただし詳細の中の自分のリンク（出典・報告）は開く。
   // 外枠（host）で preventDefault すると、内側の <a> の移動まで打ち消された。closed の内側を見分けるため shadow root で受ける
-  for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup"]) {
+  // キー操作も止める（相談の欄に書いている文字を、X などがショートカットとして受け取らないように）
+  for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup", "keydown", "keyup", "keypress"]) {
     sh.addEventListener(t, (e) => {
       e.stopPropagation();
       if (t === "click" && !e.target.closest?.("a[href]")) e.preventDefault();
@@ -221,7 +225,7 @@ function rowValue(r) {
 }
 
 // 詳細の中身: 当たった項目（手口の名前と説明、要一次ソース確認なら出典）→ 全項目の数値
-function fillDetails(pop, rows, links, extra) {
+function fillDetails(pop, rows, links, extra, text) {
   pop.textContent = "";
   const add = (cls, text) => {
     const d = document.createElement("div");
@@ -254,7 +258,40 @@ function fillDetails(pop, rows, links, extra) {
   if (keyless) add("note", "API キーが無いので、コードで判定できる項目だけを見ています。キーを入れると Jev の判定も加わります");
   add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
   if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
+  addConsult(pop, rows, text);
   link(JEV_REPORT_URL, "判定がおかしいと思ったら、ここから知らせてください（GitHub）");
+}
+
+// 「AI に相談」: 押すと、AI に貼る文をその場に出す（本文が入るので、何が渡るかをコピーの前に見せる）。【】に考えを書き足してコピーする
+function addConsult(pop, rows, text) {
+  const items = rows.filter((r) => !r.c.code).map((r) => ({ label: r.c.label, qs: r.c.qs, high: r.c.high, pct: r.pct }));
+  if (!items.length || !text) return;
+  const btn = document.createElement("button");
+  btn.className = "act";
+  btn.textContent = "この判定を AI に相談する";
+  pop.append(btn);
+  btn.onclick = () => {
+    const note = document.createElement("div");
+    note.className = "note";
+    note.textContent = "下の文をコピーして、ChatGPT などの AI に貼ってください。この文章の本文が入っています。【】の中に考えを書き足すと話が早くなります";
+    const ta = document.createElement("textarea");
+    ta.rows = 8;
+    ta.value = jevConsultPrompt({ items, text, mode });
+    const copy = document.createElement("button");
+    copy.className = "act";
+    copy.textContent = "コピー";
+    copy.onclick = async () => {
+      let ok = true;
+      try {
+        await navigator.clipboard.writeText(ta.value);
+      } catch {
+        ta.select();
+        ok = document.execCommand("copy");
+      }
+      copy.textContent = ok ? "コピーしました" : "コピーできませんでした。欄の中を全選択してコピーしてください";
+    };
+    btn.replaceWith(note, ta, copy);
+  };
 }
 
 // ---- ページ全体モード ----
@@ -262,7 +299,7 @@ function fillDetails(pop, rows, links, extra) {
 let pageMark = null;
 let pageUrl = "";
 let pageTimer = null;
-let pageView = null; // { rows, links, cmp, error }
+let pageView = null; // { rows, links, cmp, error, text }
 let pageLastText = ""; // 前のページで判定した本文。SPA の切り替え直後は画面がまだ前のページのままのことがある
 
 function startPage() {
@@ -338,7 +375,7 @@ async function judgePage(retry = 0) {
   // 出典は本文の範囲から探し、無ければページ全体から（参考文献欄が本文の外にあるサイトがある）
   let links = primaryLinks(pageRoot());
   if (!links.length) links = primaryLinks(document.body);
-  pageView = { rows: score(answers, text), links, cmp: null };
+  pageView = { rows: score(answers, text), links, cmp: null, text };
   renderPage();
   comparePage(text, links);
 }
@@ -381,7 +418,7 @@ function renderPage() {
     add("why", `いちばん近い評価: ${cmp.level}（${(cmp.levelP * 100).toFixed(0)}%）` + (cmp.hit ? `。手口: ${JEV_COMPARE.label}` : ""));
     link(cmp.paper.url, `論文: ${cmp.paper.title}${cmp.paper.year ? `（${cmp.paper.year}）` : ""}`);
     add("note", "要旨だけとの比較です。要旨にない数字や、数字の細かいずれは確かめられません");
-  });
+  }, pageView.text);
   debugLines();
 }
 
@@ -757,7 +794,7 @@ function apply(el) {
   st.mark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(st.mark.pop, rows, hits.some((r) => r.c.showSources) ? primaryLinks(el) : [], (add) => {
     if (el.classList.contains("jev-blur")) add("note", "本文はぼかしています。本文を押すと表示します");
-  });
+  }, st.text);
   el.append(st.mark.host);
 }
 
