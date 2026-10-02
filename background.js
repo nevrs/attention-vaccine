@@ -126,18 +126,29 @@ async function compareWithPaper(doi, text) {
 }
 
 // OpenAlex は要旨を「単語 → 出現位置」の形で持っているので、並べ直して文章に戻す
+// DOI はページのリンク由来で信用できないので、形を確かめ、パスの区切りごとにエスケープしてから URL に入れる
+const DOI_SHAPE = /^10\.\d{4,9}\/\S{1,200}$/;
+function safeDoiPath(doi) {
+  if (typeof doi !== "string" || !DOI_SHAPE.test(doi)) return null;
+  const segs = doi.split("/");
+  if (segs.some((x) => x === "." || x === "..")) return null; // ../ で別のパスに出ない
+  return segs.map(encodeURIComponent).join("/");
+}
+
 async function fetchPaper(doi) {
+  const path = safeDoiPath(doi);
+  if (!path) return null;
   const key = "paper:" + doi;
   const hit = (await chrome.storage.session.get(key))[key];
   if (hit !== undefined) return hit;
   let paper = null;
-  const r = await fetch("https://api.openalex.org/works/doi:" + doi);
+  const r = await fetch("https://api.openalex.org/works/doi:" + path);
   if (r.ok) {
     const w = await r.json();
     const words = [];
     for (const [word, positions] of Object.entries(w.abstract_inverted_index || {})) for (const p of positions) words[p] = word;
     const abstract = words.filter(Boolean).join(" ");
-    if (abstract.length >= 200) paper = { title: w.title || "", year: w.publication_year || "", url: "https://doi.org/" + doi, abstract };
+    if (abstract.length >= 200) paper = { title: w.title || "", year: w.publication_year || "", url: "https://doi.org/" + path, abstract };
   }
   await chrome.storage.session.set({ [key]: paper });
   return paper;
