@@ -69,6 +69,9 @@ async function renderMine() {
   t.textContent = "";
   for (const d of list) {
     const r = t.insertRow();
+    const use = Object.assign(document.createElement("input"), { type: "checkbox", className: "use" });
+    use.dataset.text = d.text;
+    r.insertCell().append(use);
     r.insertCell().textContent = d.kind === "fp" ? "誤検知" : "取りこぼし";
     r.insertCell().textContent = d.checks.join("・");
     r.insertCell().textContent = d.text.length > 80 ? d.text.slice(0, 80) + "…" : d.text;
@@ -101,11 +104,13 @@ $("run").onclick = async () => {
   if (spec.current) cols.push({ name: "今の問い", q: spec.current });
   spec.candidates.forEach((q, i) => q !== spec.current && cols.push({ name: `案${i + 1}`, q }));
   let texts = spec.hit.map((t) => ({ g: "hit", t })).concat(spec.not.map((t) => ({ g: "not", t })));
-  if ($("useMine").checked) {
-    const seen = new Set(texts.map((x) => x.t));
-    const add = (await mine()).filter((d) => !seen.has(d.text)).map((d) => ({ g: d.kind === "fp" ? "not" : "hit", t: d.text, mine: true }));
-    texts = texts.concat(add).slice(0, MAX_TEXTS + JEV_DISAGREE_MAX);
-  }
+  // 印を付けた記録だけ加える（記録はその時の項目についての判断なので、直している項目に関係するものだけを使う）
+  const picked = new Set([...document.querySelectorAll("#mineTable .use:checked")].map((c) => c.dataset.text));
+  const seen = new Set(texts.map((x) => x.t));
+  const add = (await mine()).filter((d) => picked.has(d.text) && !seen.has(d.text)).map((d) => ({ g: d.kind === "fp" ? "not" : "hit", t: d.text, mine: true }));
+  const room = MAX_TEXTS - texts.length; // 合わせて MAX_TEXTS 本まで（1日の上限を食いつぶさない）
+  const skipped = Math.max(0, add.length - room);
+  texts = texts.concat(add.slice(0, Math.max(0, room)));
   $("run").disabled = true;
   let done = 0;
   let failed = 0;
@@ -125,7 +130,7 @@ $("run").onclick = async () => {
   );
   $("run").disabled = false;
   $("msg").className = failed ? "bad" : "";
-  $("msg").textContent = failed ? `${failed} 本は測れませんでした（${lastError}）` : `${texts.length} 本を測りました`;
+  $("msg").textContent = (failed ? `${failed} 本は測れませんでした（${lastError}）` : `${texts.length} 本を測りました`) + (skipped ? `。記録 ${skipped} 本は上限 ${MAX_TEXTS} 本を超えるので加えていません` : "");
   if (failed === texts.length) return ($("out").hidden = true);
   const cur = spec.current ? await currentHigh(spec.current) : null;
   result = { cols, rows, cur, spec };

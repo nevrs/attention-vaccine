@@ -100,8 +100,14 @@ chrome.runtime.onMessage.addListener((msg, _sender, send) => {
   return true; // 非同期で返す
 });
 
-// 「違うと思う」の記録。ページから来た値なので、形と長さを決めてから残す。同じ本文は新しいほうだけ
-async function addDisagree(item) {
+// 「違うと思う」の記録。ページから来た値なので、形と長さを決めてから残す。同じ本文は新しいほうだけ。
+// 読んで書き戻すので、続けて押されても上書きで消えないよう順に
+let disagreeQueue = Promise.resolve();
+function addDisagree(item) {
+  const run = () => addDisagreeOnce(item);
+  return (disagreeQueue = disagreeQueue.then(run, run));
+}
+async function addDisagreeOnce(item) {
   const text = String(item?.text || "").slice(0, JEV_CONSULT_MAX);
   if (!text) throw new Error("本文がありません");
   const { disagree = [] } = await chrome.storage.local.get("disagree");
