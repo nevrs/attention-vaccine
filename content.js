@@ -627,16 +627,21 @@ function dupOf(el) {
   return { hit: authors.length >= JEV_DUP.minAuthors, authors };
 }
 
-// 右下の小さな表示。当たりが無いと印が1つも出ず、動いているのか止まっているのか分からない
-// （実際に X で「動いていない」と見えた）ので、読んだ件数と失敗を常に見せる
+// 右下の小さな表示。普段は出さない（動作確認はポップアップの「読んだ投稿 N 件」で見られる）。
+// 手口が見つかったとき・失敗しているとき・デバッグ中だけ出し、条件が外れたら取り除く
 let counter = null;
 function updateCounter() {
   if (mode !== "block") return;
+  const failing = stats.errors && !stats.judged;
+  if (!stats.warned && !failing && !settings.debug) {
+    counter?.host.remove();
+    counter = null;
+    return;
+  }
   if (!counter) {
     counter = createMark(true);
     document.documentElement.append(counter.host);
   }
-  const failing = stats.errors && !stats.judged;
   const label = failing ? "Jev ⚠" : stats.warned ? `${JEV_MARK} ${stats.warned}` : `Jev 読んだ ${stats.judged}`;
   counter.badge.textContent = settings.debug ? `${modeName(mode)}｜${label}` : label;
   counter.badge.classList.toggle("quiet", !stats.warned && !failing);

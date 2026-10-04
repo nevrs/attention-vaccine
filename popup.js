@@ -1,7 +1,8 @@
 const $ = (id) => document.getElementById(id);
 
-chrome.storage.sync.get({ enabled: true }).then(({ enabled }) => ($("enabled").checked = enabled));
-$("enabled").onchange = (e) => chrome.storage.sync.set({ enabled: e.target.checked });
+// 全体の一時停止。保存の形（enabled）は変えない: 一時停止 = enabled が false
+chrome.storage.sync.get({ enabled: true }).then(({ enabled }) => ($("paused").checked = !enabled));
+$("paused").onchange = (e) => chrome.storage.sync.set({ enabled: !e.target.checked });
 $("open").onclick = () => chrome.runtime.openOptionsPage();
 
 function line(t, cls) {
@@ -30,7 +31,8 @@ async function render() {
     const { usage } = await chrome.storage.local.get("usage");
     const { dailyCap = JEV_DAILY_CAP } = await chrome.storage.sync.get("dailyCap");
     const today = usage?.day === new Date().toLocaleDateString("sv") ? usage.n : 0;
-    line(`今日の問い合わせ ${today} / ${dailyCap} 回`);
+    // 普段は見せない。上限が近いときだけ知らせる
+    if (dailyCap > 0 && today >= dailyCap * 0.8) line(`今日の問い合わせ ${today} / ${dailyCap} 回（上限が近いです。設定で変えられます）`, "err");
   }
   // アドレスは activeTab（ポップアップを開いたタブだけ）で読める
   if (!/^https?:/.test(tab?.url || "")) {
@@ -56,6 +58,10 @@ async function render() {
   $("site").hidden = false;
   $("host").textContent = host;
   const site = jevSiteFor(host);
+  // オンにしたときのモードは自動: 主要サイトはおすすめ、それ以外はページ全体
+  const auto = site?.mode || "page";
+  $("use").checked = !!mode;
+  $("use").onchange = (e) => setMode(host, pattern, e.target.checked ? auto : "", granted);
   for (const r of document.querySelectorAll("[name=mode]")) {
     // 主要サイトは、おすすめのモードに印を付ける（sites.js）
     if (site && r.value === site.mode && !r.parentElement.querySelector(".rec")) {
@@ -65,7 +71,8 @@ async function render() {
       tag.style.cssText = "color:#2a7;font-size:11px";
       r.parentElement.append(tag);
     }
-    r.checked = r.value === mode;
+    r.checked = r.value === (mode || auto);
+    r.disabled = !mode; // オフのあいだは選べない（先に「このサイトで使う」をオンにする）
     r.onchange = () => setMode(host, pattern, r.value, granted);
   }
   if (mode && !granted) {
@@ -87,7 +94,7 @@ async function render() {
   // キーが無くても、コードで判定する項目だけで動く
   if (noKey) line("キーなしモード: コードで判定できる項目（誘導の決まり文句・同じ文言の大量投稿）だけを見ています。キーを入れると Jev の判定も加わります");
   if (!mode) {
-    line("このサイトでは判定していません。上でモードを選ぶと、このサイトを読む許可を求めます");
+    line("このサイトでは判定していません。「このサイトで使う」をオンにすると、このサイトを読む許可を求めます");
     if (noKey) trialButton();
     return;
   }
