@@ -1,6 +1,6 @@
 // Jev の判定をページに表示する。サイトごとに2つのモードがある（ポップアップで選ぶ）:
 //   page  … ページ1枚（見出し＋本文冒頭）を1回判定し、右下に小さなマークを出す
-//   block … 一覧の1件ずつを判定し、当たった件の右上に ‼️ を重ねる
+//   block … 一覧の1件ずつを判定し、当たった件の右上に「手口」の印を重ねる
 // マークを押すと、何に当たったか・なぜか・数値が出る。当たらなかった件には何も付けない（静かに、文章をずらさない）。
 // 軽さのために: 見えている状態が一定時間（既定 1.5 秒）続いた件だけ判定する（流し読みした件は判定しない）。
 // スクロールを優先し、区切りを探す・マークを描くのはスクロールが止まってから。ページの変化の常時監視はしない。
@@ -30,14 +30,14 @@ function buildChecks(s, mode) {
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
     const c = { ...p.defaults, ...(s.pillars[id] || {}) };
     if (!c.on || (p.modes && !p.modes.includes(mode)) || (keyless && !p.code)) continue;
-    out.push({ id, label: p.label, short: p.short, why: p.why, qs: p.qs.map((k) => JEV_QUESTIONS[k]), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
+    out.push({ id, label: p.label, short: p.short, why: p.why, tip: p.tip, qs: p.qs.map((k) => JEV_QUESTIONS[k]), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
   }
   if (keyless) return out; // 自分で足す項目は Jev が要る
   for (const r of s.rules) {
     if (!r.condition) continue;
     const cut = (n) => (r.condition.length > n ? r.condition.slice(0, n) + "…" : r.condition);
-    const name = JEV_PRESETS.find((p) => p.condition === r.condition)?.label; // おすすめから足した項目は、その名前で出す
-    out.push({ id: r.id, label: name || cut(16), short: name || cut(8), why: "", qs: [r.condition], high: r.high, action: "warn" });
+    const pre = JEV_PRESETS.find((p) => p.condition === r.condition); // おすすめから足した項目は、その名前と説明で出す
+    out.push({ id: r.id, label: pre?.label || cut(16), short: pre?.label || cut(8), why: pre?.why || "", tip: pre?.tip, qs: [r.condition], high: r.high, action: "warn" });
   }
   return out;
 }
@@ -166,19 +166,24 @@ function doiOf(href) {
   return n ? "10.1038/" + n[1] : null;
 }
 
-// ---- マーク: ‼️ の小さなボタン。押すと詳細が開く。サイトの CSS に影響されないよう shadow DOM に閉じる ----
+// ---- マーク: 「手口」の小さなボタン。押すと詳細が開く。サイトの CSS に影響されないよう shadow DOM に閉じる ----
 
 const MARK_CSS = `
-  .b { all: initial; font: 13px/1 system-ui, sans-serif; cursor: pointer; background: #fff; border: 1px solid #e0a000;
-       border-radius: 12px; padding: 3px 6px; box-shadow: 0 1px 4px #0003; }
-  .b.quiet { border-color: #ccc; color: #888; font-size: 11px; }
-  .pop { position: absolute; right: 0; top: 26px; width: 300px; max-height: 60vh; overflow: auto; background: #fff; color: #222;
+  .b { all: initial; font: 12px/1 system-ui, sans-serif; cursor: pointer; background: #fffaf0; color: #5c4400; border: 1px solid #d9b45a;
+       border-radius: 12px; padding: 4px 8px; box-shadow: 0 1px 3px #0002; }
+  .b .k { font-weight: 700; margin-right: 4px; padding-right: 5px; border-right: 1px solid #e3c98a; }
+  .b.quiet { background: #fff; border-color: #ccc; color: #888; font-size: 11px; }
+  .pop { position: absolute; right: 0; top: 28px; width: 320px; max-height: 60vh; overflow: auto; background: #fff; color: #222;
          border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 10px #0003; padding: 8px 10px;
          font: 12px/1.5 system-ui, sans-serif; text-align: left; white-space: normal; }
   :host(.fixed) .pop { top: auto; bottom: 30px; }
   :host(.left) .pop { right: auto; left: 0; }
-  .hit { color: #8a5300; font-weight: 700; margin-top: 4px; }
-  .why { color: #444; }
+  .hit { color: #5c4400; font-weight: 700; font-size: 13px; margin-top: 6px; }
+  .hit:first-child { margin-top: 0; }
+  .why { color: #333; }
+  .tip { color: #1f5130; background: #f1f8f3; border-radius: 6px; padding: 4px 6px; margin-top: 4px; }
+  .more { margin-top: 8px; border-top: 1px solid #eee; padding-top: 4px; }
+  .more > summary { cursor: pointer; color: #555; font-size: 11px; }
   .note { color: #777; font-size: 11px; }
   .all { margin-top: 6px; padding-top: 4px; border-top: 1px dashed #ddd; color: #777; font-size: 11px; }
   a { color: #0b57d0; word-break: break-all; }
@@ -195,7 +200,7 @@ function createMark(fixed) {
     : `all:initial;position:absolute;top:4px;right:4px;z-index:2147483646;${SITE?.markAt || ""}`;
   if (fixed) host.classList.add("fixed");
   if (fixed && /left:\s*\d/.test(SITE?.cornerAt || "")) host.classList.add("left"); // 詳細を画面の外にはみ出させない
-  const sh = host.attachShadow({ mode: "closed" }); // open だとページ側のプログラムが ‼️ を書き換えられる
+  const sh = host.attachShadow({ mode: "closed" }); // open だとページ側のプログラムが印を書き換えられる
   sh.innerHTML = `<style>${MARK_CSS}</style><button class="b"></button><div class="pop" hidden></div>`;
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
@@ -211,61 +216,75 @@ function createMark(fixed) {
   return { host, badge, pop };
 }
 
-// ‼️ の横の文字: いちばん確率の高い手口と数値。ほかにも当たっていれば「ほかN」
-// （当たったときだけ出るので、名前まで出してもうるさくならない。2026-09-28 ユーザー）
-// コードの項目（決まり文句）は確率ではないので % を付けず、Jev の項目より後ろに回す
+// 印の文字: 「手口｜いちばん確率の高い手口の名前」。ほかにも当たっていれば「ほかN」。
+// % は出さない（「95% うそ」と読まれる。2026-10-04 UI レビュー）。コードの項目は Jev の項目より後ろに回す
 function badgeText(hits) {
   const top = [...hits].sort((a, b) => !!a.c.code - !!b.c.code || b.pct - a.pct)[0];
-  return `‼️ ${top.badge || top.c.short + (top.c.code ? "" : ` ${top.pct.toFixed(0)}%`)}` + (hits.length > 1 ? ` ほか${hits.length - 1}` : "");
+  return (top.badge || top.c.short) + (hits.length > 1 ? ` ほか${hits.length - 1}` : "");
+}
+function setBadge(badge, hits, prefix = "") {
+  badge.textContent = prefix;
+  badge.append(Object.assign(document.createElement("span"), { className: "k", textContent: JEV_MARK }), badgeText(hits));
+  badge.setAttribute("aria-label", `注意: ${hits.map((r) => r.c.label || r.c.short).join("、")} の手口の可能性。押すと説明が出ます`);
 }
 
 function rowValue(r) {
   return r.c.code ? (r.hit ? "あり" : "なし") : `${r.pct.toFixed(0)}%`;
 }
 
-// 詳細の中身: 当たった項目（手口の名前と説明、要一次ソース確認なら出典）→ 全項目の数値
+// 詳細の中身: 手口ごとに「名前 → 仕組み → 向き合い方」（出典のリンクがあれば添える）。
+// 判定の中身（確率・閾値・問いの原文・全項目）と、直すための操作（AI に相談・違うと思う）は「詳しく」の中
 function fillDetails(pop, rows, links, extra, text) {
   pop.textContent = "";
-  const add = (cls, text) => {
+  const add = (cls, text, parent = pop) => {
     const d = document.createElement("div");
     if (cls) d.className = cls;
     d.textContent = text;
-    pop.append(d);
+    parent.append(d);
     return d;
   };
-  const link = (href, text) => {
+  const link = (href, text, parent = pop) => {
     const a = document.createElement("a");
     a.href = href;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     a.textContent = text;
-    add("note", "").append(a);
+    add("note", "", parent).append(a);
   };
   const hits = rows.filter((r) => r.hit);
-  if (!hits.length) add("note", "目立った手口は見つかりませんでした");
+  if (!hits.length) add("note", "目立った手口は見つかりませんでした。手口が無いことは、内容が正しいという意味ではありません");
   for (const r of hits) {
-    add("hit", `‼️ ${r.c.label}（${r.c.code ? "コードで判定" : r.pct.toFixed(0) + "%"}）`);
+    add("hit", r.c.label);
     if (r.c.why) add("why", r.c.why);
     if (r.detail) add("note", r.detail);
-    if (!r.c.code) add("note", jevQuestionNote(r.c.qs));
     if (r.c.showSources) {
       if (!links.length) add("note", "範囲内に一次ソースへのリンクは見当たりません");
       for (const href of links.slice(0, 3)) link(href, "出典: " + shortUrl(href));
     }
+    if (r.c.tip) add("tip", "向き合い方: " + r.c.tip);
   }
   extra?.(add, link);
-  if (keyless) add("note", "API キーが無いので、コードで判定できる項目だけを見ています。キーを入れると Jev の判定も加わります");
-  add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
-  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
-  addConsult(pop, rows, text);
-  addDisagree(pop, rows, text);
+  const more = document.createElement("details");
+  more.className = "more";
+  more.append(Object.assign(document.createElement("summary"), { textContent: "詳しく（判定の中身・直し方）" }));
+  pop.append(more);
+  for (const r of hits) {
+    if (r.c.code) continue;
+    add("note", `${r.c.label}: 当てはまる確率 ${r.pct.toFixed(0)}%（${r.c.high}% 以上で印を付けます）`, more);
+    add("note", jevQuestionNote(r.c.qs), more);
+  }
+  if (keyless) add("note", "API キーが無いので、コードで判定できる項目だけを見ています。キーを入れると Jev の判定も加わります", more);
+  add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "), more);
+  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE, more);
+  addConsult(more, rows, text);
+  addDisagree(more, rows, text);
 }
 
 // 「違うと思う」: この件を手元（このブラウザの中だけ）に残す。「問いを試す」画面で、AI の例文に加えて本人の実例で測れる。
-// ‼️ が付いた件は誤検知の、付かなかった件は取りこぼしの例として残す
+// 印が付いた件は誤検知の、付かなかった件は取りこぼしの例として残す
 function addDisagree(pop, rows, text) {
   if (!rows.some((r) => !r.c.code) || !text) return; // 測るのは Jev の問いだけ
-  const hits = rows.filter((r) => r.hit); // コードの項目だけで ‼️ が付いた件も「付いた件」
+  const hits = rows.filter((r) => r.hit); // コードの項目だけで印が付いた件も「付いた件」
   const btn = document.createElement("button");
   btn.className = "act";
   btn.textContent = hits.length ? "誤検知だと思う（記録する）" : "取りこぼしだと思う（記録する）";
@@ -400,7 +419,7 @@ async function judgePage(retry = 0) {
   comparePage(text, links);
 }
 
-// ページ全体は右下に1つだけ。当たれば ‼️ と件数、当たらなければ控えめな Jev 読んだ（押せば数値が見られる。‼️ は当たりの印なので入れない）
+// ページ全体は右下に1つだけ。当たれば「手口｜名前」、当たらなければ控えめな Jev 読んだ（押せば数値が見られる）
 function renderPage() {
   if (!pageView) return;
   if (!pageMark) {
@@ -428,12 +447,13 @@ function renderPage() {
   }
   const { rows, links, cmp } = pageView;
   // 元論文との比較で当たったものも、手口の1つとして並べる
-  const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元論文より誇張" }, pct: cmp.pct }] : []);
-  pageMark.badge.textContent = tag(hits.length ? badgeText(hits) : "Jev 読んだ");
+  const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元の研究を盛っている", label: JEV_COMPARE.label }, pct: cmp.pct }] : []);
+  if (hits.length) setBadge(pageMark.badge, hits, settings.debug ? `${modeName(mode)}｜` : "");
+  else pageMark.badge.textContent = tag("Jev 読んだ");
   pageMark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(pageMark.pop, rows, links, (add, link) => {
     if (!cmp) return;
-    add("hit", cmp.message ? "元論文（要旨）との比較" : `${cmp.hit ? "‼️ " : ""}元論文（要旨）との比較: 誇張・歪曲 ${cmp.pct.toFixed(0)}%`);
+    add("hit", cmp.message ? "元論文（要旨）との比較" : `元論文（要旨）との比較: 誇張・歪曲 ${cmp.pct.toFixed(0)}%${cmp.hit ? "（手口あり）" : ""}`);
     if (cmp.message) return add("note", cmp.message);
     add("why", `いちばん近い評価: ${cmp.level}（${(cmp.levelP * 100).toFixed(0)}%）` + (cmp.hit ? `。手口: ${JEV_COMPARE.label}` : ""));
     link(cmp.paper.url, `論文: ${cmp.paper.title}${cmp.paper.year ? `（${cmp.paper.year}）` : ""}`);
@@ -483,7 +503,7 @@ let idleTimer = null;
 const idleJobs = new Set();
 
 function whenIdle(fn) {
-  idleJobs.delete(fn); // 入れ直して最後に回す。隅の件数（updateCounter）が、後から積んだ ‼️ の描画より先に走ると古いまま残った
+  idleJobs.delete(fn); // 入れ直して最後に回す。隅の件数（updateCounter）が、後から積んだ印の描画より先に走ると古いまま残った
   idleJobs.add(fn);
   clearTimeout(idleTimer);
   idleTimer = setTimeout(runIdle, Math.max(0, IDLE_MS - (Date.now() - lastScroll)));
@@ -596,7 +616,7 @@ function dupOf(el) {
   return { hit: authors.length >= JEV_DUP.minAuthors, authors };
 }
 
-// 右下の小さな表示。当たりが無いと ‼️ が1つも出ず、動いているのか止まっているのか分からない
+// 右下の小さな表示。当たりが無いと印が1つも出ず、動いているのか止まっているのか分からない
 // （実際に X で「動いていない」と見えた）ので、読んだ件数と失敗を常に見せる
 let counter = null;
 function updateCounter() {
@@ -606,7 +626,7 @@ function updateCounter() {
     document.documentElement.append(counter.host);
   }
   const failing = stats.errors && !stats.judged;
-  const label = failing ? "Jev ⚠" : stats.warned ? `‼️ ${stats.warned}` : `Jev 読んだ ${stats.judged}`;
+  const label = failing ? "Jev ⚠" : stats.warned ? `${JEV_MARK} ${stats.warned}` : `Jev 読んだ ${stats.judged}`;
   counter.badge.textContent = settings.debug ? `${modeName(mode)}｜${label}` : label;
   counter.badge.classList.toggle("quiet", !stats.warned && !failing);
   counter.pop.textContent = "";
@@ -617,7 +637,7 @@ function updateCounter() {
     counter.pop.append(d);
   };
   add(`読んだ投稿 ${stats.judged} 件のうち、手口が見つかったのは ${stats.warned} 件です。`);
-  add("‼️ は、手口が見つかった投稿の右上に付きます。画面に少しとどまった投稿だけを判定しています。", "note");
+  add("「手口」の印は、手口が見つかった投稿の右上に付きます。画面に少しとどまった投稿だけを判定しています。", "note");
   if (keyless) add("API キーが無いので、コードで判定できる項目（誘導の決まり文句・同じ文言の大量投稿）だけを見ています。キーを入れると Jev の判定も加わります。", "note");
   if (stats.excluded) add(`除外リストのアカウントの投稿 ${stats.excluded} 件は判定していません。`, "note");
   if (stats.errors) add(`判定の失敗 ${stats.errors} 件: ${stats.lastError}`, "hit");
@@ -795,7 +815,7 @@ async function judgeBlock(el) {
   whenIdle(updateCounter); // 失敗も数える
 }
 
-// 当たった件にだけ ‼️ を重ねる（「判定した全件にマーク」がオンなら、当たらない件にも控えめな「読んだ」。✓ は「安全」と読まれるので使わない）
+// 当たった件にだけ「手口」の印を重ねる（「判定した全件にマーク」がオンなら、当たらない件にも控えめな「読んだ」。✓ は「安全」と読まれるので使わない）
 function apply(el) {
   clearMarks(el);
   const st = state.get(el);
@@ -810,7 +830,8 @@ function apply(el) {
   if (!hits.length && !settings.debug) return;
   if (getComputedStyle(el).position === "static") el.classList.add("jev-anchor"); // マークを右上に置く基準
   st.mark = createMark(false);
-  st.mark.badge.textContent = hits.length ? badgeText(hits) : "読んだ";
+  if (hits.length) setBadge(st.mark.badge, hits);
+  else st.mark.badge.textContent = "読んだ";
   st.mark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(st.mark.pop, rows, hits.some((r) => r.c.showSources) ? primaryLinks(el) : [], (add) => {
     if (el.classList.contains("jev-blur")) add("note", "本文はぼかしています。本文を押すと表示します");

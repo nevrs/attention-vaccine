@@ -9,9 +9,9 @@
 英語名は Attention Vaccine です（日本語の Chrome では「煽り注意報」と表示されます）。
 
 怒りや不安をあおって稼ぐ、炎上を狙う、根拠を示さずに言い切る。
-読んでいる投稿や記事にこうした**手口**が使われていたら、‼️ で知らせる Chrome 拡張です。
+読んでいる投稿や記事にこうした**手口**が使われていたら、「手口」の印で知らせる Chrome 拡張です。印を押すと、手口の仕組みと向き合い方が出ます。
 
-- **知らせるのは手口だけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。‼️ を押すと、どの手口に当たったか、なぜか、数値が出ます。
+- **知らせるのは手口だけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。印を押すと、どの手口か、その仕組みと向き合い方が出ます。
 - **立場は見ない:** どの主張かではなく、書き方だけを見ます。
 - **真偽は確かめていない:** 「根拠のない断定」は、根拠を示さずに言い切っている、または広く否定されている主張を事実として述べている、という意味です。内容の真偽を確かめた結果ではありません。
 - **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。判定しないアカウントも指定できます（X・Bluesky）。
@@ -23,13 +23,13 @@
 開発者の私はエンジニアではありません。この拡張機能は、ほぼすべてを AI（Claude Opus 5.5）と相談しながら作りました。直したいところは、拡張の中で自分で直すか（下の「使うときの注意」）、フォークして自由に変えてください。開発者は、個別の要望・Issue・プルリクエストを受け付けていません。
 
 > **状態: 試作品（プロトタイプ）です。** 精度は、主に自作の例文と一部の実サイトでしか測っていません。
-> 誤った ‼️ も、見逃しも起きます。
+> 誤った印も、見逃しも起きます。
 
 ### しくみ
 
 判定には [TypeSafe](https://typesafe.ai) の **Jev**（`jev-1.13.0`）を使います。
 Jev は文章を書かない AI で、「この文は○○か」という問いに確率だけを返します。
-確率が設定した感度（閾値）以上のときだけ ‼️ を付けます。
+確率が設定した感度（閾値）以上のときだけ「手口」の印を付けます。
 大きな言語モデル（LLM）は使いません。
 
 | 手口 | 見かた | 初期値 |
@@ -80,8 +80,8 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 1. 判定したいサイト（X、ニュースサイトなど）を開きます。
 2. 拡張のアイコンを押し、次のどちらかを選びます。初めて選ぶサイトでは、Chrome が「このサイトのデータの読み取りと変更」の許可を確かめるので、許可します。拡張は許可したサイトでしか動きません。
    - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の隅（多くのサイトでは右下）に結果が 1 つ出ます。
-   - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に ‼️ が付きます。
-3. ‼️ を押すと、見つかった手口の名前・理由・数値が出ます。
+   - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に「手口」の印が付きます。
+3. 印を押すと、見つかった手口の名前・仕組み・向き合い方が出ます。確率などの判定の中身は「詳しく」の中です。
 4. やめるときは、同じ画面で「オフ」を選びます。そのサイトの許可も返します。
 
 **更新するとき**
@@ -114,7 +114,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 ### 言語について
 
 判定の問いは日本語で書いています。英語・中国語・韓国語・スペイン語の文章にも、日本語の問いのままで判定できることを確かめました。
-自作の例文各 20 本で、狙った手口の検出は 12 本中 11〜12 本、当てはまらない文への誤った ‼️ は 0 件でした。
+自作の例文各 20 本で、狙った手口の検出は 12 本中 11〜12 本、当てはまらない文への誤った印は 0 件でした。
 
 ただし、これで十分だとは考えていません。
 
@@ -127,10 +127,10 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 ### 使うときの注意
 
-- ‼️ は機械による推定です。**相手を「デマ認定された」と責める根拠には使わないでください。**
-- Jev は理由を説明しません。‼️ を押すと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
-- 判定がおかしいと思ったら、‼️ の詳細の「誤検知だと思う」（‼️ が付かなかった件では「取りこぼしだと思う」）で、その投稿をこのブラウザの中に記録できます（最大 50 件。本文・項目と値・サイト・日時が残り、ふだんはどこにも送りません）。記録した投稿は「問いを試す」画面で選んで例文に加えられ、そのときは例文として接続先に送ります。そのうえで、自分で直せます。‼️ の詳細の「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。AI の答え（JSON）を設定画面から開ける「問いを試す」画面に貼ると、今の問いと案を例文すべてにかけて表で比べ、良い案をそのまま自分の項目として採用できます（例文の数だけ問い合わせ、1日の上限に数えます）。
-- ‼️ が付かなくても、内容が正しい・安全だという意味ではありません。
+- 印は機械による推定です。**相手を「デマ認定された」と責める根拠には使わないでください。**
+- Jev は理由を説明しません。印を押して「詳しく」を開くと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
+- 判定がおかしいと思ったら、印の詳細の「詳しく」にある「誤検知だと思う」（印が付かなかった件では「取りこぼしだと思う」）で、その投稿をこのブラウザの中に記録できます（最大 50 件。本文・項目と値・サイト・日時が残り、ふだんはどこにも送りません）。記録した投稿は「問いを試す」画面で選んで例文に加えられ、そのときは例文として接続先に送ります。そのうえで、自分で直せます。印の詳細の「詳しく」にある「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。AI の答え（JSON）を設定画面から開ける「問いを試す」画面に貼ると、今の問いと案を例文すべてにかけて表で比べ、良い案をそのまま自分の項目として採用できます（例文の数だけ問い合わせ、1日の上限に数えます）。
+- 印が付かなくても、内容が正しい・安全だという意味ではありません。
 - 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿、DM などの画面、除外したアカウントの投稿。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
 
@@ -149,9 +149,9 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 In Japanese, this extension is called 煽り注意報 (roughly "rage-bait advisory", as in a weather advisory). The name you see in Chrome depends on your browser's language.
 
-A Chrome extension that shows ‼️ when a post or article you are reading uses a **manipulation technique**, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence.
+A Chrome extension that shows a "手口" (technique) tag when a post or article you are reading uses a **manipulation technique**, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence.
 
-- **It points out the technique, nothing more:** it never judges posts good or bad, and hides them only if you choose to (blurring sexual content). Click ‼️ to see which technique was detected, why, and the score.
+- **It points out the technique, nothing more:** it never judges posts good or bad, and hides them only if you choose to (blurring sexual content). Click the tag to see which technique was detected, how it works, and how to respond.
 - **It ignores viewpoints:** it looks only at how something is written, not at which side it supports.
 - **It does not fact-check:** "Unsupported assertion" means something is asserted without evidence, or a widely refuted claim is stated as fact. It is not the result of checking whether the content is true.
 - **You are in control:** you choose the sites, the techniques to detect, and the sensitivity. You can also exclude specific accounts (X and Bluesky).
@@ -163,13 +163,13 @@ I built this extension hoping it would work as an immune system, across politica
 I am not an engineer. Almost all of this extension was built in consultation with an AI (Claude Opus 5.5). If you want something changed, adjust it inside the extension (see "Please note" below) or fork the code and change it freely. The developer does not accept individual requests, issues, or pull requests.
 
 > **Status: prototype.** Accuracy has mainly been measured on hand-written examples and a few real sites.
-> Expect both false ‼️ and misses.
+> Expect both false tags and misses.
 
 ### How it works
 
 It uses **Jev** (`jev-1.13.0`) by [TypeSafe](https://typesafe.ai).
 Jev is an AI model that does not generate text; it returns only a probability for questions like "Does this text do X?".
-‼️ appears only when the probability reaches your sensitivity setting (threshold).
+The tag appears only when the probability reaches your sensitivity setting (threshold).
 No large language model (LLM) is used.
 
 | Technique | How it is detected | Default |
@@ -219,8 +219,8 @@ By default, nothing happens on any site. Turn it on for each site you want.
 1. Open a site you want to check (X, a news site, etc.).
 2. Click the extension icon and choose one of these. The first time for a site, Chrome asks you to allow the extension to read and change data on that site; allow it. The extension runs only on sites you allow.
    - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in a corner of the screen (bottom right on most sites).
-   - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. ‼️ appears at the top right of each post where a technique is found.
-3. Click ‼️ to see the technique, the reason, and the score.
+   - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. a "手口" tag appears at the top right of each post where a technique is found.
+3. Click the tag to see the technique, how it works, and how to respond. The scores are under "詳しく" (details).
 4. To stop, choose "オフ" (Off) in the same place. This also gives back the permission for that site.
 
 **Updating**
@@ -253,7 +253,7 @@ A daily request limit guards against runaway usage (2,000 by default, adjustable
 ### Languages
 
 The detection questions are written in Japanese. We confirmed that they still work, unchanged, on English, Chinese, Korean, and Spanish text.
-On 20 hand-written examples per language, 11–12 of the 12 targeted techniques were detected, with 0 false ‼️ on the 8 neutral texts.
+On 20 hand-written examples per language, 11–12 of the 12 targeted techniques were detected, with 0 false tags on the 8 neutral texts.
 
 We do not consider this sufficient:
 
@@ -266,10 +266,10 @@ Questions for other languages can be added as your own checks on the options pag
 
 ### Please note
 
-- ‼️ is a machine estimate. **Please do not use it as proof to accuse others of spreading misinformation.**
-- Jev does not explain its reasons. Click ‼️ to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
-- If a result looks wrong, record the post with "誤検知だと思う" (false alarm) or "取りこぼしだと思う" (missed) in the ‼️ details. Records (text, checks and scores, site, time; up to 50) stay in this browser and are not sent anywhere, unless you pick them as test sentences on the try-questions page, which sends them to your provider. Then you can fix it yourself: use "この判定を AI に相談する" (consult an AI) in the ‼️ details or on the options page. It produces a prompt with how the extension works, the questions, the scores and the text, to paste into an AI of your choice for rewording ideas and test sentences. It includes the post text, so choose where you paste it. Whether a suggestion works can only be known by measuring it with Jev: paste the AI's JSON answer into the "問いを試す" (try questions) page, linked from the options page, to score the current question and the candidates on every test sentence, compare them in a table, and adopt one as your own check (one request per sentence, counted toward the daily limit).
-- No ‼️ does not mean the content is true or safe.
+- The tag is a machine estimate. **Please do not use it as proof to accuse others of spreading misinformation.**
+- Jev does not explain its reasons. Open "詳しく" (details) in the tag to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
+- If a result looks wrong, record the post with "誤検知だと思う" (false alarm) or "取りこぼしだと思う" (missed) in the tag's details. Records (text, checks and scores, site, time; up to 50) stay in this browser and are not sent anywhere, unless you pick them as test sentences on the try-questions page, which sends them to your provider. Then you can fix it yourself: use "この判定を AI に相談する" (consult an AI) in the tag's details or on the options page. It produces a prompt with how the extension works, the questions, the scores and the text, to paste into an AI of your choice for rewording ideas and test sentences. It includes the post text, so choose where you paste it. Whether a suggestion works can only be known by measuring it with Jev: paste the AI's JSON answer into the "問いを試す" (try questions) page, linked from the options page, to score the current question and the candidates on every test sentence, compare them in a table, and adopt one as your own check (one request per sentence, counted toward the daily limit).
+- No tag does not mean the content is true or safe.
 - Not checked: text inside images or videos, anything after the first 2,000 characters of an article, posts you scroll past quickly, DM-like pages, and posts from accounts you excluded.
 - Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
 

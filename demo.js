@@ -1,17 +1,22 @@
-// 体験ページ: demo-data.js の見本と判定結果を、本番と同じ見た目の ‼️ で表示する（通信なし・キー不要）。
-// ‼️ の見た目と詳細の中身は content.js の createMark / fillDetails / badgeText に合わせている（「AI に相談」は本文の判定が無いので出さない）。
+// 体験ページ: demo-data.js の見本と判定結果を、本番と同じ見た目の「手口」の印で表示する（通信なし・キー不要）。
+// 印の見た目と詳細の中身は content.js の createMark / fillDetails / badgeText に合わせている（「AI に相談」は本文の判定が無いので出さない）。
 const $ = (id) => document.getElementById(id);
 
 const MARK_CSS = `
-  .b { all: initial; font: 13px/1 system-ui, sans-serif; cursor: pointer; background: #fff; border: 1px solid #e0a000;
-       border-radius: 12px; padding: 3px 6px; box-shadow: 0 1px 4px #0003; }
-  .b.quiet { border-color: #ccc; color: #888; font-size: 11px; }
-  .pop { position: absolute; right: 0; top: 26px; width: 300px; background: #fff; color: #222; z-index: 10;
+  .b { all: initial; font: 12px/1 system-ui, sans-serif; cursor: pointer; background: #fffaf0; color: #5c4400; border: 1px solid #d9b45a;
+       border-radius: 12px; padding: 4px 8px; box-shadow: 0 1px 3px #0002; }
+  .b .k { font-weight: 700; margin-right: 4px; padding-right: 5px; border-right: 1px solid #e3c98a; }
+  .b.quiet { background: #fff; border-color: #ccc; color: #888; font-size: 11px; }
+  .pop { position: absolute; right: 0; top: 28px; width: 320px; background: #fff; color: #222; z-index: 10;
          border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 10px #0003; padding: 8px 10px;
          font: 12px/1.5 system-ui, sans-serif; text-align: left; }
   :host(.up) .pop { top: auto; bottom: 30px; }
-  .hit { color: #8a5300; font-weight: 700; margin-top: 4px; }
-  .why { color: #444; }
+  .hit { color: #5c4400; font-weight: 700; font-size: 13px; margin-top: 6px; }
+  .hit:first-child { margin-top: 0; }
+  .why { color: #333; }
+  .tip { color: #1f5130; background: #f1f8f3; border-radius: 6px; padding: 4px 6px; margin-top: 4px; }
+  .more { margin-top: 8px; border-top: 1px solid #eee; padding-top: 4px; }
+  .more > summary { cursor: pointer; color: #555; font-size: 11px; }
   .note { color: #777; font-size: 11px; }
   .all { margin-top: 6px; padding-top: 4px; border-top: 1px dashed #ddd; color: #777; font-size: 11px; }
   [hidden] { display: none; }
@@ -48,7 +53,7 @@ function rowsFor(answers, mode, saved, text) {
 
 function badgeText(hits) {
   const top = [...hits].sort((a, b) => !!a.c.code - !!b.c.code || b.pct - a.pct)[0];
-  return `‼️ ${top.c.short}${top.c.code ? "" : ` ${top.pct.toFixed(0)}%`}` + (hits.length > 1 ? ` ほか${hits.length - 1}` : "");
+  return top.c.short + (hits.length > 1 ? ` ほか${hits.length - 1}` : "");
 }
 
 const rowValue = (r) => (r.c.code ? (r.hit ? "あり" : "なし") : `${r.pct.toFixed(0)}%`);
@@ -61,25 +66,37 @@ function createMark(rows, style, extraNote) {
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
   const hits = rows.filter((r) => r.hit);
-  badge.textContent = hits.length ? badgeText(hits) : "読んだ";
+  if (hits.length) {
+    badge.append(Object.assign(document.createElement("span"), { className: "k", textContent: JEV_MARK }), badgeText(hits));
+    badge.setAttribute("aria-label", `注意: ${hits.map((r) => r.c.label).join("、")} の手口の可能性。押すと説明が出ます`);
+  } else badge.textContent = "読んだ";
   badge.classList.toggle("quiet", !hits.length);
-  const add = (cls, text) => {
+  const add = (cls, text, parent = pop) => {
     const d = document.createElement("div");
     d.className = cls;
     d.textContent = text;
-    pop.append(d);
+    parent.append(d);
   };
-  if (!hits.length) add("note", "目立った手口は見つかりませんでした");
+  if (!hits.length) add("note", "目立った手口は見つかりませんでした。手口が無いことは、内容が正しいという意味ではありません");
   for (const r of hits) {
-    add("hit", `‼️ ${r.c.label}（${r.c.code ? "決まり文句" : r.pct.toFixed(0) + "%"}）`);
+    add("hit", r.c.label);
     if (r.c.why) add("why", r.c.why);
     if (r.matches?.length) add("note", "見つかった言い回し: " + r.matches.map((m) => `「${m}」`).join(""));
-    if (!r.c.code) add("note", jevQuestionNote(r.c.qs.map((k) => JEV_QUESTIONS[k])));
     if (r.c.showSources) add("note", "範囲内に一次ソースへのリンクは見当たりません");
+    if (r.c.tip) add("tip", "向き合い方: " + r.c.tip);
   }
   if (extraNote) add("note", extraNote);
-  add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "));
-  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE);
+  const more = document.createElement("details");
+  more.className = "more";
+  more.append(Object.assign(document.createElement("summary"), { textContent: "詳しく（判定の中身）" }));
+  pop.append(more);
+  for (const r of hits) {
+    if (r.c.code) continue;
+    add("note", `${r.c.label}: 当てはまる確率 ${r.pct.toFixed(0)}%（${r.c.high}% 以上で印を付けます）`, more);
+    add("note", jevQuestionNote(r.c.qs.map((k) => JEV_QUESTIONS[k])), more);
+  }
+  add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "), more);
+  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE, more);
   badge.onclick = () => (pop.hidden = !pop.hidden);
   return { host, hits };
 }
@@ -93,7 +110,7 @@ async function render() {
   $("figBait").textContent = pct(JEV_PILLARS.bait.qs);
   $("figFlame").textContent = pct(JEV_PILLARS.flame.qs);
   $("figDema").textContent = pct(JEV_PILLARS.dema.qs);
-  $("figBadge").textContent = `‼️ ${JEV_PILLARS.bait.short} ${pct(JEV_PILLARS.bait.qs)}`;
+  $("figBadge").textContent = `${JEV_MARK}｜${JEV_PILLARS.bait.short}`;
 
   const feed = $("feed");
   feed.textContent = "";
