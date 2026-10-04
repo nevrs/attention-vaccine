@@ -633,7 +633,7 @@ let counter = null;
 function updateCounter() {
   if (mode !== "block") return;
   const failing = stats.errors && !stats.judged;
-  if (!stats.warned && !failing && !settings.debug) {
+  if (!stats.warned && !stats.errors && !settings.debug) { // 一部だけ失敗した場合も、隅に出して詳細で失敗の内容を見せる
     counter?.host.remove();
     counter = null;
     return;

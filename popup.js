@@ -25,8 +25,8 @@ let injectTried = false; // 入れられないページ（PDF・ストア・管�
 async function render() {
   $("stats").textContent = "";
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  const { provider = "typesafe", apiKeys = {} } = await chrome.storage.local.get(["provider", "apiKeys"]);
-  const noKey = !apiKeys[provider];
+  // キーが要るかは判定部分（background.js の BACKENDS）ごとに違うので、background に聞く
+  const noKey = !(await chrome.runtime.sendMessage({ type: "hasKey" }).catch(() => null))?.has;
   if (!noKey) {
     const { usage } = await chrome.storage.local.get("usage");
     const { dailyCap = JEV_DAILY_CAP } = await chrome.storage.sync.get("dailyCap");

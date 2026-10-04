@@ -1,4 +1,4 @@
-// 体験ページの見本と、その判定結果。本物の Jev（jev-1.13.0）に checks.js の問いで判定させた値をそのまま載せている。
+// 体験ページの見本と、その判定結果。本物の Jev（jev-1.13.0）に techniques.js の問いで判定させた値をそのまま載せている。
 // 問いの文面を変えたら作り直すこと: python tools/demo_measure.py
 const JEV_DEMO = {
   "measured": "2026-10-02",

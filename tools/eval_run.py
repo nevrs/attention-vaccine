@@ -1,4 +1,4 @@
-# 回帰評価: tools/eval/cases.json の文を今の checks.js の問いで Jev にかけ、閾値での誤検知・取りこぼしを出す。
+# 回帰評価: tools/eval/cases.json の文を今の techniques.js の問いで Jev にかけ、閾値での誤検知・取りこぼしを出す。
 # 使い方（問いや閾値を変える前後に）: TYPESAFE_API_KEY を設定して  python tools/eval_run.py [--only bait] [--repeat 3] [--limit 15] [--out r.json]
 # 失敗（誤検知・取りこぼし）があれば終了コード 1。
 import sys, re, json, os, time, argparse, urllib.request, urllib.error, concurrent.futures as cf, statistics
