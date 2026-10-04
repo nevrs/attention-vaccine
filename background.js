@@ -1,11 +1,16 @@
-// Jev への問い合わせを一手に引き受ける。並列数の制限・429 の再試行・結果のキャッシュをここに置く。
-// 接続先は利用者が設定画面で選ぶ。どちらも TypeSafe と同じリクエスト/レスポンスの形。
-importScripts("checks.js"); // JEV_COMPARE・JEV_PRESETS・JEV_CONTENT
-const PROVIDERS = {
+// 判定の問い合わせを一手に引き受ける。並列数の制限・429 の再試行・結果のキャッシュをここに置く。
+// 接続先は利用者が設定画面で選ぶ。
+importScripts("techniques.js", "checks.js"); // JEV_COMPARE・JEV_PRESETS・JEV_CONTENT
+
+// 判定する部分（バックエンド）。どれも ask(acc, 文章, [問いの原文]) で { 問いの原文: 当てはまる確率 0〜1 } を返す。
+// キャッシュ・並列制限・1日の上限・ページ側・問いを試す画面は、この形だけに頼っている。
+// 今は Jev の API（TypeSafe と Vercel、同じ形）だけ。手元で動く判定（将来のブラウザ内蔵など）を足すときは、同じ形の項目を足し、
+// 設定画面の接続先の選択肢に加える。needsKey: キーが要るか。compare: 一次ソース比較（Jev の score 型の問い）に使えるか
+const BACKENDS = {
   // バージョン固定。latest は閾値の前提を無言で変える（Jev は問いの文面と版で確率の出方が変わる）
-  typesafe: { url: "https://api.typesafe.ai/v1/systemone", model: "jev-1.13.0" },
+  typesafe: { url: "https://api.typesafe.ai/v1/systemone", model: "jev-1.13.0", needsKey: true, compare: true, ask: askJevApi },
   // Vercel 側のモデル名は docs の表記どおり。版の固定方法は未確認
-  vercel: { url: "https://ai-gateway.vercel.sh/typesafe/v1/systemone", model: "typesafe-ai/jev" },
+  vercel: { url: "https://ai-gateway.vercel.sh/typesafe/v1/systemone", model: "typesafe-ai/jev", needsKey: true, compare: true, ask: askJevApi },
 };
 const MAX_PARALLEL = 6;
 
@@ -92,7 +97,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, send) => {
     msg.type === "judge" ? judge(msg.text, msg.questions).then((answers) => ({ answers })) :
     msg.type === "test" ? testConnection(msg.provider, msg.apiKey) :
     msg.type === "compare" ? compareWithPaper(msg.doi, msg.text) :
-    msg.type === "hasKey" ? account().then((a) => ({ has: !!a.apiKey })) : // ページ側にはキーそのものを渡さない
+    msg.type === "hasKey" ? account().then((a) => ({ has: !a.needsKey || !!a.apiKey })) : // ページ側にはキーそのものを渡さない
     msg.type === "disagree" ? addDisagree(msg.item) : // ページ側は storage.local を読めないので、ここで書く
     null;
   if (!job) return;
@@ -125,17 +130,17 @@ async function addDisagreeOnce(item) {
 
 async function account() {
   const { provider = "typesafe", apiKeys = {} } = await chrome.storage.local.get(["provider", "apiKeys"]);
-  const p = PROVIDERS[provider] || PROVIDERS.typesafe;
-  return { ...p, apiKey: apiKeys[provider] || "" };
+  const id = BACKENDS[provider] ? provider : "typesafe";
+  return { ...BACKENDS[id], id, apiKey: apiKeys[id] || "" };
 }
 
 // 1件の本文に複数の問いを投げる。キャッシュは問いごと。足りない問いだけを1回の呼び出しにまとめる
 // （Jev は1回で複数の問いに答え、時間も1問のときと変わらない）。返り値は { 問い: 確率 }
 async function judge(text, questions) {
   const acc = await account();
-  if (!acc.apiKey) throw new Error("API キーが未設定");
+  if (acc.needsKey && !acc.apiKey) throw new Error("API キーが未設定");
   const keys = {};
-  for (const q of questions) keys[q] = "c:" + (await sha256(acc.url + "\n" + acc.model + "\n" + q + "\n" + text));
+  for (const q of questions) keys[q] = "c:" + (await sha256(acc.id + "\n" + acc.model + "\n" + q + "\n" + text));
   const hits = await chrome.storage.session.get(Object.values(keys));
   const out = {};
   const missing = [];
@@ -143,7 +148,7 @@ async function judge(text, questions) {
   if (!missing.length) return out;
   const flightKey = missing.map((q) => keys[q]).join("|"); // 問いの組が同じときだけ相乗りする
   if (!inflight.has(flightKey)) {
-    const pr = queued(() => call(acc, text, missing))
+    const pr = queued(() => acc.ask(acc, text, missing))
       .then(async (ps) => {
         // 保存に失敗しても（容量など）、取れた答えは捨てない
         await chrome.storage.session.set(Object.fromEntries(missing.map((q) => [keys[q], ps[q]]))).catch(() => {});
@@ -159,10 +164,11 @@ async function judge(text, questions) {
 // 要旨が取れなければ paper: null を返す（比較しない）
 async function compareWithPaper(doi, text) {
   const acc = await account();
-  if (!acc.apiKey) throw new Error("API キーが未設定");
+  if (acc.needsKey && !acc.apiKey) throw new Error("API キーが未設定");
+  if (!acc.compare) throw new Error("この接続先では一次ソース比較を使えません");
   const paper = await fetchPaper(doi);
   if (!paper) return { paper: null };
-  const key = "cmp:" + (await sha256(acc.url + "\n" + acc.model + "\n" + doi + "\n" + text));
+  const key = "cmp:" + (await sha256(acc.id + "\n" + acc.model + "\n" + doi + "\n" + text));
   const hit = (await chrome.storage.session.get(key))[key];
   if (hit) return { paper, ...hit };
   const answers = await queued(() =>
@@ -214,12 +220,12 @@ async function fetchPaper(doi) {
 
 // 保存前のキーで1回だけ呼ぶ。キャッシュも並列制限も1日の上限も通さない
 async function testConnection(provider, apiKey) {
-  const p = PROVIDERS[provider];
+  const p = BACKENDS[provider];
   if (!p) throw new Error("接続先が不明");
-  if (!apiKey) throw new Error("API キーが空です");
+  if (p.needsKey && !apiKey) throw new Error("API キーが空です");
   const t0 = performance.now();
   const q = "食べ物の話か";
-  const ps = await call({ ...p, apiKey, uncounted: true }, "今日の夕飯は鶏むね肉の南蛮漬けにした", [q]);
+  const ps = await p.ask({ ...p, id: provider, apiKey, uncounted: true }, "今日の夕飯は鶏むね肉の南蛮漬けにした", [q]);
   return { p: ps[q], ms: Math.round(performance.now() - t0) };
 }
 
@@ -248,8 +254,8 @@ const HTTP_REASON = {
   404: "接続先が見つかりません",
 };
 
-// noul の問いだけを投げて { 問い: 確率 } で返す
-async function call(acc, text, questions) {
+// Jev の API（TypeSafe と Vercel）。noul の問いを q0, q1 … の名前で1回にまとめて投げ、{ 問い: 確率 } で返す
+async function askJevApi(acc, text, questions) {
   const answers = await post(acc, {
     state: text,
     model: acc.model,

@@ -2,34 +2,10 @@
 # 使い方（問いや閾値を変える前後に）: TYPESAFE_API_KEY を設定して  python tools/eval_run.py [--only bait] [--repeat 3] [--limit 15] [--out r.json]
 # 失敗（誤検知・取りこぼし）があれば終了コード 1。
 import sys, re, json, os, time, argparse, urllib.request, urllib.error, concurrent.futures as cf, statistics
+import techniques  # tools/techniques.py
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL = "jev-1.13.0"
-
-
-def parse_checks(path):
-    """checks.js から {検査名: {qs: [問いの原文], high: 閾値}} を作る。検査名は JEV_PILLARS の id と JEV_PRESETS の label。"""
-    src = open(path, encoding="utf-8").read()
-    qblock = src.split("const JEV_QUESTIONS", 1)[1].split("\n};", 1)[0]
-    Q = {k: json.loads('"' + v + '"') for k, v in re.findall(r'^\s+(\w+): "(.*)",$', qblock, re.M)}
-    pblock = src.split("const JEV_PILLARS", 1)[1].split("\n};", 1)[0]
-    checks = {}
-    for m in re.finditer(r'^  (\w+): \{\n(.*?)^  \},', pblock, re.M | re.S):
-        body = m.group(2)
-        qs = re.search(r'^\s+qs: \[(.*?)\]', body, re.M)
-        hi = re.search(r'defaults: \{[^}]*high: (\d+)', body)
-        keys = re.findall(r'"(\w+)"', qs.group(1)) if qs else []
-        if keys and hi:
-            checks[m.group(1)] = {"qs": [Q[k] for k in keys], "high": int(hi.group(1))}
-    prblock = src.split("const JEV_PRESETS", 1)[1].split("\n];", 1)[0]
-    # 先頭が label: のオブジェクトごとに、label / high / condition を読む（old: の中の condition は拾わない）
-    for chunk in re.split(r'(?=\blabel: ")', prblock)[1:]:
-        lab = re.match(r'label: "([^"]+)"', chunk)
-        hi = re.search(r'\bhigh: (\d+)', chunk)
-        con = re.search(r'\bcondition: "((?:[^"\\]|\\.)*)"', chunk)
-        if lab and hi and con:
-            checks[lab.group(1)] = {"qs": [json.loads('"' + con.group(1) + '"')], "high": int(hi.group(1))}
-    return checks
 
 
 def ask(state, questions):
@@ -75,7 +51,7 @@ def main():
     ap.add_argument("--limit", type=int, help="N 件に均等に間引く")
     ap.add_argument("--out")
     a = ap.parse_args()
-    checks = parse_checks(os.path.join(HERE, "..", "checks.js"))
+    checks = techniques.checks()
     cases = json.load(open(os.path.join(HERE, "eval", "cases.json"), encoding="utf-8"))
     for c in cases:
         c["expect"] = {k: v for k, v in c.get("expect", {}).items()

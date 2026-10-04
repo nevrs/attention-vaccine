@@ -1,8 +1,9 @@
-# 体験ページの見本を、今の checks.js の問いで本物の Jev に判定させ、demo-data.js を作る。
-# 判定の問い（checks.js の JEV_QUESTIONS）を変えたら、これを動かして作り直す。
+# 体験ページの見本を、今の techniques.js の問いで本物の Jev に判定させ、demo-data.js を作る。
+# 判定の問い（techniques.js の questions）を変えたら、これを動かして作り直す。
 #   TYPESAFE_API_KEY を設定して:  python tools/demo_measure.py
 import sys, re, json, datetime, concurrent.futures as cf
 import os, urllib.request
+import techniques  # tools/techniques.py
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -13,8 +14,7 @@ def ask(state, questions, model="jev-1.13.0"):
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
 
-checks = open(os.path.join(HERE, "..", "checks.js"), encoding="utf-8").read()
-Q = dict(re.findall(r'^\s+(\w+): "(.*)",$', checks.split("const JEV_PILLARS")[0], re.M))
+Q = techniques.questions()
 
 POSTS = [
   "このままだと老後資金が5000万円足りない！知らないと破産する人が続出…今すぐ無料診断を",
@@ -43,7 +43,7 @@ def main():
     data = {"measured": datetime.date.today().isoformat(), "model": "jev-1.13.0", "posts": posts, "article": article}
     out = os.path.join(HERE, "..", "demo-data.js")
     open(out, "w", encoding="utf-8").write(
-        "// 体験ページの見本と、その判定結果。本物の Jev（jev-1.13.0）に checks.js の問いで判定させた値をそのまま載せている。\n"
+        "// 体験ページの見本と、その判定結果。本物の Jev（jev-1.13.0）に techniques.js の問いで判定させた値をそのまま載せている。\n"
         "// 問いの文面を変えたら作り直すこと: python tools/demo_measure.py\n"
         "const JEV_DEMO = " + json.dumps(data, ensure_ascii=False, indent=2) + ";\n")
 
