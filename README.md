@@ -78,11 +78,12 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 初期状態では、どのサイトでも何もしません。使いたいサイトごとにオンにします。
 1. 判定したいサイト（X、ニュースサイトなど）を開きます。
-2. 拡張のアイコンを押し、次のどちらかを選びます。初めて選ぶサイトでは、Chrome が「このサイトのデータの読み取りと変更」の許可を確かめるので、許可します。拡張は許可したサイトでしか動きません。
+2. 拡張のアイコンを押し、「このサイトで使う」をオンにします。初めてのサイトでは、Chrome が「このサイトのデータの読み取りと変更」の許可を確かめるので、許可します。拡張は許可したサイトでしか動きません。
+3. 表示のしかた（モード）は自動で決まります。主要なサイトはおすすめ、それ以外はページ全体です。変えたいときは、同じ画面の「表示のしかた」を開いて選びます。
    - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の隅（多くのサイトでは右下）に結果が 1 つ出ます。
    - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に「手口」の印が付きます。
-3. 印を押すと、見つかった手口の名前・仕組み・向き合い方が出ます。確率などの判定の中身は「詳しく」の中です。
-4. やめるときは、同じ画面で「オフ」を選びます。そのサイトの許可も返します。
+4. 印を押すと、見つかった手口の名前・仕組み・向き合い方が出ます。確率などの判定の中身は「詳しく」の中です。
+5. やめるときは、同じ画面で「このサイトで使う」をオフにします。そのサイトの許可も返します。
 
 **更新するとき**
 
@@ -217,11 +218,12 @@ If you use `git`, you can run `git clone https://github.com/nevrs/attention-vacc
 
 By default, nothing happens on any site. Turn it on for each site you want.
 1. Open a site you want to check (X, a news site, etc.).
-2. Click the extension icon and choose one of these. The first time for a site, Chrome asks you to allow the extension to read and change data on that site; allow it. The extension runs only on sites you allow.
+2. Click the extension icon and turn on "このサイトで使う" (Use on this site). The first time for a site, Chrome asks you to allow the extension to read and change data on that site; allow it. The extension runs only on sites you allow.
+3. The display mode is chosen automatically: the recommended one for well-known sites, whole page otherwise. To change it, open "表示のしかた" (Display style) in the same place and pick one.
    - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in a corner of the screen (bottom right on most sites).
    - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. a "手口" tag appears at the top right of each post where a technique is found.
-3. Click the tag to see the technique, how it works, and how to respond. The scores are under "詳しく" (details).
-4. To stop, choose "オフ" (Off) in the same place. This also gives back the permission for that site.
+4. Click the tag to see the technique, how it works, and how to respond. The scores are under "詳しく" (details).
+5. To stop, turn off "このサイトで使う" in the same place. This also gives back the permission for that site.
 
 **Updating**
 

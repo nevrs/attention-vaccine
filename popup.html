@@ -13,13 +13,17 @@
   button { width: 100%; padding: 6px; margin-top: 6px; }
   details { margin-top: 8px; color: #666; font-size: 12px; }
   summary { cursor: pointer; }
+  #site details { margin-top: 6px; }
+  #pause { margin-top: 12px; color: #666; font-size: 11px; }
 </style>
-<label><input type="checkbox" id="enabled"> 有効にする</label>
 <div id="site" hidden>
   <div class="h" id="host"></div>
-  <label><input type="radio" name="mode" value=""> オフ</label>
-  <label><input type="radio" name="mode" value="page"> ページ全体（記事ページ向け）</label>
-  <label><input type="radio" name="mode" value="block"> ブロックごと（一覧・タイムライン向け）</label>
+  <label><input type="checkbox" id="use"> このサイトで使う</label>
+  <details id="how">
+    <summary>表示のしかた</summary>
+    <label><input type="radio" name="mode" value="page"> ページ全体（記事向け）</label>
+    <label><input type="radio" name="mode" value="block"> ブロックごと（タイムライン向け）</label>
+  </details>
 </div>
 <div id="stats">読み込み中…</div>
 <button id="open">設定を開く</button>
@@ -27,6 +31,7 @@
   <summary>表示がずれるとき</summary>
   <button id="pick"></button>
 </details>
+<label id="pause"><input type="checkbox" id="paused"> すべてのサイトで一時停止</label>
 <script src="checks.js"></script>
 <script src="sites.js"></script>
 <script src="popup.js"></script>
