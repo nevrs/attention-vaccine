@@ -6,7 +6,7 @@
 | `manifest.json` | 権限。ページ側のスクリプトは manifest に書かず、許可したサイトにだけ background が登録する（`JEV_CONTENT`: checks → sites → content → picker） |
 | `checks.js` | 判定の問い（`JEV_QUESTIONS`）・項目（`JEV_PILLARS`）・コードで判定する項目（`JEV_CODE` / `JEV_LURE` / `JEV_DUP`） |
 | `sites.js` | 主要サイトの区切り・本文の場所（`JEV_SITES`）と `jevSiteFor` |
-| `content.js` | ページ側。モード（page / block）、見えた件の判定、‼️ の表示 |
+| `content.js` | ページ側。モード（page / block）、見えた件の判定、「手口」の印と詳細の表示 |
 | `picker.js` | クリックで区切り・本文の場所・判定範囲を直すバー |
 | `background.js` | 接続先への問い合わせ（並列制限・再試行・キャッシュ・1日の上限）、OpenAlex |
 | `options.*` / `popup.*` | 設定画面・アイコンのポップアップ（画面は日本語のみ） |

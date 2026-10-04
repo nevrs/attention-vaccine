@@ -120,7 +120,7 @@ function score(answers, text, el) {
       const d = dupOf(el);
       rows.push({
         c, pct: d.hit ? 100 : 0, hit: d.hit,
-        badge: d.hit ? `同じ文言 ${d.authors.length}アカウント` : null,
+        badge: d.hit ? `同じ文 ${d.authors.length}アカウント` : null,
         detail: d.hit ? "同じ文を投稿しているアカウント: " + d.authors.slice(0, 10).map((a) => "@" + a).join(" ") + (d.authors.length > 10 ? ` ほか${d.authors.length - 10}` : "") : null,
       });
     } else if (c.code) {
@@ -204,13 +204,20 @@ function createMark(fixed) {
   sh.innerHTML = `<style>${MARK_CSS}</style><button class="b"></button><div class="pop" hidden></div>`;
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
-  badge.onclick = () => (pop.hidden = !pop.hidden);
+  badge.onclick = () => {
+    pop.hidden = !pop.hidden;
+    host.style.zIndex = pop.hidden ? "2147483646" : "2147483647"; // 開いた詳細を、下の投稿の印より上に
+  };
   // マークへの操作はページ側（投稿を包むリンクの移動など）に渡さない。ただし詳細の中の自分のリンク（出典・論文）は開く。
   // 外枠（host）で preventDefault すると、内側の <a> の移動まで打ち消された。closed の内側を見分けるため shadow root で受ける
   for (const t of ["click", "mousedown", "mouseup", "pointerdown", "pointerup"]) {
     sh.addEventListener(t, (e) => {
       e.stopPropagation();
-      if (t === "click" && !e.target.closest?.("a[href]")) e.preventDefault();
+      if (t !== "click" || e.target.closest?.("a[href]")) return;
+      e.preventDefault(); // 投稿を包むリンクへの移動を止める
+      // 止めると「詳しく」（details）の開閉も止まるので、ここで開け閉めする
+      const sum = e.target.closest?.("summary");
+      if (sum) sum.parentElement.open = !sum.parentElement.open;
     });
   }
   return { host, badge, pop };
@@ -436,6 +443,7 @@ function renderPage() {
   };
   if (pageView.error) {
     pageMark.badge.textContent = tag("Jev ⚠");
+    pageMark.badge.removeAttribute("aria-label");
     pageMark.badge.classList.add("quiet");
     pageMark.pop.textContent = "";
     const d = document.createElement("div");
@@ -449,7 +457,10 @@ function renderPage() {
   // 元論文との比較で当たったものも、手口の1つとして並べる
   const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元の研究を盛っている", label: JEV_COMPARE.label }, pct: cmp.pct }] : []);
   if (hits.length) setBadge(pageMark.badge, hits, settings.debug ? `${modeName(mode)}｜` : "");
-  else pageMark.badge.textContent = tag("Jev 読んだ");
+  else {
+    pageMark.badge.textContent = tag("Jev 読んだ");
+    pageMark.badge.removeAttribute("aria-label"); // 前の当たりの読み上げを残さない
+  }
   pageMark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(pageMark.pop, rows, links, (add, link) => {
     if (!cmp) return;

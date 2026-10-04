@@ -13,7 +13,7 @@
 
 - **知らせるのは手口だけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。印を押すと、どの手口か、その仕組みと向き合い方が出ます。
 - **立場は見ない:** どの主張かではなく、書き方だけを見ます。
-- **真偽は確かめていない:** 「根拠のない断定」は、根拠を示さずに言い切っている、または広く否定されている主張を事実として述べている、という意味です。内容の真偽を確かめた結果ではありません。
+- **真偽は確かめていない:** 「根拠を示さない断定」は、根拠を示さずに言い切っている、または広く否定されている主張を事実として述べている、という意味です。内容の真偽を確かめた結果ではありません。
 - **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。判定しないアカウントも指定できます（X・Bluesky）。
 
 ### 願い
@@ -34,12 +34,12 @@ Jev は文章を書かない AI で、「この文は○○か」という問い
 
 | 手口 | 見かた | 初期値 |
 |---|---|---|
-| 煽って稼ぐ型 | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
-| 炎上狙い・挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
-| 根拠のない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
-| 要一次ソース確認 | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
+| 不安や怒りで行動に誘う | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
+| 反応を集めるための挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
+| 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
+| 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
 | 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
-| 同じ文言の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
+| 同じ文の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
 | 集団へのレッテル貼り | 国籍・性別・世代・立場などの集団の全員に、性質を決めつける（好意的な決めつけも含む。Jev、高度な設定） | オフ |
 
 API キーが無くても、コードで判定する 2 項目だけで動きます。
@@ -174,12 +174,12 @@ No large language model (LLM) is used.
 
 | Technique | How it is detected | Default |
 |---|---|---|
-| Emotional bait for profit | Stirs up emotions × drives views or purchases (Jev) | On |
-| Flame bait / provocation | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
+| Stirring anxiety or anger to push action | Stirs up emotions × drives views or purchases (Jev) | On |
+| Provocation to farm reactions | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
 | Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
-| Check the primary source | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
+| Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
 | Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |
-| Copy-paste posting | Near-identical text posted by different accounts (rule-based) | On |
+| Same text posted en masse | Near-identical text posted by different accounts (rule-based) | On |
 | Group labeling | Attributing a trait to everyone in a group by nationality, gender, generation, political position, etc., including "positive" stereotypes (Jev, advanced settings) | Off |
 
 Without an API key, only the two rule-based checks run.

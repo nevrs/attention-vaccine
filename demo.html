@@ -35,7 +35,7 @@
 <ul class="feed" id="feed"></ul>
 
 <h2>2. 記事ページでは（ページ全体）</h2>
-<p>ページ1枚をまとめて判定し、画面の隅に結果を出します。記事ページでは「要一次ソース確認」も見ます
+<p>ページ1枚をまとめて判定し、画面の隅に結果を出します。記事ページでは「数字・研究の出どころがあいまい」も見ます
   （研究や統計の数字が、元の情報源から切り離されて使われていないか）。</p>
 <div class="article" id="article"></div>
 
@@ -62,9 +62,9 @@
       <rect x="210" y="20" width="220" height="160" rx="10" fill="#eef4ff" stroke="#7ea6ec"/>
       <text x="320" y="46" text-anchor="middle" font-weight="700">Jev</text>
       <text x="320" y="66" text-anchor="middle" fill="#555" font-size="12">判定基準ごとに「当てはまる確率」だけを返す</text>
-      <text x="236" y="98">煽り×利益</text><text x="404" y="98" text-anchor="end" font-weight="700" id="figBait"></text>
-      <text x="236" y="122">炎上狙い</text><text x="404" y="122" text-anchor="end" id="figFlame"></text>
-      <text x="236" y="146">根拠のない断定</text><text x="404" y="146" text-anchor="end" id="figDema"></text>
+      <text x="236" y="98">不安・怒りで誘導</text><text x="404" y="98" text-anchor="end" font-weight="700" id="figBait"></text>
+      <text x="236" y="122">わざと挑発</text><text x="404" y="122" text-anchor="end" id="figFlame"></text>
+      <text x="236" y="146">根拠なしの断定</text><text x="404" y="146" text-anchor="end" id="figDema"></text>
       <text x="320" y="170" text-anchor="middle" fill="#888" font-size="11">文章は書かない・要約しない</text>
 
       <line x1="434" y1="100" x2="480" y2="100" stroke="#888" stroke-width="2" marker-end="url(#arr)"/>
@@ -94,7 +94,7 @@
 
 <h2>4. 「手口」の印の読み方</h2>
 <ul>
-  <li><b id="figBadge"></b> … いちばん確率の高い手口の名前と、Jev が「その手口が使われている」と答えた確率です。「ほか1」は、ほかにも当たった手口の数です。</li>
+  <li><b id="figBadge"></b> … いちばん確率の高い手口の名前です。「ほか1」は、ほかにも当たった手口の数です。確率は、印を押して「詳しく」を開くと出ます（印に % を出すと「95% うそ」のように読まれやすいためです）。</li>
   <li>印は「悪い投稿」「うそ」という判定ではありません。「この手口が使われている」という知らせです。どう受け取るかは、あなたが決めてください。</li>
   <li><b>手口｜誘導の決まり文句</b> … 「プロフのリンクから」「公式LINE登録」「今だけ」のような、リンクや登録へ誘導する決まった言い回しです。これは Jev ではなく決まった言い回しの一覧で見つけているので、<b>API キーがなくても動きます</b>。</li>
   <li>Jev は内容の真偽を確かめていません。どのくらいで印を付けるか（感度）は、設定画面の「高度な設定」で変えられます。</li>
