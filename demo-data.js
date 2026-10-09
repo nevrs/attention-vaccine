@@ -9,17 +9,17 @@ const JEV_DEMO = {
       "answers": {
         "arouse": 0.97,
         "profit": 0.98,
-        "flame": 0.22,
+        "flame": 0.24,
         "dema": 0.76,
         "greed": 0.21,
-        "imperson": 0.21
+        "imperson": 0.23
       }
     },
     {
       "text": "駅前の桜がもう咲いてた。今年は少し早いみたい",
       "answers": {
         "arouse": 0.01,
-        "profit": 0.04,
+        "profit": 0.01,
         "flame": 0.07,
         "dema": 0.05,
         "greed": 0.0,
@@ -29,10 +29,10 @@ const JEV_DEMO = {
     {
       "text": "正直、〇〇世代って本当に使えない。指示待ちばっかり。異論は認める",
       "answers": {
-        "arouse": 0.65,
-        "profit": 0.13,
+        "arouse": 0.66,
+        "profit": 0.04,
         "flame": 0.82,
-        "dema": 0.68,
+        "dema": 0.66,
         "greed": 0.01,
         "imperson": 0.03
       }
@@ -40,31 +40,31 @@ const JEV_DEMO = {
     {
       "text": "大雨の影響で、○○線は終日運転を見合わせています。振替輸送を実施中です",
       "answers": {
-        "arouse": 0.04,
-        "profit": 0.06,
-        "flame": 0.06,
+        "arouse": 0.05,
+        "profit": 0.02,
+        "flame": 0.05,
         "dema": 0.06,
-        "greed": 0.0,
+        "greed": 0.01,
         "imperson": 0.02
       }
     },
     {
       "text": "【緊急】明日から全国の銀行で引き出し制限が始まる。今日中に全額おろして！まだどこも報道していない",
       "answers": {
-        "arouse": 0.95,
-        "profit": 0.8,
-        "flame": 0.16,
+        "arouse": 0.96,
+        "profit": 0.83,
+        "flame": 0.19,
         "dema": 0.93,
         "greed": 0.1,
-        "imperson": 0.25
+        "imperson": 0.28
       }
     },
     {
       "text": "この計画には反対です。住民への説明が足りないまま決めるのは、順序が逆だと思う",
       "answers": {
-        "arouse": 0.13,
-        "profit": 0.04,
-        "flame": 0.1,
+        "arouse": 0.14,
+        "profit": 0.02,
+        "flame": 0.09,
         "dema": 0.07,
         "greed": 0.01,
         "imperson": 0.01
@@ -73,12 +73,12 @@ const JEV_DEMO = {
     {
       "text": "年収300万の同級生と年収3000万の僕、たった1つの違い。答えはプロフのリンクから",
       "answers": {
-        "arouse": 0.83,
+        "arouse": 0.84,
         "profit": 0.97,
-        "flame": 0.42,
-        "dema": 0.19,
-        "greed": 0.39,
-        "imperson": 0.19
+        "flame": 0.4,
+        "dema": 0.2,
+        "greed": 0.41,
+        "imperson": 0.16
       }
     }
   ],
@@ -86,12 +86,12 @@ const JEV_DEMO = {
     "text": "【衝撃】〇〇大学の研究で判明！毎朝この成分をとるだけで、認知症のリスクが40%も下がることが分かった。専門家も「今日から始めるべき」と太鼓判。高齢の親がいる人は、今すぐ見直してほしい。記事の最後で、研究チームも愛用しているおすすめのサプリを紹介しています。",
     "answers": {
       "arouse": 0.91,
-      "profit": 0.96,
-      "flame": 0.14,
-      "dema": 0.79,
-      "greed": 0.03,
+      "profit": 0.95,
+      "flame": 0.13,
+      "dema": 0.78,
+      "greed": 0.04,
       "imperson": 0.05,
-      "source": 0.88
+      "source": 0.89
     }
   }
 };
