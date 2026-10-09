@@ -586,7 +586,7 @@ function remember(el) {
   if (!checks.some((c) => c.code === "dup")) return null;
   const author = authorOf(el);
   if (!author) return null;
-  const parts = SITE?.text ? [...el.querySelectorAll(SITE.text)].map((e) => e.textContent) : [el.textContent];
+  const parts = SITE?.text ? ownParts(el).map((e) => e.textContent) : [el.textContent];
   const norm = JEV_DUP.normalize(parts.join(" "));
   if (norm.length < JEV_DUP.minChars) return null;
   const sh = JEV_DUP.shingles(norm);
@@ -652,8 +652,8 @@ function updateCounter() {
     d.textContent = text;
     counter.pop.append(d);
   };
-  add(`読んだ投稿 ${stats.judged} 件のうち、手口が見つかったのは ${stats.warned} 件です。`);
-  add("「手口」の印は、手口が見つかった投稿の右上に付きます。画面に少しとどまった投稿だけを判定しています。", "note");
+  add(`手口が見つかった投稿は ${stats.warned} 件です（Jev で読んだ投稿 ${stats.judged} 件）。`);
+  add("「手口」の印は、手口が見つかった投稿の右上に付きます。誘導の決まり文句は投稿が現れた時点で、Jev の項目は画面に少しとどまった投稿だけを判定しています。", "note");
   if (keyless) add("API キーが無いので、コードで判定できる項目（誘導の決まり文句・同じ文言の大量投稿）だけを見ています。キーを入れると Jev の判定も加わります。", "note");
   if (stats.excluded) add(`除外リストのアカウントの投稿 ${stats.excluded} 件は判定していません。`, "note");
   if (stats.errors) add(`判定の失敗 ${stats.errors} 件: ${stats.lastError}`, "hit");
@@ -675,6 +675,8 @@ function scan() {
     state.delete(el);
   }
   const touched = new Set(); // 同じ文言のグループに新しく加わった分
+  // DM・メールなどの画面では、手元だけで済むコードの判定（決まり文句・同じ文言）もしない（judgeBlock と同じ扱い）
+  const priv = isPrivatePage();
   for (const el of currentItems()) {
     const st = state.get(el);
     if (st) {
@@ -690,10 +692,14 @@ function scan() {
       stats.excluded = excludedSeen.size;
       continue;
     }
-    state.set(el, { answers: null, pending: false, timer: null, mark: null });
+    const fresh = { answers: null, pending: false, timer: null, mark: null };
+    state.set(el, fresh);
     if (settings.debug) el.classList.add("jev-debug");
-    const gid = remember(el);
-    if (gid !== null) touched.add(gid);
+    if (!priv) {
+      const gid = remember(el);
+      if (gid !== null) touched.add(gid);
+      codeFirst(el, fresh);
+    }
     io.observe(el);
   }
   // 3アカウント目がそろったら、それまでの投稿にもさかのぼって印を付ける（まだ Jev の判定が無くても出す）
@@ -704,6 +710,19 @@ function scan() {
     updateCounter();
   }
   if (settings.debug) updateCounter();
+}
+
+// コードで判定する項目（誘導の決まり文句）は費用がかからないので、見つけた時点で判定し、当たれば印をすぐ付ける。
+// Jev の判定（見えてから待ち時間＋問い合わせ）を待つと、印が出るのは読み終わった後になる。手口は読む前に知らせたい。
+// Jev の結果が返ったら apply で描き直し、両方の当たりをまとめて出す
+function codeFirst(el, st) {
+  if (!checks.some((c) => c.code && c.code !== "dup")) return;
+  const text = blockText(el);
+  if (!text) return; // まだ本文が描かれていない件は、Jev の判定のときに見る
+  st.text = text;
+  if (!score(null, text, el).some((r) => r.hit)) return;
+  apply(el);
+  whenIdle(updateCounter);
 }
 
 // 見えている状態が待ち時間（既定 1.5 秒、高度な設定）続いたら判定。その前に外れたら取りやめ（流し読み）
@@ -754,7 +773,7 @@ function currentItems() {
 // 無ければ全文から、数字だけの行（いいね数・再生数）と2文字以下の行（「返信」などの部品）を落とす
 function blockText(el) {
   // 画面に出ていない要素は除く（Yahoo!コメントの「このコメントを削除しますか？」のような隠れた確認文）
-  const parts = SITE?.text ? [...el.querySelectorAll(SITE.text)].filter(isShown).map((e) => e.innerText.trim()).filter(Boolean) : [];
+  const parts = SITE?.text ? ownParts(el).filter(isShown).map((e) => e.innerText.trim()).filter(Boolean) : [];
   if (SITE?.text && !parts.length && !SITE.textFallback) return ""; // 画像だけの投稿など: ユーザー名や日時だけで判定しない
   const text = parts.length
     ? [...new Set(parts)].join("\n")
@@ -764,6 +783,17 @@ function blockText(el) {
         .filter((l) => l.length > 2 && !/^[\d,.\s万千億KkMm件回人+:：/()（）-]+$/.test(l))
         .join("\n");
   return text.slice(0, MAX_CHARS);
+}
+
+// 1件の中の本文の場所のうち、引用として埋め込まれたほかの投稿（sites.js の quote）の中にあるものを除く。
+// 引用元だけで本文の無い投稿は、空になって判定しない（書いたのは引用元の人）
+function ownParts(el) {
+  const parts = [...el.querySelectorAll(SITE.text)];
+  if (!SITE.quote) return parts;
+  return parts.filter((p) => {
+    const q = p.closest(SITE.quote);
+    return !q || !el.contains(q);
+  });
 }
 
 function selectAll(sel) {
@@ -842,7 +872,7 @@ function apply(el) {
     stats.warned++;
   }
   if (hits.some((r) => r.c.action === "blur") && !revealed.has(el)) el.classList.add("jev-blur");
-  if (settings.debug) el.classList.add("jev-debug", "jev-debug-done"); // clearMarks で外れた分も付け直す
+  if (settings.debug) el.classList.add("jev-debug", ...(st.answers ? ["jev-debug-done"] : [])); // clearMarks で外れた分も付け直す。Jev の判定前（コードの項目だけ）は判定済みにしない
   if (!hits.length && !settings.debug) return;
   if (getComputedStyle(el).position === "static") el.classList.add("jev-anchor"); // マークを右上に置く基準
   st.mark = createMark(false);

@@ -35,6 +35,8 @@ Jev は文章を書かない AI で、「この文は○○か」という問い
 | 手口 | 見かた | 初期値 |
 |---|---|---|
 | 不安や怒りで行動に誘う | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
+| 楽に儲かる話で誘う | 楽に・確実にお金が得られると約束して、投資・副業・登録に誘う（Jev） | オン |
+| 公的機関や企業を名乗って急がせる | 停止・未払い・当選などを告げる通知の形で、リンク・入力・送金に誘う（Jev） | オン |
 | 反応を集めるための挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
 | 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
 | 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
@@ -132,7 +134,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 - Jev は理由を説明しません。印を押して「詳しく」を開くと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
 - 判定がおかしいと思ったら、印の詳細の「詳しく」にある「誤検知だと思う」（印が付かなかった件では「取りこぼしだと思う」）で、その投稿をこのブラウザの中に記録できます（最大 50 件。本文・項目と値・サイト・日時が残り、ふだんはどこにも送りません）。記録した投稿は「問いを試す」画面で選んで例文に加えられ、そのときは例文として接続先に送ります。そのうえで、自分で直せます。印の詳細の「詳しく」にある「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。AI の答え（JSON）を設定画面から開ける「問いを試す」画面に貼ると、今の問いと案を例文すべてにかけて表で比べ、良い案をそのまま自分の項目として採用できます（例文の数だけ問い合わせ、1日の上限に数えます）。
 - 印が付かなくても、内容が正しい・安全だという意味ではありません。
-- 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿、DM などの画面、除外したアカウントの投稿。
+- 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿（Jev の判定。誘導の決まり文句は投稿が現れた時点で手元で判定します）、DM などの画面、除外したアカウントの投稿。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
 
 ### 詳しく
@@ -176,6 +178,8 @@ No large language model (LLM) is used.
 | Technique | How it is detected | Default |
 |---|---|---|
 | Stirring anxiety or anger to push action | Stirs up emotions × drives views or purchases (Jev) | On |
+| Easy-money pitch | Promises easy or guaranteed money to draw readers into investing, side jobs or sign-ups (Jev) | On |
+| Impersonating an authority or company | A notice claiming suspension, unpaid bills, prizes etc. that pushes a link, login, input or payment (Jev) | On |
 | Provocation to farm reactions | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
 | Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
 | Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
@@ -272,7 +276,7 @@ Questions for other languages can be added as your own checks on the options pag
 - Jev does not explain its reasons. Open "詳しく" (details) in the tag to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
 - If a result looks wrong, record the post with "誤検知だと思う" (false alarm) or "取りこぼしだと思う" (missed) in the tag's details. Records (text, checks and scores, site, time; up to 50) stay in this browser and are not sent anywhere, unless you pick them as test sentences on the try-questions page, which sends them to your provider. Then you can fix it yourself: use "この判定を AI に相談する" (consult an AI) in the tag's details or on the options page. It produces a prompt with how the extension works, the questions, the scores and the text, to paste into an AI of your choice for rewording ideas and test sentences. It includes the post text, so choose where you paste it. Whether a suggestion works can only be known by measuring it with Jev: paste the AI's JSON answer into the "問いを試す" (try questions) page, linked from the options page, to score the current question and the candidates on every test sentence, compare them in a table, and adopt one as your own check (one request per sentence, counted toward the daily limit).
 - No tag does not mean the content is true or safe.
-- Not checked: text inside images or videos, anything after the first 2,000 characters of an article, posts you scroll past quickly, DM-like pages, and posts from accounts you excluded.
+- Not checked: text inside images or videos, anything after the first 2,000 characters of an article, posts you scroll past quickly (for Jev checks; lure phrases are checked locally as soon as a post appears), DM-like pages, and posts from accounts you excluded.
 - Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
 
 ### More

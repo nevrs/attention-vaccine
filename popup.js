@@ -99,7 +99,7 @@ async function render() {
     return;
   }
   if (!s) return line("このページには入れませんでした。読み込み直すか、PDF・ストアなど拡張が入れないページでないか確かめてください");
-  if (s.mode === "block") line(`読んだ投稿 ${s.judged} 件のうち、手口あり ${s.warned} 件`);
+  if (s.mode === "block") line(`手口あり ${s.warned} 件（Jev で読んだ投稿 ${s.judged} 件）`);
   if (s.mode === "page") line(s.judged ? `このページの手口 ${s.pageHits} 件` : "判定中…");
   if (s.errors) line(`失敗 ${s.errors}（${s.lastError}）`, "err");
 }

@@ -34,7 +34,7 @@ def judge(text, keys):
     return {k: round(v["noul"], 3) for k, v in r["answers"].items()}
 
 def main():
-    BLOCK = ["arouse", "profit", "flame", "dema"]
+    BLOCK = ["arouse", "profit", "flame", "dema", "greed", "imperson"]
     PAGE = BLOCK + ["source"]
     with cf.ThreadPoolExecutor(8) as ex:
         posts = list(ex.map(lambda t: {"text": t, "answers": judge(t, BLOCK)}, POSTS))
@@ -50,7 +50,7 @@ def main():
     for p in posts + [article]:
         a = p["answers"]
         bait = a["arouse"] * a["profit"]
-        print(f"煽×利 {bait:.2f} 炎上 {a['flame']:.2f} 断定 {a['dema']:.2f}" + (f" 要源 {a['source']:.2f}" if "source" in a else ""), p["text"][:24])
+        print(f"煽×利 {bait:.2f} 炎上 {a['flame']:.2f} 断定 {a['dema']:.2f} 儲 {a['greed']:.2f} 名 {a['imperson']:.2f}" + (f" 要源 {a['source']:.2f}" if "source" in a else ""), p["text"][:24])
 
 
 if __name__ == "__main__":

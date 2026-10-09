@@ -53,9 +53,13 @@ def main():
     a = ap.parse_args()
     checks = techniques.checks()
     cases = json.load(open(os.path.join(HERE, "eval", "cases.json"), encoding="utf-8"))
+    border = 0
     for c in cases:
-        c["expect"] = {k: v for k, v in c.get("expect", {}).items()
-                       if v in ("hit", "no") and k in checks and (not a.only or k == a.only)}
+        want = {k: v for k, v in c.get("expect", {}).items() if k in checks and (not a.only or k == a.only)}
+        border += sum(v not in ("hit", "no") for v in want.values())
+        c["expect"] = {k: v for k, v in want.items() if v in ("hit", "no")}
+    if border:  # "border"（境目。当たっても外れてもよい文）は測らない。経緯は各例文の note に書く
+        print(f"境目の例文 {border} 件は測っていません（expect が hit / no 以外）")
     cases = [c for c in cases if c["expect"]]
     if a.ids:
         want = set(a.ids.split(","))

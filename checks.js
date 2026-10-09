@@ -24,7 +24,7 @@ const JEV_PRESETS = JEV_TECHNIQUES.presets.map(({ notes, ...p }) => p);
 // 言い回しを足すときは、普通の投稿に付かないかを確かめる（誤検知は印の信用を落とす）
 const JEV_LURE = {
   strong: [
-    /プロフ(ィール)?(の|に)?(リンク|URL|ＵＲＬ)/,
+    /プロフ(ィール)?(の|に)?(リンク|URL)/,
     /プロフ(ィール)?(から|を?見て|をチェック)/,
     /固定(ツイ|ポスト)|固ツイ/,
     /(公式)?LINE(登録|追加|で受け取)|LINE@|友(だち|達)追加/,
@@ -36,13 +36,28 @@ const JEV_LURE = {
     /メルマガ(登録|で)/,
     /続きは(note|ノート|ブログ|有料|こちら|リンク|プロフ)/,
   ],
+  // 重なる言い回し（「詳しくは概要欄」と「概要欄」など）は長いほうを先に書く。JEV_CODE.lure が重なった分を数えない
   weak: [/今だけ/, /期間限定/, /今すぐ/, /詳しくは(こちら|リンク|概要欄)/, /概要欄/, /リンクから/, /限定(公開|特典|配布)/, /特典/, /知らないと損/],
 };
 
 // コードで判定する項目の関数。返り値は { hit, matches[] }
 const JEV_CODE = {
   lure(text) {
-    const pick = (list) => list.map((re) => text.match(re)?.[0]).filter(Boolean);
+    // 全角の英数字（「ＬＩＮＥ登録」「先着１００名」）も当たるよう、比べる前に表記をそろえる
+    const t = text.normalize("NFKC");
+    // 1つの言い回しを2回数えない（「詳しくは概要欄」が /詳しくは概要欄/ と /概要欄/ の両方に当たり、弱い2つで当たりになっていた）。
+    // 既に数えた箇所と重なる当たりは捨てる。強い → 弱いの順、各リストは長い言い回しを先に書く
+    const taken = [];
+    const pick = (list) =>
+      list.flatMap((re) => {
+        for (const m of t.matchAll(new RegExp(re.source, "g"))) {
+          const [s, e] = [m.index, m.index + m[0].length];
+          if (taken.some(([a, b]) => s < b && a < e)) continue;
+          taken.push([s, e]);
+          return [m[0]];
+        }
+        return [];
+      });
     const strong = pick(JEV_LURE.strong);
     const weak = pick(JEV_LURE.weak);
     return { hit: strong.length >= 1 || weak.length >= 2, matches: [...strong, ...weak] };
