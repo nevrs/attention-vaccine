@@ -3,6 +3,7 @@
 #    同じ形で弱い立場・私人に向けた文（acc_weak）との値の差
 # 2. 権力側のかわし方（power_tactic）と、相手を問わない害（harm）を、今の問いと候補の問い（CANDIDATES、未採用）がどれだけ拾うか。
 #    候補は、似た形の正当な文（tactic_ok / harm_ok）と正当な告発・批判に当たらないかも見る
+# 出力の ■1 が上の 1、■2・■3 が上の 2（SESSION.md の「3」「4・5」）
 # 使い方: TYPESAFE_API_KEY を設定して  python tools/power_survey.py [--repeat 2] [--out r.json]
 import sys, os, json, argparse, statistics, collections, concurrent.futures as cf
 import techniques  # tools/techniques.py
@@ -82,18 +83,27 @@ def main():
     for k in cur:
         d = [byid[x["pair"]]["scores"][k] - x["scores"][k] for x in G["acc_power"] if "pair" in x]
         print(f"  平均 {k} {statistics.mean(d):+.1f}")
+    # 相手を集団に替えた対は stereo などが上がって当然なので除き、私人・小さな団体に替えた対だけで比べる
+    ind = [x for x in G["acc_power"] if "pair" in x and byid[x["pair"]]["tags"]["target"] != "group"]
+    for k in ["dema", "flame"]:
+        d = [byid[x["pair"]]["scores"][k] - x["scores"][k] for x in ind]
+        print(f"  集団を除く {len(ind)} 組の {k}: 権力側のほうが高い組 {sum(v < 0 for v in d)}、差の中央値 {statistics.median(d):+.1f}")
 
     print("\n■ 2. 今の問いでの印（初期値のまま）")
     for g in ["power_tactic", "tactic_ok", "harm", "harm_ok"]:
         print(f"  {g} {flagged(G[g])}/{len(G[g])}")
 
-    print("\n■ 3. 候補の問い（値は 0〜100、3 回平均）。正当な文側の最大と、拾うべき側の分布")
+    print(f"\n■ 3. 候補の問い（値は 0〜100、{1 + a.repeat} 回平均）。拾うべき文（その候補が狙う kind だけ）の分布と、正当な文の最大")
     neg_all = G["tactic_ok"] + G["harm_ok"] + G["acc_power"] + G["critique"]
-    for ck, pos, neg in [("c_deflect", "power_tactic", "tactic_ok"), ("c_dismiss", "power_tactic", "tactic_ok"),
-                         ("c_harass", "harm", "harm_ok"), ("c_dehuman", "harm", "harm_ok"), ("c_spill", "harm", "harm_ok")]:
-        p = sorted(x["scores"][ck] for x in G[pos])
+    aims = {"c_deflect": ("power_tactic", "tactic_ok", {"whatabout", "deflect", "evade", "minimize", "attack_accuser", "motive", "reassure"}),
+            "c_dismiss": ("power_tactic", "tactic_ok", {"label", "dismiss"}),
+            "c_harass": ("harm", "harm_ok", {"doxx", "raid", "threat", "spill"}),
+            "c_dehuman": ("harm", "harm_ok", {"dehuman"}),
+            "c_spill": ("harm", "harm_ok", {"spill"})}
+    for ck, (pos, neg, kinds) in aims.items():
+        p = sorted(x["scores"][ck] for x in G[pos] if x["tags"]["kind"] in kinds)
         n_top = sorted(neg_all, key=lambda x: -x["scores"][ck])[:4]
-        print(f"\n  {ck}: {pos} 中央値 {statistics.median(p):.0f} 最小 {p[0]:.0f} / {neg} 最大 {max(x['scores'][ck] for x in G[neg]):.0f} / 正当な文全体の上位: "
+        print(f"\n  {ck}: {pos}（{len(p)} 本）中央値 {statistics.median(p):.0f} 最小 {p[0]:.0f} / {neg} 最大 {max(x['scores'][ck] for x in G[neg]):.0f} / 正当な文全体の上位: "
               + ", ".join(f"{x['id']} {x['scores'][ck]:.0f}" for x in n_top))
     print("\n  拾うべき文ごと（今の印 / 候補の値）")
     for g, cks in [("power_tactic", ["c_deflect", "c_dismiss"]), ("tactic_ok", ["c_deflect", "c_dismiss"]),
