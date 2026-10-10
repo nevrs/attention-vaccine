@@ -20,6 +20,7 @@ let mode = null; // "page" | "block" | null
 let checks = []; // { id, label, why, qs[], code, high, action, showSources }
 let keyless = false; // API キーが無い: コードで判定する項目だけで動く（Jev は呼ばない）
 const stats = { judged: 0, warned: 0, errors: 0, lastError: "", excluded: 0 };
+const warnedSeen = new Set(); // 印を付けた投稿（本文）。X は画面外の投稿を作り直すので、要素ごとに数えると戻るたびに増える
 let excludedAuthors = new Set(); // 利用者が「判定しない」と決めたアカウント（小文字、@ なし）
 const excludedSeen = new Set(); // 除外した投稿（投稿者＋本文の冒頭）。X は画面外の投稿を作り直すので、要素ではなく中身で数える
 
@@ -64,6 +65,7 @@ async function load() {
   Object.assign(stats, { judged: 0, warned: 0, errors: 0, lastError: "", excluded: 0 });
   excludedAuthors = new Set((settings.excludeAuthors || []).map((a) => String(a).replace(/^@/, "").toLowerCase()));
   excludedSeen.clear();
+  warnedSeen.clear();
   SITE = jevSiteFor(location.hostname, settings.userSites);
   SITE_ITEMS = [...new Set([SITE?.item, jevSiteFor(location.hostname)?.item].filter(Boolean))];
   stopPage();
@@ -193,11 +195,12 @@ const MARK_CSS = `
   [hidden] { display: none; }
 `;
 
-function createMark(fixed) {
+// at: 1件の印の位置（既定は SITE.markAt）。引用の枠にはサイトのボタンが無いので、既定の右上の角に置く
+function createMark(fixed, at = SITE?.markAt) {
   const host = document.createElement("jev-mark");
   host.style.cssText = fixed
     ? `all:initial;position:fixed;right:12px;bottom:12px;z-index:2147483646;${SITE?.cornerAt || ""}`
-    : `all:initial;position:absolute;top:4px;right:4px;z-index:2147483646;${SITE?.markAt || ""}`;
+    : `all:initial;position:absolute;top:4px;right:4px;z-index:2147483646;${at || ""}`;
   if (fixed) host.classList.add("fixed");
   if (fixed && /left:\s*\d/.test(SITE?.cornerAt || "")) host.classList.add("left"); // 詳細を画面の外にはみ出させない
   const sh = host.attachShadow({ mode: "closed" }); // open だとページ側のプログラムが印を書き換えられる
@@ -677,30 +680,35 @@ function scan() {
   const touched = new Set(); // 同じ文言のグループに新しく加わった分
   // DM・メールなどの画面では、手元だけで済むコードの判定（決まり文句・同じ文言）もしない（judgeBlock と同じ扱い）
   const priv = isPrivatePage();
-  for (const el of currentItems()) {
+  const track = (el, quote) => {
     const st = state.get(el);
     if (st) {
       if (st.mark && !st.mark.host.isConnected) el.append(st.mark.host); // サイト側の描き直しで消えたマークを戻す
-      continue;
+      return;
     }
-    if (isMainArticle(el)) continue;
+    if (!quote && isMainArticle(el)) return;
     // 除外リストのアカウントは判定しない（送らない・数えない・同じ文言にも入れない）
     const who = excludedAuthors.size ? authorOf(el) : null;
     if (who && excludedAuthors.has(who.toLowerCase())) {
       state.set(el, { excluded: true, answers: null, pending: false, timer: null, mark: null });
       excludedSeen.add(who.toLowerCase() + "\n" + el.textContent.slice(0, 200));
       stats.excluded = excludedSeen.size;
-      continue;
+      return;
     }
-    const fresh = { answers: null, pending: false, timer: null, mark: null };
+    const fresh = { answers: null, pending: false, timer: null, mark: null, quote };
     state.set(el, fresh);
     if (settings.debug) el.classList.add("jev-debug");
     if (!priv) {
-      const gid = remember(el);
+      // 引用元は同じ文言に数えない（同じ投稿を引用した3人が「同じ文の3アカウント」に見える）
+      const gid = quote ? null : remember(el);
       if (gid !== null) touched.add(gid);
       codeFirst(el, fresh);
     }
     io.observe(el);
+  };
+  for (const el of currentItems()) {
+    track(el, false);
+    for (const q of quotesIn(el)) track(q, true);
   }
   // 3アカウント目がそろったら、それまでの投稿にもさかのぼって印を付ける（まだ Jev の判定が無くても出す）
   for (const gid of touched) {
@@ -714,15 +722,35 @@ function scan() {
 
 // コードで判定する項目（誘導の決まり文句）は費用がかからないので、見つけた時点で判定し、当たれば印をすぐ付ける。
 // Jev の判定（見えてから待ち時間＋問い合わせ）を待つと、印が出るのは読み終わった後になる。手口は読む前に知らせたい。
-// Jev の結果が返ったら apply で描き直し、両方の当たりをまとめて出す
+// Jev の結果が返ったら apply で描き直し、両方の当たりをまとめて出す。前に判定した本文なら、保存済みの結果もすぐ出す（peek）
 function codeFirst(el, st) {
-  if (!checks.some((c) => c.code && c.code !== "dup")) return;
   const text = blockText(el);
   if (!text) return; // まだ本文が描かれていない件は、Jev の判定のときに見る
+  peek(el, st, text);
+  if (!checks.some((c) => c.code && c.code !== "dup")) return;
   st.text = text;
   if (!score(null, text, el).some((r) => r.hit)) return;
   apply(el);
   whenIdle(updateCounter);
+}
+
+// 前に判定した本文は、保存済みの結果で印をすぐ戻す（問い合わせはしない。保存に無ければ何もしない）。
+// X は画面外の投稿を作り直すので、スクロールで戻るたびに待ち時間からやり直しになっていた。別の人が同じ文を投稿した場合も同じ
+async function peek(el, st, text) {
+  const questions = [...new Set(checks.flatMap((c) => c.qs))];
+  if (keyless || !questions.length || isPrivatePage()) return;
+  const r = await chrome.runtime.sendMessage({ type: "peek", text, questions }).catch(() => null);
+  if (!r?.answers || state.get(el) !== st || st.answers) return;
+  clearTimeout(st.timer);
+  st.timer = null;
+  st.answers = r.answers;
+  st.text = text;
+  io.unobserve(el);
+  whenIdle(() => {
+    if (state.get(el) !== st) return;
+    apply(el);
+    updateCounter();
+  });
 }
 
 // 見えている状態が待ち時間（既定 1.5 秒、高度な設定）続いたら判定。その前に外れたら取りやめ（流し読み）
@@ -786,14 +814,21 @@ function blockText(el) {
 }
 
 // 1件の中の本文の場所のうち、引用として埋め込まれたほかの投稿（sites.js の quote）の中にあるものを除く。
-// 引用元だけで本文の無い投稿は、空になって判定しない（書いたのは引用元の人）
+// 引用元だけで本文の無い投稿は、空になって判定しない（書いたのは引用元の人）。el が引用の枠そのものなら、その中の本文を使う
 function ownParts(el) {
   const parts = [...el.querySelectorAll(SITE.text)];
   if (!SITE.quote) return parts;
   return parts.filter((p) => {
     const q = p.closest(SITE.quote);
-    return !q || !el.contains(q);
+    return !q || q === el || !el.contains(q);
   });
+}
+
+// 1件の中に埋め込まれた引用元の投稿（本文のあるもの）。引用した人の判定からは外すので、引用元として別に判定する。
+// 外したままだと、ヘイトやデマを一言添えて引用するだけで、タイムラインのどこにも印が付かない
+function quotesIn(el) {
+  if (!SITE?.quote || !SITE.text) return [];
+  return [...el.querySelectorAll(SITE.quote)].filter((q) => q.querySelector(SITE.text));
 }
 
 function selectAll(sel) {
@@ -867,19 +902,20 @@ function apply(el) {
   const st = state.get(el);
   const rows = score(st.answers, st.text, el);
   const hits = rows.filter((r) => r.hit);
-  if (hits.length && !st.counted) {
-    st.counted = true;
-    stats.warned++;
+  if (hits.length) {
+    warnedSeen.add((st.quote ? "引用\n" : "") + (st.text ?? blockText(el)));
+    stats.warned = warnedSeen.size;
   }
   if (hits.some((r) => r.c.action === "blur") && !revealed.has(el)) el.classList.add("jev-blur");
   if (settings.debug) el.classList.add("jev-debug", ...(st.answers ? ["jev-debug-done"] : [])); // clearMarks で外れた分も付け直す。Jev の判定前（コードの項目だけ）は判定済みにしない
   if (!hits.length && !settings.debug) return;
   if (getComputedStyle(el).position === "static") el.classList.add("jev-anchor"); // マークを右上に置く基準
-  st.mark = createMark(false);
-  if (hits.length) setBadge(st.mark.badge, hits);
+  st.mark = createMark(false, st.quote ? "" : SITE?.markAt);
+  if (hits.length) setBadge(st.mark.badge, hits, st.quote ? "引用元 " : "");
   else st.mark.badge.textContent = "読んだ";
   st.mark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(st.mark.pop, rows, hits.some((r) => r.c.showSources) ? primaryLinks(el) : [], (add) => {
+    if (st.quote) add("note", "引用された投稿の手口です。引用した人の文章の判定ではありません");
     if (el.classList.contains("jev-blur")) add("note", "本文はぼかしています。本文を押すと表示します");
   }, st.text);
   el.append(st.mark.host);

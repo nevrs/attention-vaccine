@@ -153,11 +153,12 @@ function collect() {
     const highInput = document.querySelector(`[data-high="${id}"]`);
     const high = highInput ? Number(highInput.value) : JEV_PILLARS[id].defaults.high; // コードの項目は欄が無い
     if (!(high >= 0 && high <= 100)) errors.push(`${JEV_PILLARS[id].label}: 閾値は 0〜100 にしてください`);
-    pillars[id] = {
+    const o = jevPillarOverrides(id, {
       on: document.querySelector(`[data-on="${id}"]`).checked,
       high,
       action: document.querySelector(`[data-act="${id}"]`)?.value ?? "warn",
-    };
+    });
+    if (Object.keys(o).length) pillars[id] = o;
   }
   const rules = [];
   for (const [i, node] of [...$("rules").children].entries()) {

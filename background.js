@@ -54,6 +54,18 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
       changed = true;
     }
   }
+  // 0.22 までは、設定を保存すると全手口の on / high / action を丸ごと保存していた。初期値と同じ項目を消し、今後の初期値の変更が届くようにする。
+  // 当時の初期値（今と違うもの）は、利用者が選んだ値と見分けられないので残す
+  const { pillars } = await chrome.storage.sync.get("pillars");
+  if (pillars) {
+    const slim = {};
+    for (const [id, c] of Object.entries(pillars)) {
+      if (!JEV_PILLARS[id]) continue; // 消えた手口
+      const o = jevPillarOverrides(id, c);
+      if (Object.keys(o).length) slim[id] = o;
+    }
+    if (JSON.stringify(slim) !== JSON.stringify(pillars)) await chrome.storage.sync.set({ pillars: slim }).catch(() => {});
+  }
   // rules が変われば開いているページは storage.onChanged で読み直す。容量超えで失敗したら旧い文のまま（次の更新で再試行）
   if (changed) await chrome.storage.sync.set({ rules }).catch(() => {});
   await syncContentScripts();
@@ -95,6 +107,7 @@ chrome.permissions.onRemoved.addListener(() => syncContentScripts());
 chrome.runtime.onMessage.addListener((msg, _sender, send) => {
   const job =
     msg.type === "judge" ? judge(msg.text, msg.questions).then((answers) => ({ answers })) :
+    msg.type === "peek" ? judge(msg.text, msg.questions, true).then((answers) => ({ answers })) : // 保存済みの結果だけ。無ければ null
     msg.type === "test" ? testConnection(msg.provider, msg.apiKey) :
     msg.type === "compare" ? compareWithPaper(msg.doi, msg.text) :
     msg.type === "hasKey" ? account().then((a) => ({ has: !a.needsKey || !!a.apiKey })) : // ページ側にはキーそのものを渡さない
@@ -135,8 +148,9 @@ async function account() {
 }
 
 // 1件の本文に複数の問いを投げる。キャッシュは問いごと。足りない問いだけを1回の呼び出しにまとめる
-// （Jev は1回で複数の問いに答え、時間も1問のときと変わらない）。返り値は { 問い: 確率 }
-async function judge(text, questions) {
+// （Jev は1回で複数の問いに答え、時間も1問のときと変わらない）。返り値は { 問い: 確率 }。
+// peek なら呼び出さず、全部の問いが保存済みのときだけ返す（足りなければ null）
+async function judge(text, questions, peek = false) {
   const acc = await account();
   if (acc.needsKey && !acc.apiKey) throw new Error("API キーが未設定");
   const keys = {};
@@ -146,6 +160,7 @@ async function judge(text, questions) {
   const missing = [];
   for (const q of questions) (hits[keys[q]] !== undefined ? (out[q] = hits[keys[q]]) : missing.push(q));
   if (!missing.length) return out;
+  if (peek) return null;
   const flightKey = missing.map((q) => keys[q]).join("|"); // 問いの組が同じときだけ相乗りする
   if (!inflight.has(flightKey)) {
     const pr = queued(() => acc.ask(acc, text, missing))
