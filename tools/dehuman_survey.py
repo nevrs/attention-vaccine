@@ -66,12 +66,12 @@ def main():
         gap = h[0] - n[0]["scores"][k]
         print(f"    当てはまる 最小 {h[0]:.0f} 中央値 {statistics.median(h):.0f} / 当てはまらない 最大 {n[0]['scores'][k]:.0f}（差 {gap:+.0f}）"
               " 上位: " + ", ".join(f"{x['id']} {x['scores'][k]:.0f}" for x in n[:5]))
-        for thr in (50, 60, 70, 80):
+        for thr in (50, 60, 70, 80, 85):
             print(f"     閾値 {thr}: 取りこぼし {sum(v < thr for v in h)}  誤検知 {sum(x['scores'][k] >= thr for x in no)}")
         print(f"     同じ文のぶれ（最大−最小）の最大 {max(x['spread'][k] for x in items):.0f}")
     print("\n■ 文ごと")
     for x in items:
-        if x["src"] in ("dehuman",) or x.get("expect5") == "hit" or max(x["scores"][k] for k in VARIANTS) >= 50:
+        if x["src"] in ("dehuman",) or x.get("expect5", x["expect"]) == "hit" or x["expect"] == "hit" or max(x["scores"][k] for k in VARIANTS) >= 50:
             t = x.get("tags", {})
             label = t.get("target") or t.get("kind") or ""
             print(f"  {x['id']} {x['expect']:<6}{x.get('expect5', x['expect']):<6} [{label}{'/呼びかけ' if t.get('call') else ''}] "
