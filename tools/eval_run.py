@@ -45,7 +45,7 @@ def score_case(case, checks):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", help="この検査だけ（bait / flame / dema / stereo / source / 誇張 / 釣りタイトル / 宣伝・勧誘）")
+    ap.add_argument("--only", help="この検査だけ（techniques.js の手口の id、または例文の expect にある名前）")
     ap.add_argument("--repeat", type=int, default=0, help="各文を追加で N 回再実行し、スコアのばらつきを出す")
     ap.add_argument("--ids", help="カンマ区切りの case id だけ使う")
     ap.add_argument("--limit", type=int, help="N 件に均等に間引く")
