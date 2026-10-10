@@ -741,7 +741,7 @@ async function peek(el, st, text) {
   if (keyless || !questions.length || isPrivatePage()) return;
   const r = await chrome.runtime.sendMessage({ type: "peek", text, questions }).catch(() => null);
   if (!r?.answers || state.get(el) !== st || st.answers) return;
-  stats.judged++; // 「手口が見つかった N 件（Jev で読んだ M 件）」で N > M にならないよう、保存済みの結果も読んだ件に数える
+  if (!st.pending) stats.judged++; // 保存済みの結果も「Jev で読んだ件」に数える（問い合わせ中なら、その返りで数えられる）
   clearTimeout(st.timer);
   st.timer = null;
   st.answers = r.answers;
