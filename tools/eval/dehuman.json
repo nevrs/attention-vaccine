@@ -1,0 +1,551 @@
+{
+ "about": "候補の手口「人間扱いしない言葉」を詰める例文（2026-10-10、自作、人名は〇〇）。expect: hit 当てはまるべき / no 当てはまるべきでない / border どちらとも決めず値だけ見る。tags.target: group 集団 / power 権力側 / private 私人 / crime 罪を犯した人 / none。tags.call: 排除・駆除の呼びかけがあるか。no 側は、文字どおりの害虫・病気の話、比喩でも人をおとしめない言い回し、人間扱いしない言葉を報じる・批判する文、強い批判・悪口だが人間以外にたとえない文。F・G・B08〜 は案 4 の確認用に後から足した文（問いの例に使った語を含まない）",
+ "cases": [
+  {
+   "id": "D01",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "あの国から来た連中はゴキブリと同じだ。一匹見たら百匹いると思え。全部追い出せ"
+  },
+  {
+   "id": "D02",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "生活保護の受給者なんて、税金に群がるウジ虫みたいなものだ"
+  },
+  {
+   "id": "D03",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "〇〇教の信者は社会をむしばむ病原菌だ。感染が広がる前に隔離しないといけない"
+  },
+  {
+   "id": "D04",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "ホームレスは街のゴミ。見ているだけで気分が悪くなる"
+  },
+  {
+   "id": "D05",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "デモに集まっているのは人間の皮をかぶった害獣だ。まとめて檻に入れておけ"
+  },
+  {
+   "id": "D06",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "右翼の連中は脳みそのない猿だ。言葉が通じると思うほうが間違っている"
+  },
+  {
+   "id": "D07",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "左翼は日本に巣くうダニだ。血を吸うことしか考えていない"
+  },
+  {
+   "id": "D08",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "あの民族は人間以下の存在だ。この国から一掃するべきだ"
+  },
+  {
+   "id": "D09",
+   "expect": "hit",
+   "tags": {
+    "target": "power",
+    "call": true
+   },
+   "text": "国会にいる連中はみんな税金を食い荒らすシロアリだ。一匹残らず駆除しろ"
+  },
+  {
+   "id": "D10",
+   "expect": "hit",
+   "tags": {
+    "target": "power",
+    "call": false
+   },
+   "text": "〇〇首相はもう人間じゃない。ただの醜い豚だ"
+  },
+  {
+   "id": "D11",
+   "expect": "hit",
+   "tags": {
+    "target": "power",
+    "call": true
+   },
+   "text": "官僚どもはこの国のがん細胞だ。切除しない限り日本は助からない"
+  },
+  {
+   "id": "D12",
+   "expect": "hit",
+   "tags": {
+    "target": "power",
+    "call": false
+   },
+   "text": "あの社長は社員の血をすするヒルだ。人の心なんて持っていない"
+  },
+  {
+   "id": "D13",
+   "expect": "hit",
+   "tags": {
+    "target": "private",
+    "call": true
+   },
+   "text": "隣の家のあいつは人間のクズ以下のゴミだ。早くこの町から消えてくれ"
+  },
+  {
+   "id": "D14",
+   "expect": "hit",
+   "tags": {
+    "target": "private",
+    "call": false
+   },
+   "text": "この投稿をしたやつ、どう見てもただの畜生だな。人間の言葉が分からないらしい"
+  },
+  {
+   "id": "D15",
+   "expect": "hit",
+   "tags": {
+    "target": "crime",
+    "call": true
+   },
+   "text": "子どもを狙う犯罪者は人間じゃない。ケダモノは一生檻の中か、処分しろ"
+  },
+  {
+   "id": "D16",
+   "expect": "hit",
+   "tags": {
+    "target": "crime",
+    "call": true
+   },
+   "text": "不法滞在者は外来種と同じ。在来の日本人を守るために駆除が必要だ"
+  },
+  {
+   "id": "D17",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "老人どもは若者に寄生するだけの害虫だ"
+  },
+  {
+   "id": "D18",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "フェミとかいう病気をこの国から根絶しないとダメだ"
+  },
+  {
+   "id": "D19",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "あいつらは群れで動くハイエナだ。弱い者を見つけては食い物にする"
+  },
+  {
+   "id": "D20",
+   "expect": "hit",
+   "tags": {
+    "target": "power",
+    "call": true
+   },
+   "text": "あの政党は日本を腐らせる毒虫の巣だ。巣ごと焼き払え"
+  },
+  {
+   "id": "B01",
+   "expect": "border",
+   "tags": {
+    "kind": "slur"
+   },
+   "text": "またマスゴミが切り取り報道をしている。もう誰も信じていない"
+  },
+  {
+   "id": "B02",
+   "expect": "border",
+   "tags": {
+    "kind": "slur"
+   },
+   "text": "老害が会議を仕切るから、この会社は何も変わらない"
+  },
+  {
+   "id": "B03",
+   "expect": "border",
+   "tags": {
+    "kind": "slur"
+   },
+   "text": "ネトウヨが今日もリプ欄で暴れている"
+  },
+  {
+   "id": "B04",
+   "expect": "border",
+   "tags": {
+    "kind": "slur"
+   },
+   "text": "パヨクはどうしてこう話が通じないのか"
+  },
+  {
+   "id": "B05",
+   "expect": "border",
+   "tags": {
+    "kind": "label"
+   },
+   "text": "国を売るような政策ばかり。あの議員は売国奴だ"
+  },
+  {
+   "id": "B06",
+   "expect": "border",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "あの部長は組織の癌だ。あの人がいる限り部署はよくならない"
+  },
+  {
+   "id": "B07",
+   "expect": "border",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "ブラック企業で何年も社畜をやっていた"
+  },
+  {
+   "id": "E01",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "台所にゴキブリが出た。一匹見たら百匹いると言うし、明日は駆除剤を買ってこよう"
+  },
+  {
+   "id": "E02",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "シロアリの被害で床下の柱がボロボロになっていた。業者に駆除を頼んだ"
+  },
+  {
+   "id": "E03",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "手術でがん細胞をすべて切除できたと主治医から説明を受けた"
+  },
+  {
+   "id": "E04",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "外来種のアメリカザリガニが池で増えすぎたので、地域で駆除作業をした"
+  },
+  {
+   "id": "E05",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "新型のウイルスは感染力が強い。手洗いと換気を続けよう"
+  },
+  {
+   "id": "E06",
+   "expect": "no",
+   "tags": {
+    "kind": "fiction"
+   },
+   "text": "このゲームは、街にあふれたゾンビを駆除しながら脱出を目指すアクションだ"
+  },
+  {
+   "id": "E07",
+   "expect": "no",
+   "tags": {
+    "kind": "affection"
+   },
+   "text": "うちの子は木登りが得意で、まるで小猿みたい"
+  },
+  {
+   "id": "E08",
+   "expect": "no",
+   "tags": {
+    "kind": "affection"
+   },
+   "text": "あの選手は野獣のようなパワーでゴール前に突っ込んでくる"
+  },
+  {
+   "id": "E09",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "あの人はたぬき親父で、何を考えているのか読めない"
+  },
+  {
+   "id": "E10",
+   "expect": "no",
+   "tags": {
+    "kind": "report"
+   },
+   "text": "ルワンダの虐殺では、ラジオが少数派を「ゴキブリ」と呼び続け、殺害をあおった"
+  },
+  {
+   "id": "E11",
+   "expect": "no",
+   "tags": {
+    "kind": "report"
+   },
+   "text": "〇〇議員が移民を「害虫」と呼んだ発言に、人権団体が抗議した"
+  },
+  {
+   "id": "E12",
+   "expect": "no",
+   "tags": {
+    "kind": "critique"
+   },
+   "text": "人を虫や病気にたとえる言葉は、暴力の前ぶれになってきた。どんなに腹が立っても、相手を人間として扱いたい"
+  },
+  {
+   "id": "E13",
+   "expect": "no",
+   "tags": {
+    "kind": "report"
+   },
+   "text": "ネットで生活保護の受給者を「寄生虫」と呼ぶ投稿が拡散し、支援団体が削除を求めている"
+  },
+  {
+   "id": "E14",
+   "expect": "no",
+   "tags": {
+    "kind": "insult"
+   },
+   "text": "あいつは本当にバカだ。何度言っても同じミスをする"
+  },
+  {
+   "id": "E15",
+   "expect": "no",
+   "tags": {
+    "kind": "critique"
+   },
+   "text": "〇〇首相の政策は最悪だ。国民の生活を何も分かっていない"
+  },
+  {
+   "id": "E16",
+   "expect": "no",
+   "tags": {
+    "kind": "critique"
+   },
+   "text": "官僚の天下りは税金の無駄づかいだ。今すぐやめさせるべきだ"
+  },
+  {
+   "id": "E17",
+   "expect": "no",
+   "tags": {
+    "kind": "critique"
+   },
+   "text": "あの社長は社員を使い捨てにしている。経営者として失格だ"
+  },
+  {
+   "id": "E18",
+   "expect": "no",
+   "tags": {
+    "kind": "critique"
+   },
+   "text": "子どもを狙う犯罪には、もっと重い刑罰を科すべきだ"
+  },
+  {
+   "id": "E19",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "政治の世界は魑魅魍魎が跋扈すると言われる"
+  },
+  {
+   "id": "E20",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "野良猫が増えすぎたので、地域で避妊手術をして見守る活動を始めた"
+  },
+  {
+   "id": "E21",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "締め切り前は毎回ゾンビみたいな顔で出社している"
+  },
+  {
+   "id": "E22",
+   "expect": "no",
+   "tags": {
+    "kind": "report"
+   },
+   "text": "ナチスは宣伝映画でユダヤ人をネズミにたとえ、迫害への抵抗感を薄れさせた"
+  },
+  {
+   "id": "F01",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "あいつらは蛆のようにどこからでも湧いてくる。根こそぎ消毒しないと"
+  },
+  {
+   "id": "F02",
+   "expect": "hit",
+   "tags": {
+    "target": "power",
+    "call": false
+   },
+   "text": "〇〇知事は県の金に吸いつく寄生虫だ"
+  },
+  {
+   "id": "F03",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": false
+   },
+   "text": "あの国の人間は家畜並みの知能しかない"
+  },
+  {
+   "id": "F04",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "働かない若者は社会の粗大ゴミだ。まとめて処分場に送れ"
+  },
+  {
+   "id": "F05",
+   "expect": "hit",
+   "tags": {
+    "target": "private",
+    "call": false
+   },
+   "text": "店で騒いでいた客、あれは人間というより獣の鳴き声だった"
+  },
+  {
+   "id": "F06",
+   "expect": "hit",
+   "tags": {
+    "target": "group",
+    "call": true
+   },
+   "text": "〇〇系の住民はこの街を汚す汚物だ。きれいに洗い流すべきだ"
+  },
+  {
+   "id": "G01",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "相手チームは虎のように激しいディフェンスで攻撃を止めた"
+  },
+  {
+   "id": "G02",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "初めての職場で、借りてきた猫みたいにおとなしくしていた"
+  },
+  {
+   "id": "G03",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "彼は仕事の鬼で、締め切り前は誰よりも遅くまで残っている"
+  },
+  {
+   "id": "G04",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "怪物ルーキーが初登板で十個の三振を奪った"
+  },
+  {
+   "id": "G05",
+   "expect": "no",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "蟻のようにこつこつ働いて、ようやく家を建てた"
+  },
+  {
+   "id": "G06",
+   "expect": "no",
+   "tags": {
+    "kind": "literal"
+   },
+   "text": "イノシシが畑を荒らすので、猟友会に駆除を頼んだ"
+  },
+  {
+   "id": "G07",
+   "expect": "no",
+   "tags": {
+    "kind": "report"
+   },
+   "text": "判決は、被告が被害者を「ゴミ」と呼んで暴行を繰り返したと認定した"
+  },
+  {
+   "id": "G08",
+   "expect": "no",
+   "tags": {
+    "kind": "critique"
+   },
+   "text": "〇〇知事は県の予算を身内の会社に流している。説明責任を果たすべきだ"
+  },
+  {
+   "id": "B08",
+   "expect": "border",
+   "tags": {
+    "kind": "idiom"
+   },
+   "text": "〇〇党の議員は人の皮をかぶった悪魔だ"
+  },
+  {
+   "id": "B09",
+   "expect": "border",
+   "tags": {
+    "kind": "label"
+   },
+   "text": "モンスターペアレントへの対応で、担任の先生が疲れ切っている"
+  }
+ ]
+}
