@@ -38,6 +38,7 @@ Jev は文章を書かない AI で、「この文は○○か」という問い
 | 楽に儲かる話で誘う | 楽に・確実にお金が得られると約束して、投資・副業・登録に誘う（Jev） | オン |
 | 公的機関や企業を名乗って急がせる | 停止・未払い・当選などを告げる通知の形で、リンク・入力・送金に誘う（Jev） | オン |
 | 反応を集めるための挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
+| 人間扱いしない言葉 | 集団・属性・政治的な立場の人々を虫・病気・ゴミ・獣・悪魔などにたとえる、人を人間以外にたとえて排除を求める（個人への悪口の慣用句は除く。Jev） | オン |
 | 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
 | 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
 | 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
@@ -181,6 +182,7 @@ No large language model (LLM) is used.
 | Easy-money pitch | Promises easy or guaranteed money to draw readers into investing, side jobs or sign-ups (Jev) | On |
 | Impersonating an authority or company | A notice claiming suspension, unpaid bills, prizes etc. that pushes a link, login, input or payment (Jev) | On |
 | Provocation to farm reactions | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
+| Dehumanizing language | Likening groups, attributes or political camps to vermin, disease, trash, beasts or devils, or likening someone to a non-human while calling for their removal (everyday insults aimed at one person are excluded; Jev) | On |
 | Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
 | Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
 | Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |

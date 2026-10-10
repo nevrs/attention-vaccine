@@ -2073,5 +2073,837 @@
    "bait": "no"
   },
   "note": "2026-10-09 正当な「今すぐ」「今日中に」（リコールの呼びかけ）"
+ },
+ {
+  "id": "dehuman-D01",
+  "text": "あの国から来た連中はゴキブリと同じだ。一匹見たら百匹いると思え。全部追い出せ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D01"
+ },
+ {
+  "id": "dehuman-D02",
+  "text": "生活保護の受給者なんて、税金に群がるウジ虫みたいなものだ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D02"
+ },
+ {
+  "id": "dehuman-D03",
+  "text": "〇〇教の信者は社会をむしばむ病原菌だ。感染が広がる前に隔離しないといけない",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D03"
+ },
+ {
+  "id": "dehuman-D04",
+  "text": "ホームレスは街のゴミ。見ているだけで気分が悪くなる",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D04"
+ },
+ {
+  "id": "dehuman-D05",
+  "text": "デモに集まっているのは人間の皮をかぶった害獣だ。まとめて檻に入れておけ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D05"
+ },
+ {
+  "id": "dehuman-D06",
+  "text": "右翼の連中は脳みそのない猿だ。言葉が通じると思うほうが間違っている",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D06"
+ },
+ {
+  "id": "dehuman-D07",
+  "text": "左翼は日本に巣くうダニだ。血を吸うことしか考えていない",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D07"
+ },
+ {
+  "id": "dehuman-D08",
+  "text": "あの民族は人間以下の存在だ。この国から一掃するべきだ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D08"
+ },
+ {
+  "id": "dehuman-D09",
+  "text": "国会にいる連中はみんな税金を食い荒らすシロアリだ。一匹残らず駆除しろ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D09"
+ },
+ {
+  "id": "dehuman-D10",
+  "text": "〇〇首相はもう人間じゃない。ただの醜い豚だ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json D10"
+ },
+ {
+  "id": "dehuman-D11",
+  "text": "官僚どもはこの国のがん細胞だ。切除しない限り日本は助からない",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D11"
+ },
+ {
+  "id": "dehuman-D12",
+  "text": "あの社長は社員の血をすするヒルだ。人の心なんて持っていない",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json D12"
+ },
+ {
+  "id": "dehuman-D13",
+  "text": "隣の家のあいつは人間のクズ以下のゴミだ。早くこの町から消えてくれ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D13"
+ },
+ {
+  "id": "dehuman-D14",
+  "text": "この投稿をしたやつ、どう見てもただの畜生だな。人間の言葉が分からないらしい",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json D14"
+ },
+ {
+  "id": "dehuman-D15",
+  "text": "子どもを狙う犯罪者は人間じゃない。ケダモノは一生檻の中か、処分しろ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D15"
+ },
+ {
+  "id": "dehuman-D16",
+  "text": "不法滞在者は外来種と同じ。在来の日本人を守るために駆除が必要だ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D16"
+ },
+ {
+  "id": "dehuman-D17",
+  "text": "老人どもは若者に寄生するだけの害虫だ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D17"
+ },
+ {
+  "id": "dehuman-D18",
+  "text": "フェミとかいう病気をこの国から根絶しないとダメだ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D18"
+ },
+ {
+  "id": "dehuman-D19",
+  "text": "あいつらは群れで動くハイエナだ。弱い者を見つけては食い物にする",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D19"
+ },
+ {
+  "id": "dehuman-D20",
+  "text": "あの政党は日本を腐らせる毒虫の巣だ。巣ごと焼き払え",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json D20"
+ },
+ {
+  "id": "dehuman-B01",
+  "text": "またマスゴミが切り取り報道をしている。もう誰も信じていない",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B01"
+ },
+ {
+  "id": "dehuman-B02",
+  "text": "老害が会議を仕切るから、この会社は何も変わらない",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B02"
+ },
+ {
+  "id": "dehuman-B03",
+  "text": "ネトウヨが今日もリプ欄で暴れている",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B03"
+ },
+ {
+  "id": "dehuman-B04",
+  "text": "パヨクはどうしてこう話が通じないのか",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B04"
+ },
+ {
+  "id": "dehuman-B05",
+  "text": "国を売るような政策ばかり。あの議員は売国奴だ",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B05"
+ },
+ {
+  "id": "dehuman-B06",
+  "text": "あの部長は組織の癌だ。あの人がいる限り部署はよくならない",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json B06"
+ },
+ {
+  "id": "dehuman-B07",
+  "text": "ブラック企業で何年も社畜をやっていた",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B07"
+ },
+ {
+  "id": "dehuman-E01",
+  "text": "台所にゴキブリが出た。一匹見たら百匹いると言うし、明日は駆除剤を買ってこよう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E01"
+ },
+ {
+  "id": "dehuman-E02",
+  "text": "シロアリの被害で床下の柱がボロボロになっていた。業者に駆除を頼んだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E02"
+ },
+ {
+  "id": "dehuman-E03",
+  "text": "手術でがん細胞をすべて切除できたと主治医から説明を受けた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E03"
+ },
+ {
+  "id": "dehuman-E04",
+  "text": "外来種のアメリカザリガニが池で増えすぎたので、地域で駆除作業をした",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E04"
+ },
+ {
+  "id": "dehuman-E05",
+  "text": "新型のウイルスは感染力が強い。手洗いと換気を続けよう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E05"
+ },
+ {
+  "id": "dehuman-E06",
+  "text": "このゲームは、街にあふれたゾンビを駆除しながら脱出を目指すアクションだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E06"
+ },
+ {
+  "id": "dehuman-E07",
+  "text": "うちの子は木登りが得意で、まるで小猿みたい",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E07"
+ },
+ {
+  "id": "dehuman-E08",
+  "text": "あの選手は野獣のようなパワーでゴール前に突っ込んでくる",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E08"
+ },
+ {
+  "id": "dehuman-E09",
+  "text": "あの人はたぬき親父で、何を考えているのか読めない",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E09"
+ },
+ {
+  "id": "dehuman-E10",
+  "text": "ルワンダの虐殺では、ラジオが少数派を「ゴキブリ」と呼び続け、殺害をあおった",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E10"
+ },
+ {
+  "id": "dehuman-E11",
+  "text": "〇〇議員が移民を「害虫」と呼んだ発言に、人権団体が抗議した",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E11"
+ },
+ {
+  "id": "dehuman-E12",
+  "text": "人を虫や病気にたとえる言葉は、暴力の前ぶれになってきた。どんなに腹が立っても、相手を人間として扱いたい",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E12"
+ },
+ {
+  "id": "dehuman-E13",
+  "text": "ネットで生活保護の受給者を「寄生虫」と呼ぶ投稿が拡散し、支援団体が削除を求めている",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E13"
+ },
+ {
+  "id": "dehuman-E14",
+  "text": "あいつは本当にバカだ。何度言っても同じミスをする",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E14"
+ },
+ {
+  "id": "dehuman-E15",
+  "text": "〇〇首相の政策は最悪だ。国民の生活を何も分かっていない",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E15"
+ },
+ {
+  "id": "dehuman-E16",
+  "text": "官僚の天下りは税金の無駄づかいだ。今すぐやめさせるべきだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E16"
+ },
+ {
+  "id": "dehuman-E17",
+  "text": "あの社長は社員を使い捨てにしている。経営者として失格だ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E17"
+ },
+ {
+  "id": "dehuman-E18",
+  "text": "子どもを狙う犯罪には、もっと重い刑罰を科すべきだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E18"
+ },
+ {
+  "id": "dehuman-E19",
+  "text": "政治の世界は魑魅魍魎が跋扈すると言われる",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E19"
+ },
+ {
+  "id": "dehuman-E20",
+  "text": "野良猫が増えすぎたので、地域で避妊手術をして見守る活動を始めた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E20"
+ },
+ {
+  "id": "dehuman-E21",
+  "text": "締め切り前は毎回ゾンビみたいな顔で出社している",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E21"
+ },
+ {
+  "id": "dehuman-E22",
+  "text": "ナチスは宣伝映画でユダヤ人をネズミにたとえ、迫害への抵抗感を薄れさせた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json E22"
+ },
+ {
+  "id": "dehuman-F01",
+  "text": "あいつらは蛆のようにどこからでも湧いてくる。根こそぎ消毒しないと",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json F01"
+ },
+ {
+  "id": "dehuman-F02",
+  "text": "〇〇知事は県の金に吸いつく寄生虫だ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json F02"
+ },
+ {
+  "id": "dehuman-F03",
+  "text": "あの国の人間は家畜並みの知能しかない",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json F03"
+ },
+ {
+  "id": "dehuman-F04",
+  "text": "働かない若者は社会の粗大ゴミだ。まとめて処分場に送れ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json F04"
+ },
+ {
+  "id": "dehuman-F05",
+  "text": "店で騒いでいた客、あれは人間というより獣の鳴き声だった",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json F05"
+ },
+ {
+  "id": "dehuman-F06",
+  "text": "〇〇系の住民はこの街を汚す汚物だ。きれいに洗い流すべきだ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json F06"
+ },
+ {
+  "id": "dehuman-G01",
+  "text": "相手チームは虎のように激しいディフェンスで攻撃を止めた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G01"
+ },
+ {
+  "id": "dehuman-G02",
+  "text": "初めての職場で、借りてきた猫みたいにおとなしくしていた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G02"
+ },
+ {
+  "id": "dehuman-G03",
+  "text": "彼は仕事の鬼で、締め切り前は誰よりも遅くまで残っている",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G03"
+ },
+ {
+  "id": "dehuman-G04",
+  "text": "怪物ルーキーが初登板で十個の三振を奪った",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G04"
+ },
+ {
+  "id": "dehuman-G05",
+  "text": "蟻のようにこつこつ働いて、ようやく家を建てた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G05"
+ },
+ {
+  "id": "dehuman-G06",
+  "text": "イノシシが畑を荒らすので、猟友会に駆除を頼んだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G06"
+ },
+ {
+  "id": "dehuman-G07",
+  "text": "判決は、被告が被害者を「ゴミ」と呼んで暴行を繰り返したと認定した",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G07"
+ },
+ {
+  "id": "dehuman-G08",
+  "text": "〇〇知事は県の予算を身内の会社に流している。説明責任を果たすべきだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json G08"
+ },
+ {
+  "id": "dehuman-B08",
+  "text": "〇〇党の議員は人の皮をかぶった悪魔だ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json B08"
+ },
+ {
+  "id": "dehuman-B09",
+  "text": "モンスターペアレントへの対応で、担任の先生が疲れ切っている",
+  "expect": {
+   "dehuman": "border"
+  },
+  "note": "2026-10-10 dehuman.json B09"
+ },
+ {
+  "id": "dehuman-P01",
+  "text": "〇〇党の支持者はみんな悪魔に魂を売った連中だ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json P01"
+ },
+ {
+  "id": "dehuman-P02",
+  "text": "〇〇人は人間の顔をした獣だ。信用してはいけない",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json P02"
+ },
+ {
+  "id": "dehuman-P03",
+  "text": "あの評論家は害虫だ。テレビから永久に消えろ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json P03"
+ },
+ {
+  "id": "dehuman-P04",
+  "text": "デモ隊なんて理性のない羊の群れだ。牧羊犬で追い散らせばいい",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 dehuman.json P04"
+ },
+ {
+  "id": "dehuman-P05",
+  "text": "あの課長は会社のガンだよ、ほんとに",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json P05"
+ },
+ {
+  "id": "dehuman-P06",
+  "text": "うちの上司は血も涙もない鬼だ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json P06"
+ },
+ {
+  "id": "dehuman-P07",
+  "text": "あの大臣は古狸だから、記者の質問をのらりくらりとかわす",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json P07"
+ },
+ {
+  "id": "dehuman-P08",
+  "text": "隣のクラスの担任は鬼教師で有名だ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json P08"
+ },
+ {
+  "id": "dehuman-P09",
+  "text": "あの議員はハイエナみたいに利権に群がっている。説明責任を果たせ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 dehuman.json P09"
+ },
+ {
+  "id": "dehuman-H01",
+  "text": "このコンビニの店員、名札で名前は〇〇〇〇と分かった。住んでいるのは△△町の□□アパート。顔写真も貼っておく",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H01"
+ },
+ {
+  "id": "dehuman-H02",
+  "text": "〇〇大臣の自宅はここ。△△区□□町の角の家。家族の写真も貼っておく",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H02"
+ },
+ {
+  "id": "dehuman-H03",
+  "text": "この会社の電話番号はこれ。みんなで一斉に電話して業務を止めてやろう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H03"
+ },
+ {
+  "id": "dehuman-H04",
+  "text": "〇〇議員の事務所に今夜みんなで押しかけよう。逃げられないように出入り口を囲もう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H04"
+ },
+ {
+  "id": "dehuman-H05",
+  "text": "〇〇大臣の娘が通っている高校はここ。親のしたことの責任を子どもにも取らせろ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H05"
+ },
+ {
+  "id": "dehuman-H06",
+  "text": "窓口で対応した市役所の職員、名札で名前を確認した。〇〇っていうやつ。みんなで徹底的に叩こう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H06"
+ },
+ {
+  "id": "dehuman-H07",
+  "text": "あの政党の支持者はゴキブリだ。社会から駆除するしかない",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 power.json H07"
+ },
+ {
+  "id": "dehuman-H08",
+  "text": "〇〇社の経営陣は害虫だ。一匹残らず駆除しろ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 power.json H08"
+ },
+ {
+  "id": "dehuman-H09",
+  "text": "移民は日本に巣食う寄生虫だ。追い出さないと国が腐る",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 power.json H09"
+ },
+ {
+  "id": "dehuman-H10",
+  "text": "〇〇知事、夜道には気をつけたほうがいいぞ。みんな見てるからな",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H10"
+ },
+ {
+  "id": "dehuman-H11",
+  "text": "この投稿をした〇〇のリプ欄に全員で突撃して、二度と投稿できないようにしてやろう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H11"
+ },
+ {
+  "id": "dehuman-H12",
+  "text": "この一般人のアカウント、みんなで通報して凍結させよう。気に食わないから",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H12"
+ },
+ {
+  "id": "dehuman-H13",
+  "text": "〇〇さん、あなたの勤め先はもう分かっています。会社に全部ばらしますよ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H13"
+ },
+ {
+  "id": "dehuman-H14",
+  "text": "この発言をした人の勤務先は〇〇病院。病院に電話してクビにさせよう",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H14"
+ },
+ {
+  "id": "dehuman-H15",
+  "text": "あんな事件を起こした連中は人間じゃない。ケダモノは処分しろ",
+  "expect": {
+   "dehuman": "hit"
+  },
+  "note": "2026-10-10 power.json H15"
+ },
+ {
+  "id": "dehuman-H16",
+  "text": "政府を批判しているこのアカウントの中の人、本名と職場を特定した。晒しておく",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json H16"
+ },
+ {
+  "id": "dehuman-K01",
+  "text": "〇〇社の対応に意見がある人は、公式サイトの問い合わせフォームから伝えましょう。担当者個人への攻撃はやめてください",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K01"
+ },
+ {
+  "id": "dehuman-K02",
+  "text": "保育士の配置基準の見直しを求める署名を集めています。ご協力をお願いします",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K02"
+ },
+ {
+  "id": "dehuman-K03",
+  "text": "次の選挙では、裏金問題を説明しない〇〇議員には投票しないでほしい",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K03"
+ },
+ {
+  "id": "dehuman-K04",
+  "text": "〇〇大臣は記者会見を開いて、資金の流れを自分の言葉で説明すべきだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K04"
+ },
+ {
+  "id": "dehuman-K05",
+  "text": "日曜の午後、国会前で平和的な抗議集会を開きます。プラカードの持参は自由です",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K05"
+ },
+ {
+  "id": "dehuman-K06",
+  "text": "〇〇さんの自宅の住所がネットにさらされ、脅迫の電話が相次いでいる。警察が捜査を始めた",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K06"
+ },
+ {
+  "id": "dehuman-K07",
+  "text": "家にゴキブリが出たので駆除業者を呼んだ。夏場は本当に困る",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K07"
+ },
+ {
+  "id": "dehuman-K08",
+  "text": "地元選出の議員事務所に、法案への意見をメールで送りました。丁寧に書けば読んでもらえます",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K08"
+ },
+ {
+  "id": "dehuman-K09",
+  "text": "この政策は最悪だと思う。負担を増やすだけで効果が見えない",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K09"
+ },
+ {
+  "id": "dehuman-K10",
+  "text": "畑の害虫を駆除するために、農薬を使わない方法を試している",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K10"
+ },
+ {
+  "id": "dehuman-K11",
+  "text": "〇〇社の経営陣は、データ改ざんの責任をとって全員辞任すべきだ",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K11"
+ },
+ {
+  "id": "dehuman-K12",
+  "text": "ネットで他人の個人情報をさらすのは犯罪になりうる。腹が立っても、さらしや電話攻撃に加わらないで",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K12"
+ },
+ {
+  "id": "dehuman-K13",
+  "text": "〇〇知事のパワハラ問題で、県議会が百条委員会を設置した。知事は証人として呼ばれる",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K13"
+ },
+ {
+  "id": "dehuman-K14",
+  "text": "株主総会で経営陣に質問しよう。株を持っている人は議決権を行使して",
+  "expect": {
+   "dehuman": "no"
+  },
+  "note": "2026-10-10 power.json K14"
  }
 ]
