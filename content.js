@@ -708,7 +708,7 @@ function scan() {
   };
   for (const el of currentItems()) {
     track(el, false);
-    for (const q of quotesIn(el)) track(q, true);
+    if (!state.get(el)?.excluded) for (const q of quotesIn(el)) track(q, true); // 除外したアカウントの投稿は、中の引用元も送らない
   }
   // 3アカウント目がそろったら、それまでの投稿にもさかのぼって印を付ける（まだ Jev の判定が無くても出す）
   for (const gid of touched) {
@@ -741,6 +741,7 @@ async function peek(el, st, text) {
   if (keyless || !questions.length || isPrivatePage()) return;
   const r = await chrome.runtime.sendMessage({ type: "peek", text, questions }).catch(() => null);
   if (!r?.answers || state.get(el) !== st || st.answers) return;
+  stats.judged++; // 「手口が見つかった N 件（Jev で読んだ M 件）」で N > M にならないよう、保存済みの結果も読んだ件に数える
   clearTimeout(st.timer);
   st.timer = null;
   st.answers = r.answers;
@@ -828,7 +829,7 @@ function ownParts(el) {
 // 外したままだと、ヘイトやデマを一言添えて引用するだけで、タイムラインのどこにも印が付かない
 function quotesIn(el) {
   if (!SITE?.quote || !SITE.text) return [];
-  return [...el.querySelectorAll(SITE.quote)].filter((q) => q.querySelector(SITE.text));
+  return outermost([...el.querySelectorAll(SITE.quote)].filter((q) => q.querySelector(SITE.text)));
 }
 
 function selectAll(sel) {

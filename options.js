@@ -229,9 +229,10 @@ $("consult").onclick = () => {
   const { pillars, rules, errors } = collect();
   $("consultErr").textContent = errors.join(" / ");
   if (errors.length) return;
+  const cur = (id) => ({ ...JEV_PILLARS[id].defaults, ...(pillars[id] || {}) }); // collect は初期値と違う項目だけを返す
   const items = Object.entries(JEV_PILLARS)
-    .filter(([id, p]) => !p.code && pillars[id].on)
-    .map(([id, p]) => ({ label: p.label, qs: p.qs.map((k) => JEV_QUESTIONS[k]), high: pillars[id].high, pct: null }))
+    .filter(([id, p]) => !p.code && cur(id).on)
+    .map(([id, p]) => ({ label: p.label, qs: p.qs.map((k) => JEV_QUESTIONS[k]), high: cur(id).high, pct: null }))
     .concat(rules.map((r) => ({ label: JEV_PRESETS.find((p) => p.condition === r.condition)?.label || "自分で足した項目", qs: [r.condition], high: r.high, pct: null })));
   $("consultText").value = jevConsultPrompt({ items });
   $("consultText").readOnly = true; // 考えは AI に貼ってから書く（content.js と同じ）

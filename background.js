@@ -60,7 +60,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   if (pillars) {
     const slim = {};
     for (const [id, c] of Object.entries(pillars)) {
-      if (!JEV_PILLARS[id]) continue; // 消えた手口
+      if (!JEV_PILLARS[id] || !c || typeof c !== "object") continue; // 消えた手口・壊れた値
       const o = jevPillarOverrides(id, c);
       if (Object.keys(o).length) slim[id] = o;
     }
