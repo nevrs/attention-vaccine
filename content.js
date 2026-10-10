@@ -741,7 +741,7 @@ async function peek(el, st, text) {
   if (keyless || !questions.length || isPrivatePage()) return;
   const r = await chrome.runtime.sendMessage({ type: "peek", text, questions }).catch(() => null);
   if (!r?.answers || state.get(el) !== st || st.answers) return;
-  if (!st.pending) stats.judged++; // 保存済みの結果も「Jev で読んだ件」に数える（問い合わせ中なら、その返りで数えられる）
+  if (!st.pending) stats.judged++; // 保存済みの結果も「Jev で読んだ件」に数える（問い合わせ中なら、その返りで数えられる。返りが失敗すると数えられないが、まれなので許す）
   clearTimeout(st.timer);
   st.timer = null;
   st.answers = r.answers;
