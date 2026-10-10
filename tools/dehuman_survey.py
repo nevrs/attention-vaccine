@@ -58,7 +58,7 @@ def main():
         n = sorted((x for x in no), key=lambda x: -x["scores"][k])
         gap = h[0] - n[0]["scores"][k]
         print(f"  {k}: 当てはまる 最小 {h[0]:.0f} 中央値 {statistics.median(h):.0f} / 当てはまらない 最大 {n[0]['scores'][k]:.0f}（差 {gap:+.0f}）"
-              f" 上位: {', '.join(f'{x['id']} {x['scores'][k]:.0f}' for x in n[:5])}")
+              " 上位: " + ", ".join(f"{x['id']} {x['scores'][k]:.0f}" for x in n[:5]))
         for thr in (50, 60, 70, 80):
             print(f"     閾値 {thr}: 取りこぼし {sum(v < thr for v in h)}  誤検知 {sum(x['scores'][k] >= thr for x in no)}")
         print(f"     同じ文のぶれ（最大−最小）の最大 {max(x['spread'][k] for x in items):.0f}")
