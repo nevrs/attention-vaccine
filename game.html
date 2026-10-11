@@ -54,7 +54,8 @@
   .stat:first-child .k { flex-basis: 100%; }
   .stat.chap { margin-left: auto; text-align: right; }
   .stat.chap .v { font-size: 15px; }
-  #fcount.rise { color: var(--good); }
+  #vcount.rise { color: var(--good); }
+  #vcount.fall { color: var(--alarm); }
   .pips { display: flex; gap: 4px; padding-block: 6px; }
   .pip { width: 18px; height: 10px; border-radius: 2px; border: 1px solid var(--muted); }
   .pip.on { background: var(--ink); border-color: var(--ink); }
@@ -101,6 +102,8 @@
   .post .who { font-size: 13px; color: var(--muted); }
   .post .who b { color: var(--ink); }
   .post.stranger { border-style: dashed; }
+  .post.act { background: transparent; border-style: dashed; }
+  .post .did { font-size: 13px; color: var(--muted); padding-bottom: 6px; border-bottom: 1px solid var(--line); }
   .metrics { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
   .replies { list-style: none; margin: 0; padding: 8px 0 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
   .replies li { font-size: 14px; padding-left: 14px; position: relative; animation: pop .35s ease-out both; animation-delay: calc(var(--i) * .45s + .3s); }
@@ -125,12 +128,26 @@
   }
 
   .frozen h1 { color: var(--alarm); }
+  .role-list { display: flex; flex-direction: column; gap: 10px; }
+  .role {
+    display: flex; flex-direction: column; gap: 4px; text-align: left; cursor: pointer;
+    padding: 14px 16px; font: inherit; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--ink); border-radius: 6px;
+  }
+  .role:hover { border-color: var(--accent); }
+  .rname { font: 18px/1.4 var(--display); display: flex; align-items: center; gap: 8px; }
+  .rname .done { font: 700 11px/1 var(--body); padding: 4px 6px; border-radius: 3px; background: var(--line); color: var(--muted); }
+  .rpitch { font-size: 14px; }
+  .rgoal { font-size: 12px; color: var(--muted); }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .go.sub { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .book-h { font: 15px/1.4 var(--display); margin: 8px 0 0; color: var(--muted); }
   .dm { align-self: flex-end; max-width: 85%; background: var(--ink); color: var(--paper); border-radius: 14px 14px 4px 14px; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; animation: pop .35s ease-out both; animation-delay: 1.8s; }
   .dm .from { font-size: 11px; letter-spacing: .08em; opacity: .7; }
   details.book summary { cursor: pointer; font: 18px/1.4 var(--display); padding-block: 4px; }
   .book-body { display: flex; flex-direction: column; gap: 12px; padding-top: 8px; }
   .afters { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
-  .afters li { display: grid; grid-template-columns: 3.5em 1fr; gap: 8px; }
+  .afters li { display: grid; grid-template-columns: 7.5em 1fr; gap: 8px; }
   .afters .ch { font-size: 13px; font-weight: 700; color: var(--muted); padding-top: 2px; }
 
   .opts { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -151,4 +168,5 @@
 <main id="app"></main>
 
 <script src="techniques.js"></script>
+<script src="game-roles.js"></script>
 <script src="game.js"></script>
