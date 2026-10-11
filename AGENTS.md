@@ -14,6 +14,7 @@
 | `tune.*` | 問いを試す画面（「AI に相談」で AI が返した JSON を Jev で測って比べ、採用する） |
 | `_locales/{ja,en}/messages.json` | 拡張の名前と説明（Chrome の言語で切り替わる。既定は en） |
 | `demo.*` / `demo-data.js` | キー不要の体験ページ。`demo-data.js` は `tools/demo_measure.py` で作る |
+| `game.*` | ゲーム「煽り屋になる」。手口を使う側で 6 場面 → 読む側で 6 問。手口の名前・仕組み・向き合い方は `techniques.js` から読み、場面・投稿・反応の文は `game.js` に書く。拡張には入れない（ストア用 ZIP の対象外） |
 
 ## 動かし方
 - 読み込み: `chrome://extensions` → デベロッパーモード → 「パッケージ化されていない拡張機能を読み込む」→ このフォルダ
