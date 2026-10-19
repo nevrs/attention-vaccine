@@ -41,7 +41,7 @@ function createMark(rows, style, extraNote) {
   if (hits.length) jevSetBadge(badge, hits);
   else badge.textContent = "読んだ";
   badge.classList.toggle("quiet", !hits.length);
-  jevFillDetails(pop, rows, { extra: extraNote && ((add) => add("note", extraNote)), moreLabel: "詳しく（判定の中身）" });
+  jevFillDetails(pop, rows, { extra: extraNote ? (add) => add("note", extraNote) : undefined, moreLabel: "詳しく（判定の中身）" });
   badge.onclick = () => (pop.hidden = !pop.hidden);
   return { host, hits };
 }

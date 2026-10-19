@@ -57,11 +57,7 @@
 - 決まり文句の限界: 言い回しを決めた後に書いた「紛らわしい普通の投稿」20 本で、まだ 8 本に付く（旧 11 本）。「プロフのリンク切れてたので直しました」「詳細はDMください、と言われたけど怪しい」「教えます。DMください（ギターのコード）」など、言い回しが同じで意図だけ違う文は、言い回しでは分けられない
 - 残り（レビューの 5〜10）: Jev の印は読んだ後に出る、画像・動画は見ない、キーの入手が難しい、問い合わせに時間切れが無い、失敗した判定を見えたまま取り直さない
 
-2026-10-19: リファクタリング（動作は変えない。ユーザー「1 の開発 リファクタリング」）
-- 体験ページ（demo.js）が印の CSS・印の文字・詳細の中身を content.js から丸写ししていた → `mark.js` に出して両方から使う（`JEV_MARK_CSS` / `jevSetBadge` / `jevFillDetails` ほか）。ページ側に入れるファイルに mark.js が加わる（`JEV_CONTENT`・demo.html・AGENTS.md の ZIP 手順）
-- checks.js に共通の小さな関数: `jevPillarConfig`（初期値＋保存値。5 か所）、`jevPct`（問いの掛け合わせ。3 か所）、`jevCodeRow`（決まり文句の行）、`jevToday`、`jevInjectContent`（タブへの注入。background・popup）、`JEV_SETTINGS`（sync の初期値。content・options）
-- 確かめ方: 変更前のコードと jsdom で並べて描画を比べた（scratchpad の harness.js・pages.js。X の模擬タイムライン 7 件・引用・同じ文 3 件、ニュース記事、デバッグ・キーなし・失敗・保存済み・除外・ぼかし・一次ソース比較、体験ページ、設定画面の保存、ポップアップの注入）。違いは意図した分だけ: 体験ページの CSS が本番と同じになった（詳細の高さ上限 60vh など）、体験ページで詳細を上に開くクラス名が up → fixed、詳細の z-index: 10 が本番にも入った（印の中だけの重なり順なので見た目は変わらない）。lure_check 27/27・65/65。実機では未確認
-- やらなかったこと: content.js（約 860 行）を「ページ全体」と「ブロックごと」に分けること（読み込み順と ZIP の手順も変わるので、要るときに別に）
+2026-10-19: リファクタリング（動作は変えない）: 印の CSS・詳細の中身を `mark.js` に出し content.js と demo.js で共通に（demo は丸写しだった）。checks.js に `jevPillarConfig` / `jevPct` / `jevCodeRow` / `jevToday` / `jevInjectContent` / `JEV_SETTINGS`。更新時の移行が失敗しても、スクリプトの登録は今の一覧に直す（background の onInstalled、finally）。確かめ方: 変更前と jsdom で描画を並べて比べた（X の模擬タイムライン・記事・体験ページ・設定画面・ポップアップ、12 通り）。違いは体験ページの CSS が本番と同じになった分だけ。実機は未確認。content.js をモード別に分けるのは見送り
 
 2026-10-12: ゲーム「煽り屋になる」は別リポ nevrs/aoriya（C:\claudecode\aoriya）に移した（ここでは d3dad08 まで）。ゲームの状態はそちらの SESSION.md
 

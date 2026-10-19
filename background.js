@@ -22,53 +22,57 @@ const waiting = [];
 const inflight = new Map();
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  // 入れた直後は、キーなしで何をする道具かが分かる体験ページを開く（そこから設定画面へ案内する）
-  if (reason === "install") chrome.tabs.create({ url: chrome.runtime.getURL("demo.html") });
-  // 0.2 までの「このサイトでフィルタする」（sites）は、今の「ブロックごと」と同じ動き
-  const { sites, siteModes = {} } = await chrome.storage.sync.get(["sites", "siteModes"]);
-  if (sites) {
-    for (const h of sites) siteModes[h] ??= "block";
-    await chrome.storage.sync.set({ siteModes });
-    await chrome.storage.sync.remove(["sites", "showScores"]);
-  }
-  // 0.5 までクリックで保存した区切り（siteSelectors: {ホスト: セレクタ}）は、userSites の item に移す
-  const { siteSelectors, userSites = [] } = await chrome.storage.sync.get(["siteSelectors", "userSites"]);
-  if (siteSelectors) {
-    for (const [h, item] of Object.entries(siteSelectors)) {
-      const e = userSites.find((s) => (s.hosts || []).includes(h));
-      if (e) e.item ??= item;
-      else userSites.push({ hosts: [h], item });
+  try {
+    // 入れた直後は、キーなしで何をする道具かが分かる体験ページを開く（そこから設定画面へ案内する）
+    if (reason === "install") chrome.tabs.create({ url: chrome.runtime.getURL("demo.html") });
+    // 0.2 までの「このサイトでフィルタする」（sites）は、今の「ブロックごと」と同じ動き
+    const { sites, siteModes = {} } = await chrome.storage.sync.get(["sites", "siteModes"]);
+    if (sites) {
+      for (const h of sites) siteModes[h] ??= "block";
+      await chrome.storage.sync.set({ siteModes });
+      await chrome.storage.sync.remove(["sites", "showScores"]);
     }
-    await chrome.storage.sync.set({ userSites });
-    await chrome.storage.sync.remove("siteSelectors");
-  }
-  // おすすめの問いを変えたとき、旧い文のまま足してある項目を今の文に入れ替える。閾値は旧の初期値のままなら今の初期値に
-  const { rules } = await chrome.storage.sync.get("rules");
-  let changed = false;
-  for (const r of rules || []) {
-    for (const p of JEV_PRESETS) {
-      const o = p.old?.find((o) => o.condition === r.condition);
-      if (!o) continue;
-      r.condition = p.condition;
-      if (r.high === o.high) r.high = p.high;
-      changed = true;
+    // 0.5 までクリックで保存した区切り（siteSelectors: {ホスト: セレクタ}）は、userSites の item に移す
+    const { siteSelectors, userSites = [] } = await chrome.storage.sync.get(["siteSelectors", "userSites"]);
+    if (siteSelectors) {
+      for (const [h, item] of Object.entries(siteSelectors)) {
+        const e = userSites.find((s) => (s.hosts || []).includes(h));
+        if (e) e.item ??= item;
+        else userSites.push({ hosts: [h], item });
+      }
+      await chrome.storage.sync.set({ userSites });
+      await chrome.storage.sync.remove("siteSelectors");
     }
-  }
-  // 0.22 までは、設定を保存すると全手口の on / high / action を丸ごと保存していた。初期値と同じ項目を消し、今後の初期値の変更が届くようにする。
-  // 当時の初期値（今と違うもの）は、利用者が選んだ値と見分けられないので残す
-  const { pillars } = await chrome.storage.sync.get("pillars");
-  if (pillars) {
-    const slim = {};
-    for (const [id, c] of Object.entries(pillars)) {
-      if (!JEV_PILLARS[id] || !c || typeof c !== "object") continue; // 消えた手口・壊れた値
-      const o = jevPillarOverrides(id, c);
-      if (Object.keys(o).length) slim[id] = o;
+    // おすすめの問いを変えたとき、旧い文のまま足してある項目を今の文に入れ替える。閾値は旧の初期値のままなら今の初期値に
+    const { rules } = await chrome.storage.sync.get("rules");
+    let changed = false;
+    for (const r of rules || []) {
+      for (const p of JEV_PRESETS) {
+        const o = p.old?.find((o) => o.condition === r.condition);
+        if (!o) continue;
+        r.condition = p.condition;
+        if (r.high === o.high) r.high = p.high;
+        changed = true;
+      }
     }
-    if (JSON.stringify(slim) !== JSON.stringify(pillars)) await chrome.storage.sync.set({ pillars: slim }).catch(() => {});
+    // 0.22 までは、設定を保存すると全手口の on / high / action を丸ごと保存していた。初期値と同じ項目を消し、今後の初期値の変更が届くようにする。
+    // 当時の初期値（今と違うもの）は、利用者が選んだ値と見分けられないので残す
+    const { pillars } = await chrome.storage.sync.get("pillars");
+    if (pillars) {
+      const slim = {};
+      for (const [id, c] of Object.entries(pillars)) {
+        if (!JEV_PILLARS[id] || !c || typeof c !== "object") continue; // 消えた手口・壊れた値
+        const o = jevPillarOverrides(id, c);
+        if (Object.keys(o).length) slim[id] = o;
+      }
+      if (JSON.stringify(slim) !== JSON.stringify(pillars)) await chrome.storage.sync.set({ pillars: slim }).catch(() => {});
+    }
+    // rules が変われば開いているページは storage.onChanged で読み直す。容量超えで失敗したら旧い文のまま（次の更新で再試行）
+    if (changed) await chrome.storage.sync.set({ rules }).catch(() => {});
+  } finally {
+    // 移行が途中で失敗しても、登録は今のファイル一覧（JEV_CONTENT）に直す。古い一覧のままだと、足したファイル（mark.js など）が入らず印が出ない
+    await syncContentScripts();
   }
-  // rules が変われば開いているページは storage.onChanged で読み直す。容量超えで失敗したら旧い文のまま（次の更新で再試行）
-  if (changed) await chrome.storage.sync.set({ rules }).catch(() => {});
-  await syncContentScripts();
 });
 
 // ページ側のスクリプトは、利用者が許可したサイトにだけ入れる。許可はポップアップ・設定画面でサイトをオンにしたときに
