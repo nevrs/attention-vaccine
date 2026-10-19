@@ -121,7 +121,7 @@ def main():
             if rngs:
                 print(f"{ck:<12}mean|dev| {statistics.mean(devs):.2f}  max|dev| {max(devs):.2f}  max range {max(rngs):.1f}  range>0: {sum(r > 0 for r in rngs)}/{len(rngs)}")
     if a.out:
-        json.dump({"scores": scores, "runs": runs, "thresholds": {k: v["high"] for k, v in checks.items()}},
+        json.dump({"model": MODEL, "scores": scores, "runs": runs, "thresholds": {k: v["high"] for k, v in checks.items()}},
                   open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     sys.exit(1 if fails else 0)
 
