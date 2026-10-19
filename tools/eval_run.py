@@ -1,5 +1,5 @@
 # 回帰評価: tools/eval/cases.json の文を今の techniques.js の問いで Jev にかけ、閾値での誤検知・取りこぼしを出す。
-# 使い方（問いや閾値を変える前後に）: TYPESAFE_API_KEY を設定して  python tools/eval_run.py [--only bait] [--repeat 3] [--limit 15] [--out r.json]
+# 使い方（問いや閾値を変える前後に）: TYPESAFE_API_KEY を設定して  python tools/eval_run.py [--only bait] [--repeat 3] [--limit 15] [--model jev-1.14.0] [--out r.json]
 # 失敗（誤検知・取りこぼし）があれば終了コード 1。
 import sys, re, json, os, time, argparse, urllib.request, urllib.error, concurrent.futures as cf, statistics
 import techniques  # tools/techniques.py
@@ -43,14 +43,18 @@ def score_case(case, checks):
 
 
 def main():
+    global MODEL
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", help="この検査だけ（techniques.js の手口の id、または例文の expect にある名前）")
     ap.add_argument("--repeat", type=int, default=0, help="各文を追加で N 回再実行し、スコアのばらつきを出す")
     ap.add_argument("--ids", help="カンマ区切りの case id だけ使う")
     ap.add_argument("--limit", type=int, help="N 件に均等に間引く")
+    ap.add_argument("--model", help=f"Jev の版（既定 {MODEL}）。版を上げる前の比較用")
     ap.add_argument("--out")
     a = ap.parse_args()
+    if a.model:
+        MODEL = a.model
     checks = techniques.checks()
     cases = json.load(open(os.path.join(HERE, "eval", "cases.json"), encoding="utf-8"))
     border = 0
