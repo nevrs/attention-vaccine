@@ -17,7 +17,7 @@ function showProvider() {
 // advanced の項目（集団へのレッテル貼り・性的な内容）は、オン・オフ・動作・閾値ごと高度な設定に置く
 function renderPillars(saved) {
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
-    const c = { ...p.defaults, ...(saved[id] || {}) };
+    const c = jevPillarConfig(id, saved);
     const box = document.createElement("div");
     box.className = "item";
     box.innerHTML = `<label><input type="checkbox" data-on="${id}"> <b></b></label><div class="why"></div><div class="opts"></div>`;
@@ -200,7 +200,7 @@ async function init() {
   apiKeys = local.apiKeys || (local.apiKey ? { typesafe: local.apiKey } : {}); // 0.1.0 の単一キーを引き継ぐ
   $("provider").value = local.provider || "typesafe";
   showProvider();
-  const s = await chrome.storage.sync.get({ enabled: true, pillars: {}, rules: [], compare: {}, userSites: [], debug: false, dwell: 1.5, dailyCap: JEV_DAILY_CAP, excludeAuthors: [] });
+  const s = await chrome.storage.sync.get(JEV_SETTINGS);
   s.userSites.forEach(addSite);
   $("enabled").checked = s.enabled;
   $("debug").checked = !!s.debug;
@@ -229,7 +229,7 @@ $("consult").onclick = () => {
   const { pillars, rules, errors } = collect();
   $("consultErr").textContent = errors.join(" / ");
   if (errors.length) return;
-  const cur = (id) => ({ ...JEV_PILLARS[id].defaults, ...(pillars[id] || {}) }); // collect は初期値と違う項目だけを返す
+  const cur = (id) => jevPillarConfig(id, pillars); // collect は初期値と違う項目だけを返す
   const items = Object.entries(JEV_PILLARS)
     .filter(([id, p]) => !p.code && cur(id).on)
     .map(([id, p]) => ({ label: p.label, qs: p.qs.map((k) => JEV_QUESTIONS[k]), high: cur(id).high, pct: null }))

@@ -6,6 +6,11 @@ const JEV_QUESTIONS = Object.fromEntries(Object.entries(JEV_TECHNIQUES.questions
 
 // 1日の問い合わせ上限の初期値（設定画面で変えられる）。暴走で料金が膨らむのを止める
 const JEV_DAILY_CAP = 2000;
+// 上限を数える「今日」（usage.day の形、YYYY-MM-DD）
+const jevToday = () => new Date().toLocaleDateString("sv");
+
+// storage.sync に置く設定の初期値（ページ側・設定画面で共通）
+const JEV_SETTINGS = { enabled: true, siteModes: {}, userSites: [], pillars: {}, rules: [], compare: {}, debug: false, dwell: 1.5, dailyCap: JEV_DAILY_CAP, excludeAuthors: [] };
 
 // 手口の伝え方（2026-10-04、ユーザーと UI レビュー）: 名前は手口そのものを言う（作り手の用語や「×」を出さない）。
 // 詳細は「手口の名前 → 仕組み（why）→ 向き合い方（tip）」の順。手口を知らせて、向き合い方を1つ添えると見抜く力が育つ（事前に手口を教える型の対策）。
@@ -21,6 +26,11 @@ function jevPillarOverrides(id, cur) {
   const d = { action: "warn", ...JEV_PILLARS[id].defaults };
   return Object.fromEntries(Object.entries(cur).filter(([k, v]) => k in d && v !== d[k]));
 }
+// 保存した設定（初期値と違う項目だけ）を初期値に重ねた、手口1つの今の設定
+const jevPillarConfig = (id, saved) => ({ ...JEV_PILLARS[id].defaults, ...(saved?.[id] || {}) });
+
+// 手口の確率（%）。問いが2つ以上なら掛け合わせる。answers は qs と同じ形（問いの原文、または問いのキー）で引く
+const jevPct = (qs, answers) => qs.reduce((acc, q) => acc * answers[q], 1) * 100;
 
 // 設定画面の「自分で足す項目」のおすすめ。押すと condition と high が利用者の rules に写される。
 // content.js は condition が一致すれば label を名前に使う。問いを変えたら、旧い文を old に残す（background.js が入れ替える）
@@ -91,6 +101,12 @@ const JEV_CODE = {
   },
 };
 
+// コードの項目の判定を、印の1行（mark.js の rows の形）にする
+function jevCodeRow(c, text) {
+  const r = JEV_CODE[c.code](text);
+  return { c, pct: r.hit ? 100 : 0, hit: r.hit, detail: r.matches.length ? "見つかった言い回し: " + r.matches.map((m) => `「${m}」`).join("") : null };
+}
+
 // 同じ文言の大量投稿の比べ方（content.js が使う）。語尾や絵文字だけ違う投稿も同じとみなすため、
 // 記号・絵文字・URL・空白を除いた本文を3文字ずつの切れ端にし、「短いほうの切れ端のうち、何割が相手にもあるか」で比べる。
 // 全体に対する割合（Jaccard）だと、同じ文の後ろに銘柄名などを追記しただけで 0.57 まで下がり取りこぼした（2026-09-29）
@@ -157,7 +173,12 @@ const jevQuestionNote = (qs) => "判定に使った問い: " + qs.map((q) => `�
 const JEV_MODES = { page: "ページ全体", block: "ブロックごと" };
 
 // ページ側に入れるファイル。manifest には書かず、利用者が許可したサイトにだけ background.js が登録する（v0.17.0 で <all_urls> をやめた）
-const JEV_CONTENT = { id: "jev", js: ["techniques.js", "checks.js", "sites.js", "content.js", "picker.js"], css: ["content.css"], runAt: "document_idle" };
+const JEV_CONTENT = { id: "jev", js: ["techniques.js", "checks.js", "sites.js", "mark.js", "content.js", "picker.js"], css: ["content.css"], runAt: "document_idle" };
+// 許可より前から開いていたタブに、ページ側のスクリプトを今入れる（background.js・popup.js）。入れられないページ（PDF・ストアなど）では何もしない
+async function jevInjectContent(tabId) {
+  await chrome.scripting.insertCSS({ target: { tabId }, files: JEV_CONTENT.css }).catch(() => {});
+  await chrome.scripting.executeScript({ target: { tabId }, files: JEV_CONTENT.js }).catch(() => {});
+}
 // サイトの許可は http と https をまとめて、ホスト単位で求める（siteModes もホスト単位）
 const jevSitePattern = (host) => `*://${host}/*`;
 

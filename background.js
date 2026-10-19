@@ -1,6 +1,6 @@
 // 判定の問い合わせを一手に引き受ける。並列数の制限・429 の再試行・結果のキャッシュをここに置く。
 // 接続先は利用者が設定画面で選ぶ。
-importScripts("techniques.js", "checks.js"); // JEV_COMPARE・JEV_PRESETS・JEV_CONTENT
+importScripts("techniques.js", "checks.js"); // JEV_COMPARE・JEV_PRESETS・JEV_CONTENT・jevInjectContent
 
 // 判定する部分（バックエンド）。どれも ask(acc, 文章, [問いの原文]) で { 問いの原文: 当てはまる確率 0〜1 } を返す。
 // キャッシュ・並列制限・1日の上限・ページ側・問いを試す画面は、この形だけに頼っている。
@@ -93,8 +93,7 @@ async function injectInto(origins) {
   const tabs = await chrome.tabs.query({ url: origins }).catch(() => []);
   for (const t of tabs) {
     if (await chrome.tabs.sendMessage(t.id, { type: "stats" }).catch(() => null)) continue;
-    await chrome.scripting.insertCSS({ target: { tabId: t.id }, files: JEV_CONTENT.css }).catch(() => {});
-    await chrome.scripting.executeScript({ target: { tabId: t.id }, files: JEV_CONTENT.js }).catch(() => {});
+    await jevInjectContent(t.id);
   }
 }
 
@@ -289,7 +288,7 @@ async function askJevApi(acc, text, questions) {
 let spendChain = Promise.resolve();
 function spend() {
   const p = spendChain.then(async () => {
-    const day = new Date().toLocaleDateString("sv");
+    const day = jevToday();
     const { dailyCap = JEV_DAILY_CAP } = await chrome.storage.sync.get("dailyCap");
     const { usage } = await chrome.storage.local.get("usage");
     const n = usage?.day === day ? usage.n : 0;

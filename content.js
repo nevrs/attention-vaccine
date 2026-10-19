@@ -7,7 +7,6 @@
 // 区切りの自動検出は一度見つけた形を覚える。オンの問いは1回の呼び出しにまとめる。
 const MAX_CHARS = 2000;
 
-const DEFAULTS = { enabled: true, siteModes: {}, userSites: [], pillars: {}, rules: [], compare: {}, debug: false, dwell: 1.5, excludeAuthors: [] };
 // デバッグモード（高度な設定）: 見つけた件を枠で囲み、全件にマーク、右下に内部の状態、コンソールに [Jev] の記録
 const dbg = (...a) => settings.debug && console.log("[Jev]", ...a);
 let itemsFrom = ""; // 区切りの出どころ（デバッグ表示用）
@@ -15,7 +14,7 @@ let SITE = null; // このサイトの設定（sites.js の組み込み ＋ 利�
 let SITE_ITEMS = []; // 区切りの候補。利用者の設定 → 組み込み の順。どちらも0件なら自動検出
 const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE", "svg", "BR", "HR", "LINK", "META"]);
 
-let settings = DEFAULTS;
+let settings = JEV_SETTINGS;
 let mode = null; // "page" | "block" | null
 let checks = []; // { id, label, why, qs[], code, high, action, showSources }
 let keyless = false; // API キーが無い: コードで判定する項目だけで動く（Jev は呼ばない）
@@ -29,7 +28,7 @@ const excludedSeen = new Set(); // 除外した投稿（投稿者＋本文の冒
 function buildChecks(s, mode) {
   const out = [];
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
-    const c = { ...p.defaults, ...(s.pillars[id] || {}) };
+    const c = jevPillarConfig(id, s.pillars);
     if (!c.on || (p.modes && !p.modes.includes(mode)) || (keyless && !p.code)) continue;
     out.push({ id, label: p.label, short: p.short, why: p.why, tip: p.tip, qs: p.qs.map((k) => JEV_QUESTIONS[k]), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
   }
@@ -52,16 +51,13 @@ function showDebugOff(chosen) {
   document.documentElement.append(debugOff.host);
   debugOff.badge.textContent = "Jev｜オフ";
   debugOff.badge.classList.add("quiet");
-  const d = document.createElement("div");
-  d.className = "note";
-  d.textContent = "― デバッグ ― 適用中のモード: オフ。" + why;
-  debugOff.pop.append(d);
+  jevDiv("note", "― デバッグ ― 適用中のモード: オフ。" + why, debugOff.pop);
 }
 
 let loadSeq = 0;
 async function load() {
   const seq = ++loadSeq; // 設定の保存で続けて呼ばれても、最後の1回だけが開始する（開始が重なるとタイマーが漏れる）
-  settings = await chrome.storage.sync.get(DEFAULTS);
+  settings = await chrome.storage.sync.get(JEV_SETTINGS);
   Object.assign(stats, { judged: 0, warned: 0, errors: 0, lastError: "", excluded: 0 });
   excludedAuthors = new Set((settings.excludeAuthors || []).map((a) => String(a).replace(/^@/, "").toLowerCase()));
   excludedSeen.clear();
@@ -96,8 +92,11 @@ const PRIVATE_HOSTS = ["discord.com", "slack.com", "messenger.com", "teams.micro
 const isPrivatePage = () =>
   PRIVATE_PATH.test(location.pathname) || PRIVATE_HOSTS.some((h) => location.hostname === h || location.hostname.endsWith("." + h));
 
+// オンの手口の問い（重複なし）。Jev にはこの組で聞き、保存済みの結果もこの組で引く
+const allQuestions = () => [...new Set(checks.flatMap((c) => c.qs))];
+
 async function ask(text) {
-  const questions = [...new Set(checks.flatMap((c) => c.qs))];
+  const questions = allQuestions();
   try {
     // Jev の問いが無い（キーなし・コードの項目だけ）ときは呼ばない
     const answers = questions.length ? await chrome.runtime.sendMessage({ type: "judge", text, questions }) : { answers: {} };
@@ -126,11 +125,9 @@ function score(answers, text, el) {
         detail: d.hit ? "同じ文を投稿しているアカウント: " + d.authors.slice(0, 10).map((a) => "@" + a).join(" ") + (d.authors.length > 10 ? ` ほか${d.authors.length - 10}` : "") : null,
       });
     } else if (c.code) {
-      if (text == null) continue;
-      const r = JEV_CODE[c.code](text);
-      rows.push({ c, pct: r.hit ? 100 : 0, hit: r.hit, detail: r.matches.length ? "見つかった言い回し: " + r.matches.map((m) => `「${m}」`).join("") : null });
+      if (text != null) rows.push(jevCodeRow(c, text));
     } else if (answers) {
-      const pct = c.qs.reduce((acc, q) => acc * answers[q], 1) * 100;
+      const pct = jevPct(c.qs, answers);
       rows.push({ c, pct, hit: pct >= c.high });
     }
   }
@@ -150,12 +147,6 @@ function primaryLinks(root) {
   return [...seen];
 }
 
-function shortUrl(href) {
-  const u = new URL(href);
-  const s = u.hostname.replace(/^www\./, "") + u.pathname;
-  return s.length > 48 ? s.slice(0, 47) + "…" : s;
-}
-
 // リンクから論文の DOI を取り出す。doi.org 以外でも、出版社の URL に DOI が入っていることが多い。arXiv は DataCite の DOI に直す
 function doiOf(href) {
   let decoded = href;
@@ -170,31 +161,6 @@ function doiOf(href) {
 
 // ---- マーク: 「手口」の小さなボタン。押すと詳細が開く。サイトの CSS に影響されないよう shadow DOM に閉じる ----
 
-const MARK_CSS = `
-  .b { all: initial; font: 12px/1 system-ui, sans-serif; cursor: pointer; background: #fffaf0; color: #5c4400; border: 1px solid #d9b45a;
-       border-radius: 12px; padding: 4px 8px; box-shadow: 0 1px 3px #0002; }
-  .b .k { font-weight: 700; margin-right: 4px; padding-right: 5px; border-right: 1px solid #e3c98a; }
-  .b.quiet { background: #fff; border-color: #ccc; color: #888; font-size: 11px; }
-  .pop { position: absolute; right: 0; top: 28px; width: 320px; max-height: 60vh; overflow: auto; background: #fff; color: #222;
-         border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 10px #0003; padding: 8px 10px;
-         font: 12px/1.5 system-ui, sans-serif; text-align: left; white-space: normal; }
-  :host(.fixed) .pop { top: auto; bottom: 30px; }
-  :host(.left) .pop { right: auto; left: 0; }
-  .hit { color: #5c4400; font-weight: 700; font-size: 13px; margin-top: 6px; }
-  .hit:first-child { margin-top: 0; }
-  .why { color: #333; }
-  .tip { color: #1f5130; background: #f1f8f3; border-radius: 6px; padding: 4px 6px; margin-top: 4px; }
-  .more { margin-top: 8px; border-top: 1px solid #eee; padding-top: 4px; }
-  .more > summary { cursor: pointer; color: #555; font-size: 11px; }
-  .note { color: #777; font-size: 11px; }
-  .all { margin-top: 6px; padding-top: 4px; border-top: 1px dashed #ddd; color: #777; font-size: 11px; }
-  a { color: #0b57d0; word-break: break-all; }
-  .act { all: initial; display: inline-block; margin-top: 6px; font: 12px/1.4 system-ui, sans-serif; color: #0b57d0; cursor: pointer;
-         border: 1px solid #0b57d0; border-radius: 10px; padding: 2px 8px; }
-  textarea { box-sizing: border-box; width: 100%; margin-top: 4px; font: 11px/1.4 system-ui, sans-serif; color: #222; background: #fafafa; }
-  [hidden] { display: none; }
-`;
-
 // at: 1件の印の位置（既定は SITE.markAt）。引用の枠にはサイトのボタンが無いので、既定の右上の角に置く
 function createMark(fixed, at = SITE?.markAt) {
   const host = document.createElement("jev-mark");
@@ -204,7 +170,7 @@ function createMark(fixed, at = SITE?.markAt) {
   if (fixed) host.classList.add("fixed");
   if (fixed && /left:\s*\d/.test(SITE?.cornerAt || "")) host.classList.add("left"); // 詳細を画面の外にはみ出させない
   const sh = host.attachShadow({ mode: "closed" }); // open だとページ側のプログラムが印を書き換えられる
-  sh.innerHTML = `<style>${MARK_CSS}</style><button class="b"></button><div class="pop" hidden></div>`;
+  sh.innerHTML = `<style>${JEV_MARK_CSS}</style><button class="b"></button><div class="pop" hidden></div>`;
   const badge = sh.querySelector(".b");
   const pop = sh.querySelector(".pop");
   badge.onclick = () => {
@@ -226,68 +192,12 @@ function createMark(fixed, at = SITE?.markAt) {
   return { host, badge, pop };
 }
 
-// 印の文字: 「手口｜いちばん確率の高い手口の名前」。ほかにも当たっていれば「ほかN」。
-// % は出さない（「95% うそ」と読まれる。2026-10-04 UI レビュー）。コードの項目は Jev の項目より後ろに回す
-function badgeText(hits) {
-  const top = [...hits].sort((a, b) => !!a.c.code - !!b.c.code || b.pct - a.pct)[0];
-  return (top.badge || top.c.short) + (hits.length > 1 ? ` ほか${hits.length - 1}` : "");
-}
-function setBadge(badge, hits, prefix = "") {
-  badge.textContent = prefix;
-  badge.append(Object.assign(document.createElement("span"), { className: "k", textContent: JEV_MARK }), badgeText(hits));
-  badge.setAttribute("aria-label", `注意: ${hits.map((r) => r.c.label || r.c.short).join("、")} の手口の可能性。押すと説明が出ます`);
-}
-
-function rowValue(r) {
-  return r.c.code ? (r.hit ? "あり" : "なし") : `${r.pct.toFixed(0)}%`;
-}
-
-// 詳細の中身: 手口ごとに「名前 → 仕組み → 向き合い方」（出典のリンクがあれば添える）。
-// 判定の中身（確率・閾値・問いの原文・全項目）と、直すための操作（AI に相談・違うと思う）は「詳しく」の中
+// 詳細の中身は mark.js（体験ページと共通）。ページ側では「詳しく」の中に、直すための操作（AI に相談・違うと思う）を足す
 function fillDetails(pop, rows, links, extra, text) {
-  pop.textContent = "";
-  const add = (cls, text, parent = pop) => {
-    const d = document.createElement("div");
-    if (cls) d.className = cls;
-    d.textContent = text;
-    parent.append(d);
-    return d;
-  };
-  const link = (href, text, parent = pop) => {
-    const a = document.createElement("a");
-    a.href = href;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.textContent = text;
-    add("note", "", parent).append(a);
-  };
-  const hits = rows.filter((r) => r.hit);
-  if (!hits.length) add("note", "目立った手口は見つかりませんでした。手口が無いことは、内容が正しいという意味ではありません");
-  for (const r of hits) {
-    add("hit", r.c.label);
-    if (r.c.why) add("why", r.c.why);
-    if (r.detail) add("note", r.detail);
-    if (r.c.showSources) {
-      if (!links.length) add("note", "範囲内に一次ソースへのリンクは見当たりません");
-      for (const href of links.slice(0, 3)) link(href, "出典: " + shortUrl(href));
-    }
-    if (r.c.tip) add("tip", "向き合い方: " + r.c.tip);
-  }
-  extra?.(add, link);
-  const more = document.createElement("details");
-  more.className = "more";
-  more.append(Object.assign(document.createElement("summary"), { textContent: "詳しく（判定の中身・直し方）" }));
-  pop.append(more);
-  for (const r of hits) {
-    if (r.c.code) continue;
-    add("note", `${r.c.label}: 当てはまる確率 ${r.pct.toFixed(0)}%（${r.c.high}% 以上で印を付けます）`, more);
-    add("note", jevQuestionNote(r.c.qs), more);
-  }
-  if (keyless) add("note", "API キーが無いので、コードで判定できる項目だけを見ています。キーを入れると Jev の判定も加わります", more);
-  add("all", rows.map((r) => `${r.c.label} ${rowValue(r)}`).join(" ・ "), more);
-  if (rows.some((r) => !r.c.code)) add("note", JEV_PCT_NOTE, more);
-  addConsult(more, rows, text);
-  addDisagree(more, rows, text);
+  jevFillDetails(pop, rows, { links, extra, keyless, more: (more) => {
+    addConsult(more, rows, text);
+    addDisagree(more, rows, text);
+  } });
 }
 
 // 「違うと思う」: この件を手元（このブラウザの中だけ）に残す。「問いを試す」画面で、AI の例文に加えて本人の実例で測れる。
@@ -300,7 +210,7 @@ function addDisagree(pop, rows, text) {
   btn.textContent = hits.length ? "誤検知だと思う（記録する）" : "取りこぼしだと思う（記録する）";
   btn.onclick = async () => {
     // 取りこぼしは、どの項目が拾うべきだったかが分からないので、その時の値を全部残す（試す画面で選ぶ手がかり）
-    const item = { kind: hits.length ? "fp" : "miss", text, checks: (hits.length ? hits : rows.filter((r) => !r.c.code)).map((r) => `${r.c.label} ${rowValue(r)}`), host: location.hostname };
+    const item = { kind: hits.length ? "fp" : "miss", text, checks: (hits.length ? hits : rows.filter((r) => !r.c.code)).map((r) => `${r.c.label} ${jevRowValue(r)}`), host: location.hostname };
     const res = await chrome.runtime.sendMessage({ type: "disagree", item }).catch(() => null);
     btn.textContent = res?.ok ? "記録しました（設定画面の「問いを試す」で例文に使えます）" : "記録できませんでした";
     btn.disabled = true;
@@ -438,28 +348,21 @@ function renderPage() {
   }
   const tag = (text) => (settings.debug ? `${modeName(mode)}｜${text}` : text);
   const debugLines = () => {
-    if (!settings.debug) return;
-    const d = document.createElement("div");
-    d.className = "all";
-    d.textContent = `― デバッグ ― 適用中のモード: ${modeName(mode)} / 判定項目: ${checks.map((c) => c.id).join(", ")}`;
-    pageMark.pop.append(d);
+    if (settings.debug) jevDiv("all", `― デバッグ ― 適用中のモード: ${modeName(mode)} / 判定項目: ${checks.map((c) => c.id).join(", ")}`, pageMark.pop);
   };
   if (pageView.error) {
     pageMark.badge.textContent = tag("Jev ⚠");
     pageMark.badge.removeAttribute("aria-label");
     pageMark.badge.classList.add("quiet");
     pageMark.pop.textContent = "";
-    const d = document.createElement("div");
-    d.className = "hit";
-    d.textContent = "判定に失敗しました: " + pageView.error;
-    pageMark.pop.append(d);
+    jevDiv("hit", "判定に失敗しました: " + pageView.error, pageMark.pop);
     debugLines();
     return;
   }
   const { rows, links, cmp } = pageView;
   // 元論文との比較で当たったものも、手口の1つとして並べる
   const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元の研究を盛っている", label: JEV_COMPARE.label }, pct: cmp.pct }] : []);
-  if (hits.length) setBadge(pageMark.badge, hits, settings.debug ? `${modeName(mode)}｜` : "");
+  if (hits.length) jevSetBadge(pageMark.badge, hits, settings.debug ? `${modeName(mode)}｜` : "");
   else {
     pageMark.badge.textContent = tag("Jev 読んだ");
     pageMark.badge.removeAttribute("aria-label"); // 前の当たりの読み上げを残さない
@@ -497,7 +400,8 @@ async function comparePage(text, links) {
 
 // ---- ブロックごとモード ----
 
-const state = new Map(); // Element -> { answers, pending, timer, mark }
+const state = new Map(); // Element -> { answers, pending, timer, mark, text, quote, excluded }
+const newEntry = (more) => ({ answers: null, pending: false, timer: null, mark: null, ...more });
 const revealed = new WeakSet(); // クリックでぼかしを解いた要素
 // 「読んでいる」候補: 6割以上見えている件（背の高い件は、画面の4割以上を占めている件）。
 // 「画面の中ほど」で判定すると、ページ末尾の件が中ほどに入れず、いつまでも判定されなかった
@@ -649,12 +553,7 @@ function updateCounter() {
   counter.badge.textContent = settings.debug ? `${modeName(mode)}｜${label}` : label;
   counter.badge.classList.toggle("quiet", !stats.warned && !failing);
   counter.pop.textContent = "";
-  const add = (text, cls) => {
-    const d = document.createElement("div");
-    if (cls) d.className = cls;
-    d.textContent = text;
-    counter.pop.append(d);
-  };
+  const add = (text, cls) => jevDiv(cls, text, counter.pop);
   add(`手口が見つかった投稿は ${stats.warned} 件です（Jev で読んだ投稿 ${stats.judged} 件）。`);
   add("「手口」の印は、手口が見つかった投稿の右上に付きます。誘導の決まり文句は投稿が現れた時点で、Jev の項目は画面に少しとどまった投稿だけを判定しています。", "note");
   if (keyless) add("API キーが無いので、コードで判定できる項目（誘導の決まり文句・同じ文言の大量投稿）だけを見ています。キーを入れると Jev の判定も加わります。", "note");
@@ -690,12 +589,12 @@ function scan() {
     // 除外リストのアカウントは判定しない（送らない・数えない・同じ文言にも入れない）
     const who = excludedAuthors.size ? authorOf(el) : null;
     if (who && excludedAuthors.has(who.toLowerCase())) {
-      state.set(el, { excluded: true, answers: null, pending: false, timer: null, mark: null });
+      state.set(el, newEntry({ excluded: true }));
       excludedSeen.add(who.toLowerCase() + "\n" + el.textContent.slice(0, 200));
       stats.excluded = excludedSeen.size;
       return;
     }
-    const fresh = { answers: null, pending: false, timer: null, mark: null, quote };
+    const fresh = newEntry({ quote });
     state.set(el, fresh);
     if (settings.debug) el.classList.add("jev-debug");
     if (!priv) {
@@ -737,7 +636,7 @@ function codeFirst(el, st) {
 // 前に判定した本文は、保存済みの結果で印をすぐ戻す（問い合わせはしない。保存に無ければ何もしない）。
 // X は画面外の投稿を作り直すので、スクロールで戻るたびに待ち時間からやり直しになっていた。別の人が同じ文を投稿した場合も同じ
 async function peek(el, st, text) {
-  const questions = [...new Set(checks.flatMap((c) => c.qs))];
+  const questions = allQuestions();
   if (keyless || !questions.length || isPrivatePage()) return;
   const r = await chrome.runtime.sendMessage({ type: "peek", text, questions }).catch(() => null);
   if (!r?.answers || state.get(el) !== st || st.answers) return;
@@ -912,7 +811,7 @@ function apply(el) {
   if (!hits.length && !settings.debug) return;
   if (getComputedStyle(el).position === "static") el.classList.add("jev-anchor"); // マークを右上に置く基準
   st.mark = createMark(false, st.quote ? "" : SITE?.markAt);
-  if (hits.length) setBadge(st.mark.badge, hits, st.quote ? "引用元 " : "");
+  if (hits.length) jevSetBadge(st.mark.badge, hits, st.quote ? "引用元 " : "");
   else st.mark.badge.textContent = "読んだ";
   st.mark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(st.mark.pop, rows, hits.some((r) => r.c.showSources) ? primaryLinks(el) : [], (add) => {

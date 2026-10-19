@@ -37,7 +37,7 @@ async function currentHigh(q) {
   const r = rules.find((r) => r.condition === q);
   if (r) return { high: r.high, kind: "rule" };
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
-    if (p.qs.length === 1 && JEV_QUESTIONS[p.qs[0]] === q) return { high: { ...p.defaults, ...(pillars[id] || {}) }.high, kind: "pillar", label: p.label };
+    if (p.qs.length === 1 && JEV_QUESTIONS[p.qs[0]] === q) return { high: jevPillarConfig(id, pillars).high, kind: "pillar", label: p.label };
   }
   return null;
 }

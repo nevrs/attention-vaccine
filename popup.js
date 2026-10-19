@@ -30,7 +30,7 @@ async function render() {
   if (!noKey) {
     const { usage } = await chrome.storage.local.get("usage");
     const { dailyCap = JEV_DAILY_CAP } = await chrome.storage.sync.get("dailyCap");
-    const today = usage?.day === new Date().toLocaleDateString("sv") ? usage.n : 0;
+    const today = usage?.day === jevToday() ? usage.n : 0;
     // 普段は見せない。上限が近いときだけ知らせる
     if (dailyCap > 0 && today >= dailyCap * 0.8) line(`今日の問い合わせ ${today} / ${dailyCap} 回（上限が近いです。設定で変えられます）`, "err");
   }
@@ -50,8 +50,7 @@ async function render() {
   // 許可はあるのに、許可より前から開いていたタブにはまだ入っていない → 今入れる
   if (granted && mode && !s && !injectTried) {
     injectTried = true;
-    await chrome.scripting.insertCSS({ target: { tabId: tab.id }, files: JEV_CONTENT.css }).catch(() => {});
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: JEV_CONTENT.js }).catch(() => {});
+    await jevInjectContent(tab.id);
     return setTimeout(render, 500);
   }
 

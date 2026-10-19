@@ -3,9 +3,10 @@
 ## 構成
 | ファイル | 役割 |
 |---|---|
-| `manifest.json` | 権限。ページ側のスクリプトは manifest に書かず、許可したサイトにだけ background が登録する（`JEV_CONTENT`: checks → sites → content → picker） |
+| `manifest.json` | 権限。ページ側のスクリプトは manifest に書かず、許可したサイトにだけ background が登録する（`JEV_CONTENT`: checks → sites → mark → content → picker） |
 | `techniques.js` | 手口の定義（データ、中身は JSON）: 問いの原文・名前・仕組み・向き合い方・閾値・おすすめ・測った結果（notes）。tools は `tools/techniques.py` で読む |
-| `checks.js` | techniques.js を拡張の各所が使う形（`JEV_QUESTIONS` / `JEV_PILLARS` / `JEV_PRESETS`）に組み直す。コードで判定する項目（`JEV_CODE` / `JEV_LURE` / `JEV_DUP`） |
+| `checks.js` | techniques.js を拡張の各所が使う形（`JEV_QUESTIONS` / `JEV_PILLARS` / `JEV_PRESETS`）に組み直す。コードで判定する項目（`JEV_CODE` / `JEV_LURE` / `JEV_DUP`）。各所で共通の小さな関数（`jevPillarConfig` / `jevPct` / `jevCodeRow` / `jevInjectContent`）と設定の初期値（`JEV_SETTINGS`）。ページを触る処理は置かない（tools が node で読み、background も読む） |
+| `mark.js` | 「手口」の印の見た目（`JEV_MARK_CSS`）と詳細の中身（`jevFillDetails` ほか）。content.js と demo.js で共通。置き場所・開け閉めはそれぞれの側 |
 | `sites.js` | 主要サイトの区切り・本文の場所（`JEV_SITES`）と `jevSiteFor` |
 | `content.js` | ページ側。モード（page / block）、見えた件の判定、「手口」の印と詳細の表示 |
 | `picker.js` | クリックで区切り・本文の場所・判定範囲を直すバー |
@@ -21,7 +22,7 @@
 - 体験ページの数値の作り直し（問いを変えたら必須）: `TYPESAFE_API_KEY` を設定して `python tools/demo_measure.py`
 - 問いを変える前後の回帰確認: `python tools/eval_run.py`（例文 `tools/eval/cases.json`、閾値をまたぐ件があると終了コード 1。Jev は同じ文でも 1〜3 点ぶれるので、閾値近くは `--repeat 3`）
 - ビルド工程なし・外部ライブラリなし
-- ストア用 ZIP（コミット済みの内容から、拡張に要るファイルだけ）: `git archive -o dist/attention-vaccine-<版>.zip HEAD manifest.json _locales icons LICENSE background.js techniques.js checks.js content.js content.css demo.html demo.js demo-data.js options.html options.js picker.js popup.html popup.js sites.js tune.html tune.js`
+- ストア用 ZIP（コミット済みの内容から、拡張に要るファイルだけ）: `git archive -o dist/attention-vaccine-<版>.zip HEAD manifest.json _locales icons LICENSE background.js techniques.js checks.js mark.js content.js content.css demo.html demo.js demo-data.js options.html options.js picker.js popup.html popup.js sites.js tune.html tune.js`
 - アイコン（`icons/`、盾の中に釣り針）は `python tools/make_icons.py` で作る（要 Pillow）。16・32・48・128 px
 
 ## 文書
