@@ -9,3 +9,7 @@ __pycache__/
 Thumbs.db
 dist/
 .claude/
+# 実際の投稿（おすすめ検温の書き出し）。他の人の投稿なのでリポに入れない
+osusume-kenon-*.json
+scores.json
+label.md
