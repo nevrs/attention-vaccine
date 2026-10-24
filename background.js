@@ -150,14 +150,23 @@ async function account() {
   return { ...BACKENDS[id], id, apiKey: apiKeys[id] || "" };
 }
 
+// 問い合わせに使う接続先。キーが要るのに無ければ止める
+async function readyAccount() {
+  const acc = await account();
+  if (acc.needsKey && !acc.apiKey) throw new Error("API キーが未設定");
+  return acc;
+}
+
+// 結果の保存のキー。接続先とモデルの版が変われば別の答えなので、キーに含める
+const cacheKey = async (prefix, acc, ...parts) => prefix + (await sha256([acc.id, acc.model, ...parts].join("\n")));
+
 // 1件の本文に複数の問いを投げる。キャッシュは問いごと。足りない問いだけを1回の呼び出しにまとめる
 // （Jev は1回で複数の問いに答え、時間も1問のときと変わらない）。返り値は { 問い: 確率 }。
 // peek なら呼び出さず、全部の問いが保存済みのときだけ返す（足りなければ null）
 async function judge(text, questions, peek = false) {
-  const acc = await account();
-  if (acc.needsKey && !acc.apiKey) throw new Error("API キーが未設定");
+  const acc = await readyAccount();
   const keys = {};
-  for (const q of questions) keys[q] = "c:" + (await sha256(acc.id + "\n" + acc.model + "\n" + q + "\n" + text));
+  for (const q of questions) keys[q] = await cacheKey("c:", acc, q, text);
   const hits = await chrome.storage.session.get(Object.values(keys));
   const out = {};
   const missing = [];
@@ -181,12 +190,11 @@ async function judge(text, questions, peek = false) {
 // 一次ソース比較: DOI から論文の要旨を取り（OpenAlex、無料・キー不要）、記事と並べて Jev に1回聞く。
 // 要旨が取れなければ paper: null を返す（比較しない）
 async function compareWithPaper(doi, text) {
-  const acc = await account();
-  if (acc.needsKey && !acc.apiKey) throw new Error("API キーが未設定");
+  const acc = await readyAccount();
   if (!acc.compare) throw new Error("この接続先では一次ソース比較を使えません");
   const paper = await fetchPaper(doi);
   if (!paper) return { paper: null };
-  const key = "cmp:" + (await sha256(acc.id + "\n" + acc.model + "\n" + doi + "\n" + text));
+  const key = await cacheKey("cmp:", acc, doi, text);
   const hit = (await chrome.storage.session.get(key))[key];
   if (hit) return { paper, ...hit };
   const answers = await queued(() =>

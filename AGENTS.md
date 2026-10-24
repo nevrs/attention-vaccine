@@ -5,7 +5,7 @@
 |---|---|
 | `manifest.json` | 権限。ページ側のスクリプトは manifest に書かず、許可したサイトにだけ background が登録する（`JEV_CONTENT`: checks → sites → mark → content → picker） |
 | `techniques.js` | 判定の定義（データ、中身は JSON）: 印に出す分類（categories）・問いの原文・項目の名前・仕組み・向き合い方・閾値・おすすめ・測った結果（notes）。tools は `tools/techniques.py` で読む |
-| `checks.js` | techniques.js を拡張の各所が使う形（`JEV_QUESTIONS` / `JEV_PILLARS` / `JEV_PRESETS`）に組み直す。コードで判定する項目（`JEV_CODE` / `JEV_LURE` / `JEV_DUP`）。各所で共通の小さな関数（`jevPillarConfig` / `jevPct` / `jevCodeRow` / `jevInjectContent`）と設定の初期値（`JEV_SETTINGS`）。ページを触る処理は置かない（tools が node で読み、background も読む） |
+| `checks.js` | techniques.js を拡張の各所が使う形（`JEV_QUESTIONS` / `JEV_PILLARS` / `JEV_PRESETS`）に組み直す。コードで判定する項目（`JEV_CODE` / `JEV_LURE` / `JEV_DUP`）。各所で共通の小さな関数（`jevPillarConfig` / `jevPct` / `jevPillarQs` / `jevAskRow` / `jevCodeRow` / `jevPresetFor` / `jevInjectContent`）と設定の初期値（`JEV_SETTINGS`）。ページを触る処理は置かない（tools が node で読み、background も読む） |
 | `mark.js` | 「注意報」の印の見た目（`JEV_MARK_CSS`）と詳細の中身（`jevFillDetails` ほか）。content.js と demo.js で共通。置き場所・開け閉めはそれぞれの側 |
 | `sites.js` | 主要サイトの区切り・本文の場所（`JEV_SITES`）と `jevSiteFor` |
 | `content.js` | ページ側。モード（page / block）、見えた件の判定、「注意報」の印と詳細の表示 |

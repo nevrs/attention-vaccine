@@ -30,13 +30,13 @@ function buildChecks(s, mode) {
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
     const c = jevPillarConfig(id, s.pillars);
     if (!c.on || (p.modes && !p.modes.includes(mode)) || (keyless && !p.code)) continue;
-    out.push({ id, cat: p.cat, label: p.label, short: p.short, why: p.why, tip: p.tip, qs: p.qs.map((k) => JEV_QUESTIONS[k]), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
+    out.push({ id, cat: p.cat, label: p.label, short: p.short, why: p.why, tip: p.tip, qs: jevPillarQs(p), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
   }
   if (keyless) return out; // 自分で足す項目は Jev が要る
   for (const r of s.rules) {
     if (!r.condition) continue;
     const cut = (n) => (r.condition.length > n ? r.condition.slice(0, n) + "…" : r.condition);
-    const pre = JEV_PRESETS.find((p) => p.condition === r.condition); // おすすめから足した項目は、その名前と説明で出す
+    const pre = jevPresetFor(r.condition); // おすすめから足した項目は、その名前と説明で出す
     out.push({ id: r.id, label: pre?.label || cut(16), short: pre?.label || cut(8), why: pre?.why || "", tip: pre?.tip, qs: [r.condition], high: r.high, action: "warn" });
   }
   return out;
@@ -45,10 +45,11 @@ function buildChecks(s, mode) {
 // デバッグモード: どのモードで動いているか（ブロックごと／ページ全体／動いていない）を隅の表示に出す
 let debugOff = null;
 const modeName = (m) => JEV_MODES[m] || "オフ";
+// デバッグ中は、隅の表示の頭に適用中のモードを付ける
+const debugPrefix = () => (settings.debug ? `${modeName(mode)}｜` : "");
 function showDebugOff(chosen) {
   const why = !settings.enabled ? "拡張が無効です" : !chosen ? "このサイトのモードが「オフ」です" : "判定項目がありません（すべてオフ、またはこのモードで使える項目がない）";
-  debugOff = createMark(true);
-  document.documentElement.append(debugOff.host);
+  debugOff = cornerMark();
   debugOff.badge.textContent = "Jev｜オフ";
   debugOff.badge.classList.add("quiet");
   jevDiv("note", "― デバッグ ― 適用中のモード: オフ。" + why, debugOff.pop);
@@ -118,16 +119,11 @@ function score(answers, text, el) {
   const rows = [];
   for (const c of checks) {
     if (c.code === "dup") {
-      const d = dupOf(el);
-      rows.push({
-        c, pct: d.hit ? 100 : 0, hit: d.hit,
-        detail: d.hit ? "同じ文を投稿しているアカウント: " + d.authors.slice(0, 10).map((a) => "@" + a).join(" ") + (d.authors.length > 10 ? ` ほか${d.authors.length - 10}` : "") : null,
-      });
+      rows.push(dupRow(c, el));
     } else if (c.code) {
       if (text != null) rows.push(jevCodeRow(c, text));
     } else if (answers) {
-      const pct = jevPct(c.qs, answers);
-      rows.push({ c, pct, hit: pct >= c.high });
+      rows.push(jevAskRow(c, answers));
     }
   }
   return rows;
@@ -189,6 +185,13 @@ function createMark(fixed, at = SITE?.markAt) {
     });
   }
   return { host, badge, pop };
+}
+
+// 画面の隅に1つだけ置く印（ページ全体の判定・ブロックごとの件数・デバッグの「オフ」）
+function cornerMark() {
+  const m = createMark(true);
+  document.documentElement.append(m.host);
+  return m;
 }
 
 // 詳細の中身は mark.js（体験ページと共通）。ページ側では「詳しく」の中に、直すための操作（AI に相談・違うと思う）を足す
@@ -279,9 +282,9 @@ function stopPage() {
 // ページ全体モードの除外: 判定範囲の最初の投稿者（X・Bluesky の投稿ページなら、その投稿の主）で決める
 function pageAuthorExcluded() {
   if (!excludedAuthors.size || !SITE?.author) return false;
-  const who = authorOf(pageRoot());
-  return !!who && excludedAuthors.has(who.toLowerCase());
+  return isExcluded(authorOf(pageRoot()));
 }
+const isExcluded = (who) => !!who && excludedAuthors.has(who.toLowerCase());
 
 // 本文の範囲: サイト別の設定 → h1 を含む article → main → body
 function pageRoot() {
@@ -299,13 +302,17 @@ function pageText() {
   const root = pageRoot();
   const head = (h1?.innerText || document.title || "").trim();
   // 15字未満の行（パンくず・「TOP」「COPIED!」などの切れ端）は落とす。ナゾロジーで要ソース確認が 0.58 → 0.64
-  const body = (root.innerText || "")
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l.length >= 15)
-    .join("\n");
+  const body = keepLines(root.innerText, (l) => l.length >= 15);
   return (head && !body.startsWith(head) ? head + "\n" : "") + body;
 }
+
+// 行ごとに前後の空白を除き、keep に合う行だけを残す
+const keepLines = (text, keep) =>
+  (text || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(keep)
+    .join("\n");
 
 async function judgePage(retry = 0) {
   const url = location.href;
@@ -341,16 +348,12 @@ async function judgePage(retry = 0) {
 // ページ全体は右下に1つだけ。当たれば「注意報｜分類」、当たらなければ控えめな Jev 読んだ（押せば数値が見られる）
 function renderPage() {
   if (!pageView) return;
-  if (!pageMark) {
-    pageMark = createMark(true);
-    document.documentElement.append(pageMark.host);
-  }
-  const tag = (text) => (settings.debug ? `${modeName(mode)}｜${text}` : text);
+  pageMark ??= cornerMark();
   const debugLines = () => {
     if (settings.debug) jevDiv("all", `― デバッグ ― 適用中のモード: ${modeName(mode)} / 判定項目: ${checks.map((c) => c.id).join(", ")}`, pageMark.pop);
   };
   if (pageView.error) {
-    pageMark.badge.textContent = tag("Jev ⚠");
+    pageMark.badge.textContent = debugPrefix() + "Jev ⚠";
     pageMark.badge.removeAttribute("aria-label");
     pageMark.badge.classList.add("quiet");
     pageMark.pop.textContent = "";
@@ -361,9 +364,9 @@ function renderPage() {
   const { rows, links, cmp } = pageView;
   // 元論文との比較で当たったものも、項目の1つとして並べる（分類は持たない）
   const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元の研究を盛っている", label: JEV_COMPARE.label }, pct: cmp.pct }] : []);
-  if (hits.length) jevSetBadge(pageMark.badge, hits, settings.debug ? `${modeName(mode)}｜` : "");
+  if (hits.length) jevSetBadge(pageMark.badge, hits, debugPrefix());
   else {
-    pageMark.badge.textContent = tag("Jev 読んだ");
+    pageMark.badge.textContent = debugPrefix() + "Jev 読んだ";
     pageMark.badge.removeAttribute("aria-label"); // 前の当たりの読み上げを残さない
   }
   pageMark.badge.classList.toggle("quiet", !hits.length);
@@ -526,11 +529,16 @@ function mergeGroups(from, to) {
   groups.delete(from);
 }
 
-function dupOf(el) {
+// 同じ文言の項目の判定を、印の1行にする（コードの項目の jevCodeRow と同じ形）
+function dupRow(c, el) {
   const e = el && dupEntry.get(el);
   const g = e && groups.get(e.group);
   const authors = g ? [...g.authors] : [];
-  return { hit: authors.length >= JEV_DUP.minAuthors, authors };
+  const hit = authors.length >= JEV_DUP.minAuthors;
+  return {
+    c, pct: hit ? 100 : 0, hit,
+    detail: hit ? "同じ文を投稿しているアカウント: " + authors.slice(0, 10).map((a) => "@" + a).join(" ") + (authors.length > 10 ? ` ほか${authors.length - 10}` : "") : null,
+  };
 }
 
 // 右下の小さな表示。普段は出さない（動作確認はポップアップの「読んだ投稿 N 件」で見られる）。
@@ -544,12 +552,9 @@ function updateCounter() {
     counter = null;
     return;
   }
-  if (!counter) {
-    counter = createMark(true);
-    document.documentElement.append(counter.host);
-  }
+  counter ??= cornerMark();
   const label = failing ? "Jev ⚠" : stats.warned ? `${JEV_MARK} ${stats.warned}` : `Jev 読んだ ${stats.judged}`;
-  counter.badge.textContent = settings.debug ? `${modeName(mode)}｜${label}` : label;
+  counter.badge.textContent = debugPrefix() + label;
   counter.badge.classList.toggle("quiet", !stats.warned && !failing);
   counter.pop.textContent = "";
   const add = (text, cls) => jevDiv(cls, text, counter.pop);
@@ -587,7 +592,7 @@ function scan() {
     if (!quote && isMainArticle(el)) return;
     // 除外リストのアカウントは判定しない（送らない・数えない・同じ文言にも入れない）
     const who = excludedAuthors.size ? authorOf(el) : null;
-    if (who && excludedAuthors.has(who.toLowerCase())) {
+    if (isExcluded(who)) {
       state.set(el, newEntry({ excluded: true }));
       excludedSeen.add(who.toLowerCase() + "\n" + el.textContent.slice(0, 200));
       stats.excluded = excludedSeen.size;
@@ -704,11 +709,7 @@ function blockText(el) {
   if (SITE?.text && !parts.length && !SITE.textFallback) return ""; // 画像だけの投稿など: ユーザー名や日時だけで判定しない
   const text = parts.length
     ? [...new Set(parts)].join("\n")
-    : (el.innerText || "")
-        .split("\n")
-        .map((l) => l.trim())
-        .filter((l) => l.length > 2 && !/^[\d,.\s万千億KkMm件回人+:：/()（）-]+$/.test(l))
-        .join("\n");
+    : keepLines(el.innerText, (l) => l.length > 2 && !/^[\d,.\s万千億KkMm件回人+:：/()（）-]+$/.test(l));
   return text.slice(0, MAX_CHARS);
 }
 

@@ -35,10 +35,19 @@ const jevPillarConfig = (id, saved) => ({ ...JEV_PILLARS[id].defaults, ...(saved
 
 // 手口の確率（%）。問いが2つ以上なら掛け合わせる。answers は qs と同じ形（問いの原文、または問いのキー）で引く
 const jevPct = (qs, answers) => qs.reduce((acc, q) => acc * answers[q], 1) * 100;
+// 手口の問いの原文（techniques.js はキーで持つ）
+const jevPillarQs = (p) => p.qs.map((k) => JEV_QUESTIONS[k]);
+// Jev の項目の判定を、印の1行（mark.js の rows の形）にする。qs は answers と同じ形（問いの原文、または問いのキー）
+function jevAskRow(c, answers, qs = c.qs) {
+  const pct = jevPct(qs, answers);
+  return { c, pct, hit: pct >= c.high };
+}
 
 // 設定画面の「自分で足す項目」のおすすめ。押すと condition と high が利用者の rules に写される。
 // content.js は condition が一致すれば label を名前に使う。問いを変えたら、旧い文を old に残す（background.js が入れ替える）
 const JEV_PRESETS = JEV_TECHNIQUES.presets.map(({ notes, ...p }) => p);
+// 自分で足した項目の文がおすすめのどれかと同じなら、そのおすすめ（名前と説明に使う）
+const jevPresetFor = (condition) => JEV_PRESETS.find((p) => p.condition === condition);
 
 // 誘導の決まり文句（コードだけで判定）。強い言い回しは1つで、弱い言い回しは2つ以上で当たり。
 // 弱いものを1つで当たりにすると普通の投稿にも付きすぎる。ふつうの動画にほぼ必ずある「チャンネル登録」は入れない。

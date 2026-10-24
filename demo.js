@@ -17,14 +17,13 @@ function rowsFor(answers, mode, saved, text) {
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
     const cfg = jevPillarConfig(id, saved);
     if (!cfg.on || p.advanced || (p.modes && !p.modes.includes(mode))) continue;
-    const c = { ...p, high: cfg.high, qs: p.qs.map((k) => JEV_QUESTIONS[k]) };
+    const c = { ...p, high: cfg.high, qs: jevPillarQs(p) };
     if (p.code) {
       if (JEV_CODE[p.code]) rows.push(jevCodeRow(c, text)); // 同じ文言の大量投稿は投稿どうしの比較なので、見本1件ずつでは出せない
       continue;
     }
     if (!p.qs.every((k) => k in answers)) continue;
-    const pct = jevPct(p.qs, answers);
-    rows.push({ c, pct, hit: pct >= c.high });
+    rows.push(jevAskRow(c, answers, p.qs));
   }
   return rows;
 }
