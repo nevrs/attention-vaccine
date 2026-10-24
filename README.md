@@ -8,8 +8,8 @@
 
 英語名は Attention Vaccine です（日本語の Chrome では「煽り注意報」と表示されます）。
 
-怒りや不安をあおって稼ぐ、炎上を狙う、根拠を示さずに言い切る。
-読んでいる投稿や記事がこうした書き方をしていたら、天気の注意報のように「**注意報**」の印で知らせる Chrome 拡張です。印には「扇動的」「主語デカ」「コエデカ」などの分類が出て、押すと仕組みと向き合い方が出ます。
+怒りや不安をあおって稼ぐ、炎上をあおる、根拠を示さずに言い切る。
+読んでいる投稿や記事がこうした書き方をしていたら、天気の注意報のように「**注意報**」の印で知らせる Chrome 拡張です。印には「扇動的」「主語デカ」「裏付けなし」などの分類が出て、押すと仕組みと向き合い方が出ます。
 
 - **書いた人を責めない:** 注意報は、書いた人がわざとかどうかを問いません。感情がにじんだだけ・主語が大きくなっただけの文にも付きます。読む人の直感が動かされるのは、意図があってもなくても同じだからです。
 - **知らせるだけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。
@@ -38,13 +38,15 @@ Jev は文章を書かない AI で、「この文は○○か」という問い
 | 誘い込み | 不安や怒りで行動に誘う | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
 | 誘い込み | 楽に儲かる話で誘う | 楽に・確実にお金が得られると約束して、投資・副業・登録に誘う（Jev） | オン |
 | 誘い込み | 公的機関や企業を名乗って急がせる | 停止・未払い・当選などを告げる通知の形で、リンク・入力・送金に誘う（Jev） | オン |
-| 扇動的 | 反応を集めるための挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
+| 扇動的 | 反応を誘う挑発的な書き方 | 反論や怒りの反応を集めること自体が目的に見える挑発（集団を雑にけなす・極端な一般化・「反論どうぞ」など。Jev） | オン |
 | 扇動的 | 人間扱いしない言葉 | 集団・属性・政治的な立場の人々を虫・病気・ゴミ・獣・悪魔などにたとえる、人を人間以外にたとえて排除を求める（個人への悪口の慣用句は除く。Jev） | オン |
-| コエデカ | 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
-| コエデカ | 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
+| 裏付けなし | 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev。真偽は調べない） | オン |
+| 裏付けなし | 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
 | 誘い込み | 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
-| 農場予兆 | 同じ文の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
+| コピペ投稿 | 同じ文の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
 | 主語デカ | 集団へのレッテル貼り | 国籍・性別・世代・立場などの集団の全員に、性質を決めつける（好意的な決めつけも含む。Jev、高度な設定） | オフ |
+
+人を虫や病気にたとえる言葉は、迫害や虐殺の前にくり返し使われてきました。初期値で「人間扱いしない言葉」をオンにしているのは、そのためです（印の説明には書かず、ここに書いています。1 件の投稿の書き手を、その手前にいる人のように見せないため）。
 
 API キーが無くても、コードで判定する 2 項目だけで動きます。
 キーを入れずに、体験ページ（`demo.html`）で見本を試すこともできます。
@@ -155,7 +157,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 In Japanese, this extension is called 煽り注意報 (roughly "rage-bait advisory", as in a weather advisory). The name you see in Chrome depends on your browser's language.
 
-A Chrome extension that, like a weather advisory, shows a "注意報" (advisory) tag when a post or article you are reading is written in a way that tends to move readers by reflex, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence. The tag names a category such as 扇動的 (inflammatory), 主語デカ (sweeping "they"), or コエデカ (loud certainty); click it to see how it works and how to respond.
+A Chrome extension that, like a weather advisory, shows a "注意報" (advisory) tag when a post or article you are reading is written in a way that tends to move readers by reflex, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence. The tag names a category such as 扇動的 (inflammatory), 主語デカ (sweeping "they"), or 裏付けなし (unsupported); click it to see how it works and how to respond.
 
 - **It does not blame the writer:** the advisory ignores whether the writer meant it. It also appears on text where emotion simply leaks through or the subject got too broad, because the reader's reflexes are moved either way.
 - **It points this out, nothing more:** it never judges posts good or bad, and hides them only if you choose to (blurring sexual content).
@@ -184,13 +186,15 @@ No large language model (LLM) is used.
 | Lure (誘い込み) | Stirring anxiety or anger to push action | Stirs up emotions × drives views or purchases (Jev) | On |
 | Lure (誘い込み) | Easy-money pitch | Promises easy or guaranteed money to draw readers into investing, side jobs or sign-ups (Jev) | On |
 | Lure (誘い込み) | Impersonating an authority or company | A notice claiming suspension, unpaid bills, prizes etc. that pushes a link, login, input or payment (Jev) | On |
-| Inflammatory (扇動的) | Provocation to farm reactions | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
+| Inflammatory (扇動的) | Provocative writing that invites reactions | Provocation that looks aimed at drawing angry replies: sweeping put-downs of groups, extreme generalizations, "prove me wrong" (Jev) | On |
 | Inflammatory (扇動的) | Dehumanizing language | Likening groups, attributes or political camps to vermin, disease, trash, beasts or devils, or likening someone to a non-human while calling for their removal (everyday insults aimed at one person are excluded; Jev) | On |
-| Loud certainty (コエデカ) | Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
-| Loud certainty (コエデカ) | Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
+| Unsupported (裏付けなし) | Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev; truth is not checked) | On |
+| Unsupported (裏付けなし) | Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
 | Lure (誘い込み) | Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |
-| Farm sign (農場予兆) | Same text posted en masse | Near-identical text posted by different accounts (rule-based) | On |
+| Copy-paste posts (コピペ投稿) | Same text posted en masse | Near-identical text posted by different accounts (rule-based) | On |
 | Sweeping "they" (主語デカ) | Group labeling | Attributing a trait to everyone in a group by nationality, gender, generation, political position, etc., including "positive" stereotypes (Jev, advanced settings) | Off |
+
+Likening people to vermin or disease has repeatedly preceded persecution and genocide. That is why "Dehumanizing language" is on by default (this is written here rather than on each tag, so that the writer of a single post is not cast as someone on that path).
 
 Without an API key, only the two rule-based checks run.
 You can also try the demo page (`demo.html`) without a key.
