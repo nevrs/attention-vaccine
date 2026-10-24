@@ -22,6 +22,7 @@ function renderPillars(saved) {
     box.className = "item";
     box.innerHTML = `<label><input type="checkbox" data-on="${id}"> <b></b></label><div class="why"></div><div class="opts"></div>`;
     box.querySelector("b").textContent = p.label;
+    if (JEV_CATS[p.cat]) box.querySelector("b").after(`（注意報: ${JEV_CATS[p.cat].name}）`); // 印に出るのは分類の名前
     box.querySelector(".why").textContent =
       p.why + (p.modes ? `（${p.modes.map((m) => JEV_MODES[m]).join("・")}モードのみ）` : "") + (p.code ? "（Jev を使わずコードで判定。キーなしでも動く）" : "");
     box.querySelector("[data-on]").checked = c.on;

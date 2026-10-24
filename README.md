@@ -9,12 +9,13 @@
 英語名は Attention Vaccine です（日本語の Chrome では「煽り注意報」と表示されます）。
 
 怒りや不安をあおって稼ぐ、炎上を狙う、根拠を示さずに言い切る。
-読んでいる投稿や記事にこうした**手口**が使われていたら、「手口」の印で知らせる Chrome 拡張です。印を押すと、手口の仕組みと向き合い方が出ます。
+読んでいる投稿や記事がこうした書き方をしていたら、天気の注意報のように「**注意報**」の印で知らせる Chrome 拡張です。印には「扇動的」「主語デカ」「コエデカ」などの分類が出て、押すと仕組みと向き合い方が出ます。
 
-- **知らせるのは手口だけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。印を押すと、どの手口か、その仕組みと向き合い方が出ます。
+- **書いた人を責めない:** 注意報は、書いた人がわざとかどうかを問いません。感情がにじんだだけ・主語が大きくなっただけの文にも付きます。読む人の直感が動かされるのは、意図があってもなくても同じだからです。
+- **知らせるだけ:** 良し悪しを決めたりはしません。投稿を隠すのも、あなたがそう設定したとき（性的な内容のぼかし）だけです。
 - **立場は見ない:** どの主張かではなく、書き方だけを見ます。
 - **真偽は確かめていない:** 「根拠を示さない断定」は、根拠を示さずに言い切っている、または広く否定されている主張を事実として述べている、という意味です。内容の真偽を確かめた結果ではありません。
-- **すべて自分で決められる:** 使うサイト、見つける手口、感度は設定で変えられます。判定しないアカウントも指定できます（X・Bluesky）。
+- **すべて自分で決められる:** 使うサイト、判定する項目、感度は設定で変えられます。判定しないアカウントも指定できます（X・Bluesky）。
 
 ### 願い
 
@@ -29,21 +30,21 @@
 
 判定には [TypeSafe](https://typesafe.ai) の **Jev**（`jev-1.13.0`）を使います。
 Jev は文章を書かない AI で、「この文は○○か」という問いに確率だけを返します。
-確率が設定した感度（閾値）以上のときだけ「手口」の印を付けます。
+確率が設定した感度（閾値）以上のときだけ「注意報」の印を付けます。
 大きな言語モデル（LLM）は使いません。
 
-| 手口 | 見かた | 初期値 |
-|---|---|---|
-| 不安や怒りで行動に誘う | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
-| 楽に儲かる話で誘う | 楽に・確実にお金が得られると約束して、投資・副業・登録に誘う（Jev） | オン |
-| 公的機関や企業を名乗って急がせる | 停止・未払い・当選などを告げる通知の形で、リンク・入力・送金に誘う（Jev） | オン |
-| 反応を集めるための挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
-| 人間扱いしない言葉 | 集団・属性・政治的な立場の人々を虫・病気・ゴミ・獣・悪魔などにたとえる、人を人間以外にたとえて排除を求める（個人への悪口の慣用句は除く。Jev） | オン |
-| 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
-| 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
-| 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
-| 同じ文の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
-| 集団へのレッテル貼り | 国籍・性別・世代・立場などの集団の全員に、性質を決めつける（好意的な決めつけも含む。Jev、高度な設定） | オフ |
+| 分類 | 項目 | 見かた | 初期値 |
+|---|---|---|---|
+| 誘い込み | 不安や怒りで行動に誘う | 感情をあおる × 閲覧や購入に誘導する（Jev） | オン |
+| 誘い込み | 楽に儲かる話で誘う | 楽に・確実にお金が得られると約束して、投資・副業・登録に誘う（Jev） | オン |
+| 誘い込み | 公的機関や企業を名乗って急がせる | 停止・未払い・当選などを告げる通知の形で、リンク・入力・送金に誘う（Jev） | オン |
+| 扇動的 | 反応を集めるための挑発 | 反応を集めるための挑発や、集団をひとまとめにけなす書き方（Jev） | オン |
+| 扇動的 | 人間扱いしない言葉 | 集団・属性・政治的な立場の人々を虫・病気・ゴミ・獣・悪魔などにたとえる、人を人間以外にたとえて排除を求める（個人への悪口の慣用句は除く。Jev） | オン |
+| コエデカ | 根拠を示さない断定 | 根拠を示さない断定、広く否定されている主張を事実として述べる（Jev） | オン |
+| コエデカ | 数字・研究の出どころがあいまい | 数字や研究が元の情報源から切り離されている（Jev、ページ全体モードのみ） | オン |
+| 誘い込み | 誘導の決まり文句 | 「プロフのリンクから」「先着○名」など（コードで判定、日本語のみ） | オン |
+| 農場予兆 | 同じ文の大量投稿 | ほぼ同じ文を別々のアカウントが投稿（コードで判定） | オン |
+| 主語デカ | 集団へのレッテル貼り | 国籍・性別・世代・立場などの集団の全員に、性質を決めつける（好意的な決めつけも含む。Jev、高度な設定） | オフ |
 
 API キーが無くても、コードで判定する 2 項目だけで動きます。
 キーを入れずに、体験ページ（`demo.html`）で見本を試すこともできます。
@@ -84,8 +85,8 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 2. 拡張のアイコンを押し、「このサイトで使う」をオンにします。初めてのサイトでは、Chrome が「このサイトのデータの読み取りと変更」の許可を確かめるので、許可します。拡張は許可したサイトでしか動きません。
 3. 表示のしかた（モード）は自動で決まります。主要なサイトはおすすめ、それ以外はページ全体です。変えたいときは、同じ画面の「表示のしかた」を開いて選びます。
    - **ページ全体:** ニュース記事やブログなど、1 ページに 1 本の文章があるページ向け。画面の隅（多くのサイトでは右下）に結果が 1 つ出ます。
-   - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。手口が見つかった投稿の右上に「手口」の印が付きます。
-4. 印を押すと、見つかった手口の名前・仕組み・向き合い方が出ます。確率などの判定の中身は「詳しく」の中です。
+   - **ブロックごと:** X のタイムラインや検索結果など、投稿が並ぶページ向け。当てはまった投稿の右上に「注意報」の印が付きます。
+4. 印を押すと、分類と、項目の名前・仕組み・向き合い方が出ます。確率などの判定の中身は「詳しく」の中です。
 5. やめるときは、同じ画面で「このサイトで使う」をオフにします。そのサイトの許可も返します。
 
 **更新するとき**
@@ -118,11 +119,11 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 ### 言語について
 
 判定の問いは日本語で書いています。英語・中国語・韓国語・スペイン語の文章にも、日本語の問いのままで判定できることを確かめました。
-自作の例文各 20 本で、狙った手口の検出は 12 本中 11〜12 本、当てはまらない文への誤った印は 0 件でした。
+自作の例文各 20 本で、狙った項目の検出は 12 本中 11〜12 本、当てはまらない文への誤った印は 0 件でした。
 
 ただし、これで十分だとは考えていません。
 
-- 試したのは、手口がはっきりした自作の例文だけです。実際の投稿での精度はまだ測っていません。
+- 試したのは、当てはまりがはっきりした自作の例文だけです。実際の投稿での精度はまだ測っていません。
 - 問いを各言語に訳した試験では、結果がかえってずれました。ただし訳したのは開発者で、その言語を母語とする人ではありません。
 - **その言語を母語とする人が、それぞれの言語や文化に合わせて書いた問いのほうが、より正確に判定できる可能性があります。** あおり方・皮肉・挑発の型は、文化によって違うからです。
 - 「誘導の決まり文句」は日本語の言い回しだけに対応しています。
@@ -135,7 +136,7 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 - Jev は理由を説明しません。印を押して「詳しく」を開くと、判定に使った問いの原文と数値が出ます。数値は「その書き方に当てはまる」確率で、内容が正しい確率ではありません。
 - 判定がおかしいと思ったら、印の詳細の「詳しく」にある「誤検知だと思う」（印が付かなかった件では「取りこぼしだと思う」）で、その投稿をこのブラウザの中に記録できます（最大 50 件。本文・項目と値・サイト・日時が残り、ふだんはどこにも送りません）。記録した投稿は「問いを試す」画面で選んで例文に加えられ、そのときは例文として接続先に送ります。そのうえで、自分で直せます。印の詳細の「詳しく」にある「この判定を AI に相談する」（設定画面にもあります）で、拡張のしくみ・問い・数値・本文をまとめた文が出ます。ChatGPT などの AI に貼り、【】に自分の考えを書き足して、言い換えの案と、測るための例文を出してもらえます。本文が入るので、貼る先を選んでください。案が効くかは Jev で測るまで分かりません。AI の答え（JSON）を設定画面から開ける「問いを試す」画面に貼ると、今の問いと案を例文すべてにかけて表で比べ、良い案をそのまま自分の項目として採用できます（例文の数だけ問い合わせ、1日の上限に数えます）。
 - 印が付かなくても、内容が正しい・安全だという意味ではありません。
-- X で引用された投稿は、引用した人の文章とは分けて判定し、手口があれば引用の枠に「引用元」の印を付けます。
+- X で引用された投稿は、引用した人の文章とは分けて判定し、当てはまれば引用の枠に「引用元」の印を付けます。
 - 判定しないもの: 画像や動画の中の文字、記事の冒頭 2000 字より後、素早くスクロールして画面にとどまらなかった投稿（Jev の判定。誘導の決まり文句は投稿が現れた時点で手元で判定します）、DM などの画面、除外したアカウントの投稿。
 - 同じ書き方なら、どの政治的立場の文章でも同じように判定されるかは、まだ十分に測っていません。「集団へのレッテル貼り」では、向きを逆にした文の組（男女・左右・世代など）でほぼ同じ数値でした。ただし、よく知られた決めつけほど拾いやすく、見慣れない決めつけは拾いにくい傾向がありました（自作の例文 50 本）。
 
@@ -154,12 +155,13 @@ Chrome ウェブストアには、まだ出していません。次の手順で�
 
 In Japanese, this extension is called 煽り注意報 (roughly "rage-bait advisory", as in a weather advisory). The name you see in Chrome depends on your browser's language.
 
-A Chrome extension that shows a "手口" (technique) tag when a post or article you are reading uses a **manipulation technique**, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence.
+A Chrome extension that, like a weather advisory, shows a "注意報" (advisory) tag when a post or article you are reading is written in a way that tends to move readers by reflex, such as stirring up anger or anxiety for profit, provoking a flame war, or making claims without evidence. The tag names a category such as 扇動的 (inflammatory), 主語デカ (sweeping "they"), or コエデカ (loud certainty); click it to see how it works and how to respond.
 
-- **It points out the technique, nothing more:** it never judges posts good or bad, and hides them only if you choose to (blurring sexual content). Click the tag to see which technique was detected, how it works, and how to respond.
+- **It does not blame the writer:** the advisory ignores whether the writer meant it. It also appears on text where emotion simply leaks through or the subject got too broad, because the reader's reflexes are moved either way.
+- **It points this out, nothing more:** it never judges posts good or bad, and hides them only if you choose to (blurring sexual content).
 - **It ignores viewpoints:** it looks only at how something is written, not at which side it supports.
 - **It does not fact-check:** "Unsupported assertion" means something is asserted without evidence, or a widely refuted claim is stated as fact. It is not the result of checking whether the content is true.
-- **You are in control:** you choose the sites, the techniques to detect, and the sensitivity. You can also exclude specific accounts (X and Bluesky).
+- **You are in control:** you choose the sites, the checks to run, and the sensitivity. You can also exclude specific accounts (X and Bluesky).
 
 ### My hope
 
@@ -177,18 +179,18 @@ Jev is an AI model that does not generate text; it returns only a probability fo
 The tag appears only when the probability reaches your sensitivity setting (threshold).
 No large language model (LLM) is used.
 
-| Technique | How it is detected | Default |
-|---|---|---|
-| Stirring anxiety or anger to push action | Stirs up emotions × drives views or purchases (Jev) | On |
-| Easy-money pitch | Promises easy or guaranteed money to draw readers into investing, side jobs or sign-ups (Jev) | On |
-| Impersonating an authority or company | A notice claiming suspension, unpaid bills, prizes etc. that pushes a link, login, input or payment (Jev) | On |
-| Provocation to farm reactions | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
-| Dehumanizing language | Likening groups, attributes or political camps to vermin, disease, trash, beasts or devils, or likening someone to a non-human while calling for their removal (everyday insults aimed at one person are excluded; Jev) | On |
-| Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
-| Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
-| Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |
-| Same text posted en masse | Near-identical text posted by different accounts (rule-based) | On |
-| Group labeling | Attributing a trait to everyone in a group by nationality, gender, generation, political position, etc., including "positive" stereotypes (Jev, advanced settings) | Off |
+| Category | Check | How it is detected | Default |
+|---|---|---|---|
+| Lure (誘い込み) | Stirring anxiety or anger to push action | Stirs up emotions × drives views or purchases (Jev) | On |
+| Lure (誘い込み) | Easy-money pitch | Promises easy or guaranteed money to draw readers into investing, side jobs or sign-ups (Jev) | On |
+| Lure (誘い込み) | Impersonating an authority or company | A notice claiming suspension, unpaid bills, prizes etc. that pushes a link, login, input or payment (Jev) | On |
+| Inflammatory (扇動的) | Provocation to farm reactions | Provocation to farm reactions, sweeping put-downs of groups (Jev) | On |
+| Inflammatory (扇動的) | Dehumanizing language | Likening groups, attributes or political camps to vermin, disease, trash, beasts or devils, or likening someone to a non-human while calling for their removal (everyday insults aimed at one person are excluded; Jev) | On |
+| Loud certainty (コエデカ) | Unsupported assertion | Claims without evidence, or widely refuted claims stated as fact (Jev) | On |
+| Loud certainty (コエデカ) | Unclear source for numbers or studies | Numbers or studies cut off from their original source (Jev, whole-page mode only) | On |
+| Lure (誘い込み) | Lure phrases | "Link in bio", "first N people only", etc. (rule-based, **Japanese only**) | On |
+| Farm sign (農場予兆) | Same text posted en masse | Near-identical text posted by different accounts (rule-based) | On |
+| Sweeping "they" (主語デカ) | Group labeling | Attributing a trait to everyone in a group by nationality, gender, generation, political position, etc., including "positive" stereotypes (Jev, advanced settings) | Off |
 
 Without an API key, only the two rule-based checks run.
 You can also try the demo page (`demo.html`) without a key.
@@ -228,8 +230,8 @@ By default, nothing happens on any site. Turn it on for each site you want.
 2. Click the extension icon and turn on "このサイトで使う" (Use on this site). The first time for a site, Chrome asks you to allow the extension to read and change data on that site; allow it. The extension runs only on sites you allow.
 3. The display mode is chosen automatically: the recommended one for well-known sites, whole page otherwise. To change it, open "表示のしかた" (Display style) in the same place and pick one.
    - **ページ全体 (Whole page):** for pages with a single piece of writing, such as news articles or blog posts. One result appears in a corner of the screen (bottom right on most sites).
-   - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. a "手口" tag appears at the top right of each post where a technique is found.
-4. Click the tag to see the technique, how it works, and how to respond. The scores are under "詳しく" (details).
+   - **ブロックごと (Per block):** for pages that list posts, such as the X timeline or search results. a "注意報" tag appears at the top right of each matching post.
+4. Click the tag to see the category, the check, how it works, and how to respond. The scores are under "詳しく" (details).
 5. To stop, turn off "このサイトで使う" in the same place. This also gives back the permission for that site.
 
 **Updating**
@@ -279,7 +281,7 @@ Questions for other languages can be added as your own checks on the options pag
 - Jev does not explain its reasons. Open "詳しく" (details) in the tag to see the exact question that was asked and the score. The score is the probability that the writing fits that description, not the probability that the content is true.
 - If a result looks wrong, record the post with "誤検知だと思う" (false alarm) or "取りこぼしだと思う" (missed) in the tag's details. Records (text, checks and scores, site, time; up to 50) stay in this browser and are not sent anywhere, unless you pick them as test sentences on the try-questions page, which sends them to your provider. Then you can fix it yourself: use "この判定を AI に相談する" (consult an AI) in the tag's details or on the options page. It produces a prompt with how the extension works, the questions, the scores and the text, to paste into an AI of your choice for rewording ideas and test sentences. It includes the post text, so choose where you paste it. Whether a suggestion works can only be known by measuring it with Jev: paste the AI's JSON answer into the "問いを試す" (try questions) page, linked from the options page, to score the current question and the candidates on every test sentence, compare them in a table, and adopt one as your own check (one request per sentence, counted toward the daily limit).
 - No tag does not mean the content is true or safe.
-- On X, a quoted post is checked separately from the quoting post; if it uses a technique, the tag "引用元" (quoted source) appears on the quote box.
+- On X, a quoted post is checked separately from the quoting post; if it matches, the tag "引用元" (quoted source) appears on the quote box.
 - Not checked: text inside images or videos, anything after the first 2,000 characters of an article, posts you scroll past quickly (for Jev checks; lure phrases are checked locally as soon as a post appears), DM-like pages, and posts from accounts you excluded.
 - Whether texts from different political positions, written in the same style, are judged equally has not been fully measured. For "Group labeling", mirrored pairs (men/women, left/right, young/old, etc.) scored almost the same, but well-known stereotypes were caught more readily than unfamiliar ones (50 hand-written examples).
 

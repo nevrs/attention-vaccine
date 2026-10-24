@@ -1,4 +1,4 @@
-// 体験ページ: demo-data.js の見本と判定結果を、本番と同じ見た目の「手口」の印で表示する（通信なし・キー不要）。
+// 体験ページ: demo-data.js の見本と判定結果を、本番と同じ見た目の「注意報」の印で表示する（通信なし・キー不要）。
 const $ = (id) => document.getElementById(id);
 
 // 利用者の今の設定（オン・オフと感度）で見せる。読めなければ初期値
@@ -55,7 +55,7 @@ async function render() {
   $("figBait").textContent = pct(JEV_PILLARS.bait.qs);
   $("figFlame").textContent = pct(JEV_PILLARS.flame.qs);
   $("figDema").textContent = pct(JEV_PILLARS.dema.qs);
-  $("figBadge").textContent = `${JEV_MARK}｜${JEV_PILLARS.bait.short}`;
+  $("figBadge").textContent = `${JEV_MARK}｜${JEV_CATS[JEV_PILLARS.bait.cat].name}`;
 
   const feed = $("feed");
   feed.textContent = "";

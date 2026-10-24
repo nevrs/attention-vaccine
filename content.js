@@ -1,6 +1,6 @@
 // Jev の判定をページに表示する。サイトごとに2つのモードがある（ポップアップで選ぶ）:
 //   page  … ページ1枚（見出し＋本文冒頭）を1回判定し、右下に小さなマークを出す
-//   block … 一覧の1件ずつを判定し、当たった件の右上に「手口」の印を重ねる
+//   block … 一覧の1件ずつを判定し、当たった件の右上に「注意報」の印を重ねる
 // マークを押すと、何に当たったか・なぜか・数値が出る。当たらなかった件には何も付けない（静かに、文章をずらさない）。
 // 軽さのために: 見えている状態が一定時間（既定 1.5 秒）続いた件だけ判定する（流し読みした件は判定しない）。
 // スクロールを優先し、区切りを探す・マークを描くのはスクロールが止まってから。ページの変化の常時監視はしない。
@@ -30,7 +30,7 @@ function buildChecks(s, mode) {
   for (const [id, p] of Object.entries(JEV_PILLARS)) {
     const c = jevPillarConfig(id, s.pillars);
     if (!c.on || (p.modes && !p.modes.includes(mode)) || (keyless && !p.code)) continue;
-    out.push({ id, label: p.label, short: p.short, why: p.why, tip: p.tip, qs: p.qs.map((k) => JEV_QUESTIONS[k]), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
+    out.push({ id, cat: p.cat, label: p.label, short: p.short, why: p.why, tip: p.tip, qs: p.qs.map((k) => JEV_QUESTIONS[k]), code: p.code, high: c.high, action: c.action, showSources: !!p.showSources });
   }
   if (keyless) return out; // 自分で足す項目は Jev が要る
   for (const r of s.rules) {
@@ -121,7 +121,6 @@ function score(answers, text, el) {
       const d = dupOf(el);
       rows.push({
         c, pct: d.hit ? 100 : 0, hit: d.hit,
-        badge: d.hit ? `同じ文 ${d.authors.length}アカウント` : null,
         detail: d.hit ? "同じ文を投稿しているアカウント: " + d.authors.slice(0, 10).map((a) => "@" + a).join(" ") + (d.authors.length > 10 ? ` ほか${d.authors.length - 10}` : "") : null,
       });
     } else if (c.code) {
@@ -159,7 +158,7 @@ function doiOf(href) {
   return n ? "10.1038/" + n[1] : null;
 }
 
-// ---- マーク: 「手口」の小さなボタン。押すと詳細が開く。サイトの CSS に影響されないよう shadow DOM に閉じる ----
+// ---- マーク: 「注意報」の小さなボタン。押すと詳細が開く。サイトの CSS に影響されないよう shadow DOM に閉じる ----
 
 // at: 1件の印の位置（既定は SITE.markAt）。引用の枠にはサイトのボタンが無いので、既定の右上の角に置く
 function createMark(fixed, at = SITE?.markAt) {
@@ -339,7 +338,7 @@ async function judgePage(retry = 0) {
   comparePage(text, links);
 }
 
-// ページ全体は右下に1つだけ。当たれば「手口｜名前」、当たらなければ控えめな Jev 読んだ（押せば数値が見られる）
+// ページ全体は右下に1つだけ。当たれば「注意報｜分類」、当たらなければ控えめな Jev 読んだ（押せば数値が見られる）
 function renderPage() {
   if (!pageView) return;
   if (!pageMark) {
@@ -360,7 +359,7 @@ function renderPage() {
     return;
   }
   const { rows, links, cmp } = pageView;
-  // 元論文との比較で当たったものも、手口の1つとして並べる
+  // 元論文との比較で当たったものも、項目の1つとして並べる（分類は持たない）
   const hits = rows.filter((r) => r.hit).concat(cmp?.hit ? [{ c: { short: "元の研究を盛っている", label: JEV_COMPARE.label }, pct: cmp.pct }] : []);
   if (hits.length) jevSetBadge(pageMark.badge, hits, settings.debug ? `${modeName(mode)}｜` : "");
   else {
@@ -370,9 +369,9 @@ function renderPage() {
   pageMark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(pageMark.pop, rows, links, (add, link) => {
     if (!cmp) return;
-    add("hit", cmp.message ? "元論文（要旨）との比較" : `元論文（要旨）との比較: 誇張・歪曲 ${cmp.pct.toFixed(0)}%${cmp.hit ? "（手口あり）" : ""}`);
+    add("hit", cmp.message ? "元論文（要旨）との比較" : `元論文（要旨）との比較: 誇張・歪曲 ${cmp.pct.toFixed(0)}%${cmp.hit ? "（注意報あり）" : ""}`);
     if (cmp.message) return add("note", cmp.message);
-    add("why", `いちばん近い評価: ${cmp.level}（${(cmp.levelP * 100).toFixed(0)}%）` + (cmp.hit ? `。手口: ${JEV_COMPARE.label}` : ""));
+    add("why", `いちばん近い評価: ${cmp.level}（${(cmp.levelP * 100).toFixed(0)}%）` + (cmp.hit ? `。注意報: ${JEV_COMPARE.label}` : ""));
     link(cmp.paper.url, `論文: ${cmp.paper.title}${cmp.paper.year ? `（${cmp.paper.year}）` : ""}`);
     add("note", "要旨だけとの比較です。要旨にない数字や、数字の細かいずれは確かめられません");
   }, pageView.text);
@@ -535,7 +534,7 @@ function dupOf(el) {
 }
 
 // 右下の小さな表示。普段は出さない（動作確認はポップアップの「読んだ投稿 N 件」で見られる）。
-// 手口が見つかったとき・失敗しているとき・デバッグ中だけ出し、条件が外れたら取り除く
+// 注意報が出たとき・失敗しているとき・デバッグ中だけ出し、条件が外れたら取り除く
 let counter = null;
 function updateCounter() {
   if (mode !== "block") return;
@@ -554,8 +553,8 @@ function updateCounter() {
   counter.badge.classList.toggle("quiet", !stats.warned && !failing);
   counter.pop.textContent = "";
   const add = (text, cls) => jevDiv(cls, text, counter.pop);
-  add(`手口が見つかった投稿は ${stats.warned} 件です（Jev で読んだ投稿 ${stats.judged} 件）。`);
-  add("「手口」の印は、手口が見つかった投稿の右上に付きます。誘導の決まり文句は投稿が現れた時点で、Jev の項目は画面に少しとどまった投稿だけを判定しています。", "note");
+  add(`注意報が出た投稿は ${stats.warned} 件です（Jev で読んだ投稿 ${stats.judged} 件）。`);
+  add("「注意報」の印は、注意報が出た投稿の右上に付きます。誘導の決まり文句は投稿が現れた時点で、Jev の項目は画面に少しとどまった投稿だけを判定しています。", "note");
   if (keyless) add("API キーが無いので、コードで判定できる項目（誘導の決まり文句・同じ文言の大量投稿）だけを見ています。キーを入れると Jev の判定も加わります。", "note");
   if (stats.excluded) add(`除外リストのアカウントの投稿 ${stats.excluded} 件は判定していません。`, "note");
   if (stats.errors) add(`判定の失敗 ${stats.errors} 件: ${stats.lastError}`, "hit");
@@ -620,7 +619,7 @@ function scan() {
 }
 
 // コードで判定する項目（誘導の決まり文句）は費用がかからないので、見つけた時点で判定し、当たれば印をすぐ付ける。
-// Jev の判定（見えてから待ち時間＋問い合わせ）を待つと、印が出るのは読み終わった後になる。手口は読む前に知らせたい。
+// Jev の判定（見えてから待ち時間＋問い合わせ）を待つと、印が出るのは読み終わった後になる。注意報は読む前に知らせたい。
 // Jev の結果が返ったら apply で描き直し、両方の当たりをまとめて出す。前に判定した本文なら、保存済みの結果もすぐ出す（peek）
 function codeFirst(el, st) {
   const text = blockText(el);
@@ -796,7 +795,7 @@ async function judgeBlock(el) {
   whenIdle(updateCounter); // 失敗も数える
 }
 
-// 当たった件にだけ「手口」の印を重ねる（「判定した全件にマーク」がオンなら、当たらない件にも控えめな「読んだ」。✓ は「安全」と読まれるので使わない）
+// 当たった件にだけ「注意報」の印を重ねる（「判定した全件にマーク」がオンなら、当たらない件にも控えめな「読んだ」。✓ は「安全」と読まれるので使わない）
 function apply(el) {
   clearMarks(el);
   const st = state.get(el);
@@ -815,7 +814,7 @@ function apply(el) {
   else st.mark.badge.textContent = "読んだ";
   st.mark.badge.classList.toggle("quiet", !hits.length);
   fillDetails(st.mark.pop, rows, hits.some((r) => r.c.showSources) ? primaryLinks(el) : [], (add) => {
-    if (st.quote) add("note", "引用された投稿の手口です。引用した人の文章の判定ではありません");
+    if (st.quote) add("note", "引用された投稿への注意報です。引用した人の文章の判定ではありません");
     if (el.classList.contains("jev-blur")) add("note", "本文はぼかしています。本文を押すと表示します");
   }, st.text);
   el.append(st.mark.host);
